@@ -81,6 +81,7 @@ class Vectores {
         Vectores();
         float distAbsoluta();
         float distDosPuntos(Vectores p2);
+        Vectores desplazarPuntoVector(Vectores p2);
         Vectores VectorDosPuntos(Vectores p2);
         Vectores ProductoVectorial(Vectores p2);
         Vectores normalizar();
@@ -98,17 +99,22 @@ float Vectores::distAbsoluta(){
 }
 
 float Vectores::distDosPuntos(Vectores p2){
-    Vectores aux (this->c[0]-p2.c[0], this->c[1]-p2.c[1], this->c[2]-p2.c[2], 1);
+    Vectores aux (this->c[0]-p2.c[0], this->c[1]-p2.c[1], this->c[2]-p2.c[2], 0); //Todo vector debe tener un 0 en el cuarto parámetro
     return aux.distAbsoluta();
 }
 
+Vectores Vectores::desplazarPuntoVector(Vectores p2){
+    Vectores aux (this->c[0]+p2.c[0], this->c[1]+p2.c[1], this->c[2]+p2.c[2], 1); //Se mantiene como punto
+    return aux;
+}
+
 Vectores Vectores::VectorDosPuntos(Vectores p2){
-    Vectores aux (this->c[0]-p2.c[0], this->c[1]-p2.c[1], this->c[2]-p2.c[2], 1);
+    Vectores aux (this->c[0]-p2.c[0], this->c[1]-p2.c[1], this->c[2]-p2.c[2], 0); //Todo vector debe tener un 0 en el cuarto parámetro
     return aux;
 }
 
 Vectores Vectores::ProductoVectorial(Vectores p2){
-    Vectores aux (this->c[1]*p2.c[2] - this->c[2]*p2.c[1], this->c[0]*p2.c[2] - this->c[2]*p2.c[0], this->c[0]*p2.c[1] - this->c[1]*p2.c[0], 1);
+    Vectores aux (this->c[1]*p2.c[2] - this->c[2]*p2.c[1], this->c[0]*p2.c[2] - this->c[2]*p2.c[0], this->c[0]*p2.c[1] - this->c[1]*p2.c[0], 0); //Todo vector debe tener un 0 en el cuarto parámetro
     return aux;
 }
 
@@ -161,14 +167,14 @@ int main () {
 
     Vectores centroPl(5.0 ,5.0 ,5.0 ,1);
     Vectores ejePl(2.0, 0.0, 0.0, 0);
-    Vectores ciudadRefPl(4.5, 4.5, 5.0, 1);
+    Vectores ciudadRefPl(5.0,4.0,5.0, 1);
 
     Planeta pl(centroPl, ejePl, ciudadRefPl, M_PI/4, M_PI/4);
 
     cout << pl.comprobarRadio() << endl;
 
     //Vectores azul = pl.medioEje();
-    Vectores x(1.0, 0.0, 0.0, 1);
+    Vectores x(1.0, 0.0, 0.0, 0);
     Vectores aux = pl.centro.VectorDosPuntos(pl.ciudadRef);
     Vectores z = x.ProductoVectorial(aux);
     Vectores y = x.ProductoVectorial(z);
@@ -189,10 +195,10 @@ int main () {
                             0.0, 0.0 , 1.0 , 0.0,
                             0.0, 0.0, 0.0, 1.0);
 
-    Vectores vectorATrasponer(1.0, 0.0, 0.0, 1);
+    Vectores vectorATrasponer(1.0, 0.0, 0.0, 0); //Vectores (direcciones) con 0 al finaaaaal, sino ponle otro nombre
     vectorATrasponer.traspConMatriz(transpuestaZ);
 
-    cout <<"Eje traspuesto --> "<< vectorATrasponer.c[0] << " "<< vectorATrasponer.c[1] << " "<< vectorATrasponer.c[2] << " "<< vectorATrasponer.tipoPunto << endl;
+    cout <<"Eje traspuesto respecto Z --> "<< vectorATrasponer.c[0] << " "<< vectorATrasponer.c[1] << " "<< vectorATrasponer.c[2] << " "<< vectorATrasponer.tipoPunto << endl;
 
     Matrix4x4 transpuestaY( cos(pl.azimuth), 0.0, sin(pl.azimuth), 0.0, 
                             0.0, 1.0 , 0.0 , 0.0,
@@ -205,9 +211,14 @@ int main () {
                             0.0, 0.0, 0.0, 1.0);
 
     vectorATrasponer.traspConMatriz(transpuestaX);
+    Vectores vectorEstacion = vectorATrasponer;
 
-    cout <<"Eje traspuesto --> "<< vectorATrasponer.c[0] << " "<< vectorATrasponer.c[1] << " "<< vectorATrasponer.c[2] << " "<< vectorATrasponer.tipoPunto <<endl;
+    cout <<"Eje traspuesto respecto X y Z (eje de centro a estacion) --> "<< vectorEstacion.c[0] << " "<< vectorEstacion.c[1] << " "<< vectorEstacion.c[2] << " "<< vectorEstacion.tipoPunto <<endl;
 
+    Vectores estacion = vectorEstacion.desplazarPuntoVector(pl.centro);
+    
+    cout <<"Posicion de la estacion --> "<< estacion.c[0] << " "<< estacion.c[1] << " "<< estacion.c[2] << " "<< estacion.tipoPunto <<endl;
+    cout <<"Posicion del centro planetario --> "<< pl.centro.c[0] << " "<< pl.centro.c[1] << " "<< pl.centro.c[2] << " "<< pl.centro.tipoPunto <<endl;
 
     Matrix4x4 cambioBase (  x.c[0], y.c[0], z.c[0], pl.centro.c[0],
                             x.c[1], y.c[1], z.c[1], pl.centro.c[1],
@@ -215,14 +226,22 @@ int main () {
                             0.0, 0.0, 0.0, 1.0
     );
 
-    Vectores surfaceNormal ();
-    surfaceNormal = vectorATrasponer.VectorDosPuntos(pl.centro);
+    Vectores surfaceNormal = vectorATrasponer.VectorDosPuntos(pl.centro);
+    cout <<"Normal en la superficie --> "<< surfaceNormal.c[0] << " "<< surfaceNormal.c[1] << " "<< surfaceNormal.c[2] << " "<< surfaceNormal.tipoPunto <<endl;
+
 
     vectorATrasponer.traspConMatriz(cambioBase);
-    cout <<"Eje traspuesto --> "<< vectorATrasponer.c[0] << " "<< vectorATrasponer.c[1] << " "<< vectorATrasponer.c[2] << " "<< vectorATrasponer.tipoPunto <<endl;
+    cout <<"Eje en la nueva base --> "<< vectorATrasponer.c[0] << " "<< vectorATrasponer.c[1] << " "<< vectorATrasponer.c[2] << " "<< vectorATrasponer.tipoPunto <<endl;
 
-
-
+    Matrix4x4 cambioBaseTrayectoria (  x.c[0], y.c[0], z.c[0], estacion.c[0],
+                            x.c[1], y.c[1], z.c[1], estacion.c[1],
+                            x.c[2], y.c[2], z.c[2], estacion.c[2],
+                            0.0, 0.0, 0.0, 1.0
+    );
+    
+    Vectores vectorAEstacion = vectorEstacion;
+    vectorEstacion.traspConMatriz(cambioBaseTrayectoria);
+    cout <<"Eje en la nueva base --> "<< vectorEstacion.c[0] << " "<< vectorEstacion.c[1] << " "<< vectorEstacion.c[2] << " "<< vectorEstacion.tipoPunto <<endl;
 
     return 1;
 }
