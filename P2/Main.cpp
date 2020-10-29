@@ -15,6 +15,8 @@ int main () {
 
     Image thisImg(fileName);
 
-    
+    Image newImg = GammaCurve (thisImg, 0.5, 0);
+
+    newImg.save("forest2");
 
 }
