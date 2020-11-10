@@ -1,4 +1,5 @@
 #include "math.h"
+#include "toneMaping.cpp"
 #include <iostream>
 #include <fstream>
 #include <string.h> 
@@ -32,28 +33,8 @@ struct Ray{
     Vectores direccion;
     Ray(){}
     Ray(Vectores Norigen, Vectores Ndireccion):origen(Norigen),direccion(Ndireccion){}
-};
+    void calibrate(float X, float Y, float Z){
 
-struct Sensor{
-    Vectores coordenadas;
-    Vectores apunta;
-    Sensor(Vectores Coordenadas, Vectores NdistanciaPlano):coordenadas(Coordenadas),apunta(NdistanciaPlano){}
-};
-
-struct Entorno{
-    vector<Obstacle> objetos;
-    Entorno(vector<Obstacle> Nobjetos){
-        objetos.resize(Nobjetos.size());
-        for (int i = 0; i < Nobjetos.size(); i++){
-            //objetos[i]=Nobjetos[i];
-            Obstacle menor = Nobjetos[i];
-            for (int j=i+1;j<Nobjetos.size(); j++){ //ordenamos por Y, no tengo tiempo ni ganas de hacer un algoritmo de ordenar decente
-                if (Nobjetos[j].center.c[1]<Nobjetos[i].center.c[1]){
-                    menor=Nobjetos[j];
-                }
-            objetos[i]=menor;
-            }
-        }
     }
 };
 
@@ -61,6 +42,7 @@ struct Obstacle{
     Vectores center;
     Obstacle(){}
     Obstacle(Vectores centro):center(centro){}
+    bool ray_intersect(Ray rayo, Emission emite);
 };
 
 struct Sphere:Obstacle{
@@ -73,15 +55,14 @@ struct Sphere:Obstacle{
         emision=Nemision;
     }
 
-    bool ray_intersect(Ray rayo, float& puntoA, float& puntoB){
+    bool ray_intersect(Ray rayo, Emission& emite){
         Vectores l = this->center.VectorDosPuntos(rayo.origen);
         float tca = l.punto(rayo.direccion);
         if (tca < 0) return false;
         float d2 = l.punto(l)-tca*tca;
         if(d2 > (radius*radius)) return false;
         float thc = sqrt((radius*radius) - d2); // Closest approach to surface of sphere
-        puntoA = tca - thc;
-        puntoB = tca + thc;
+        emite = this->emision;
         return true;
     }
 };
@@ -96,14 +77,56 @@ struct Plane:Obstacle{
         normal = Nnormal;
     }
 
-    bool ray_intersect(Vectores Vcamara, Vectores& puntoChoque){
-        return true;
+    bool ray_intersect(Ray rayo, Emission emite){
+        return false;
+    }
+};
+
+struct Entorno{
+    vector<Obstacle> objetos;
+    Entorno(){}
+    Entorno(vector<Obstacle> Nobjetos){
+        objetos.resize(Nobjetos.size());
+        objetos=Nobjetos;
+    }
+    void add(Obstacle item){
+        int size =objetos.size();
+        auto objetosAux = objetos.insert(objetos.begin()+size,item);
+    }
+};
+
+struct Sensor{
+    Vectores coordenadas;
+    Vectores apunta;
+    Sensor(Vectores Coordenadas, Vectores NdistanciaPlano):coordenadas(Coordenadas),apunta(NdistanciaPlano){}
+    Image ver(Entorno entorno, string imagenNombre, int ancho, int alto){
+        Image imagen("test", true, 10, 10);
+        Emission visto;
+        for (int miraPixel=0;miraPixel<imagen.total;miraPixel++){
+            int alto=miraPixel/imagen.height;
+            int ancho=miraPixel%imagen.height;
+        }
+        for (int i=0;i<entorno.objetos.size();i++){
+             rayoAux(this->coordenadas,this->apunta);
+
+            if(entorno.objetos[i].ray_intersect)
+        }
+        return imagen;
     }
 };
 
 
 int main () {
-
-
-
+    Vectores bolaAux1(5.0,5.0,8.0,1);
+    Emission color(500,500,500);
+    Sphere bola1(bolaAux1,1.0,color);
+    Entorno entorno;
+    entorno.add(bola1);
+    //Image imagen("test", true, 10, 10);
+    //imagen.save("test");
+    Vectores sensorCentro(5.0,5.0,1.0,1);
+    Vectores sensorApunta(0.0,0.0,1.0,0);
+    Sensor sensor(sensorCentro,sensorApunta);
+    Imagen visto = sensor.ver(entorno,"test",10,10);
+    visto.save("test");
 }

@@ -79,6 +79,9 @@ class Vectores {
         int tipoPunto;
         Vectores(float x , float y , float z , int tipoDePunto);
         Vectores();
+        void setX(float X);
+        void setY(float Y);
+        void setZ(float Z);
         float distAbsoluta();
         float punto(Vectores vector);
         float distDosPuntos(Vectores p2);
@@ -93,6 +96,18 @@ Vectores::Vectores(float x , float y , float z , int tipoDePunto){
 }
 
 Vectores::Vectores() {
+}
+
+void Vectores::setX(float X){
+    c[0]=X;
+}
+
+void Vectores::setY(float Y){
+    c[1]=Y;
+}
+
+void Vectores::setZ(float Z){
+    c[2]=Z;
 }
 
 float Vectores::distAbsoluta(){

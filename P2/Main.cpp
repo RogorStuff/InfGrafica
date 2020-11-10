@@ -13,7 +13,7 @@ int main () {
     cout << "Please enter the name of the img: ";
     //cin >> fileName;
 
-    Image thisImg(fileName);
+    Image thisImg(fileName,false,0,0);
 
     Image newImg = GammaCurve (thisImg, 0.5, 0);
 
