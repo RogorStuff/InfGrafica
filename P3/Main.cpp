@@ -107,9 +107,11 @@ struct Sensor{
             int ancho=miraPixel%imagen.height;
         }
         for (int i=0;i<entorno.objetos.size();i++){
-             rayoAux(this->coordenadas,this->apunta);
+            Ray rayoAux(this->coordenadas,this->apunta);
 
-            if(entorno.objetos[i].ray_intersect)
+            if(entorno.objetos[i].ray_intersect(rayoAux,visto)){
+                return imagen;
+            };
         }
         return imagen;
     }
@@ -127,6 +129,6 @@ int main () {
     Vectores sensorCentro(5.0,5.0,1.0,1);
     Vectores sensorApunta(0.0,0.0,1.0,0);
     Sensor sensor(sensorCentro,sensorApunta);
-    Imagen visto = sensor.ver(entorno,"test",10,10);
+    Image visto = sensor.ver(entorno,"test",10,10);
     visto.save("test");
 }
