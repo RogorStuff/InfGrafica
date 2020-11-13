@@ -8,6 +8,25 @@
 
 using namespace std;
 
+struct Emission{
+    int red;
+    int green;
+    int blue;
+
+    Emission(int Ered, int Egreen, int Eblue){
+        red=Ered;
+        green=Egreen;
+        blue=Eblue;
+    }
+    Emission(){}
+
+    void getEmision(int& Rred, int& Rgreen, int& Rblue){
+        Rred=red;
+        Rgreen=green;
+        Rblue=blue;
+    }
+};
+
 class Pixel {
     public:
         int R;
@@ -15,16 +34,29 @@ class Pixel {
         int B;
         Pixel();
         Pixel(int Rgb, int rGb, int rgB);
+        Pixel(Emission emision);
+        void update(Emission emision);
         Pixel GammaCurve(float gamma, int max, float m, int c);
 };
 
 Pixel::Pixel(){
 }
 
+Pixel::Pixel(Emission emission){
+    this->R=emission.red;
+    this->G=emission.green;
+    this->B=emission.blue;
+}
 Pixel::Pixel(int Rgb, int rGb, int rgB){
     this->R=Rgb;
     this->G=rGb;
     this->B=rgB;
+}
+
+void Pixel::update(Emission emission){
+    this->R=emission.red;
+    this->G=emission.green;
+    this->B=emission.blue;
 }
 
 Pixel Pixel::GammaCurve(float gamma, int max, float m, int c){

@@ -9,24 +9,6 @@
 
 using namespace std;
 
-struct Emission{
-    int red;
-    int green;
-    int blue;
-
-    Emission(int Ered, int Egreen, int Eblue){
-        red=Ered;
-        green=Egreen;
-        blue=Eblue;
-    }
-    Emission(){}
-
-    void getEmision(int& Rred, int& Rgreen, int& Rblue){
-        Rred=red;
-        Rgreen=green;
-        Rblue=blue;
-    }
-};
 
 struct Ray{
     Vectores origen;
@@ -101,17 +83,28 @@ struct Sensor{
     Sensor(Vectores Coordenadas, Vectores NdistanciaPlano):coordenadas(Coordenadas),apunta(NdistanciaPlano){}
     Image ver(Entorno entorno, string imagenNombre, int ancho, int alto){
         Image imagen("test", true, 10, 10);
+        Matrix4x4 cambioBaseTrayectoria (   apunta.c[0], 0.0, 0.0, coordenadas.c[0],
+                                            0.0, apunta.c[1], 0.0, coordenadas.c[1],
+                                            0.0, 0.0, apunta.c[2], coordenadas.c[2],
+                                            0.0, 0.0, 0.0, 1.0
+        );
+        Matrix4x4 vueltaBaseTrayectoria (   1.0, 0.0, 0.0, coordenadas.c[0],
+                                            0.0, 1.0, 0.0, coordenadas.c[1],
+                                            0.0, 0.0, 1.0, coordenadas.c[2],
+                                            0.0, 0.0, 0.0, 1.0
+        );
         Emission visto;
         for (int miraPixel=0;miraPixel<imagen.total;miraPixel++){
             int alto=miraPixel/imagen.height;
             int ancho=miraPixel%imagen.height;
-        }
-        for (int i=0;i<entorno.objetos.size();i++){
-            Ray rayoAux(this->coordenadas,this->apunta);
-
-            if(entorno.objetos[i].ray_intersect(rayoAux,visto)){
-                return imagen;
-            };
+            for (int i=0;i<entorno.objetos.size();i++){
+                Ray rayoAux(this->coordenadas,this->apunta); //Generar rayo
+                Pixel pixel(visto);
+                if(entorno.objetos[i].ray_intersect(rayoAux,visto)){ //Añadir distancia al item para poner el más cercano
+                    pixel.update(visto);
+                };
+            }
+            imagen.imageMatrix[miraPixel]=pixel;
         }
         return imagen;
     }
@@ -129,6 +122,21 @@ int main () {
     Vectores sensorCentro(5.0,5.0,1.0,1);
     Vectores sensorApunta(0.0,0.0,1.0,0);
     Sensor sensor(sensorCentro,sensorApunta);
-    Image visto = sensor.ver(entorno,"test",10,10);
-    visto.save("test");
+    cout <<"Vector --> "<< bolaAux1.c[0] << " "<< bolaAux1.c[1] << " "<< bolaAux1.c[2] << endl;
+    Matrix4x4 cambioBaseTrayectoria (   2.0, 0.0, 0.0, 5.0,
+                                        0.0, 3.0, 0.0, 5.0,
+                                        0.0, 0.0, 1.0, 1.0,
+                                        0.0, 0.0, 0.0, 1.0
+    );
+    Matrix4x4 vueltaBaseTrayectoria (   0.5, 0.0, 0.0, 5.0,
+                                        0.0, 0.33, 0.0, 5.0,
+                                        0.0, 0.0, 1.0, 1.0,
+                                        0.0, 0.0, 0.0, 1.0
+    );
+    bolaAux1.traspConMatriz(cambioBaseTrayectoria);
+    cout <<"Vector --> "<< bolaAux1.c[0] << " "<< bolaAux1.c[1] << " "<< bolaAux1.c[2] << endl;
+    bolaAux1.traspConMatriz(vueltaBaseTrayectoria);
+    cout <<"Vector --> "<< bolaAux1.c[0] << " "<< bolaAux1.c[1] << " "<< bolaAux1.c[2] << endl;
+    //Image visto = sensor.ver(entorno,"test",10,10);
+    //visto.save("test");
 }
