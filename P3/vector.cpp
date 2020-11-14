@@ -82,6 +82,9 @@ class Vectores {
         void setX(float X);
         void setY(float Y);
         void setZ(float Z);
+        void rotarX(float angulo);
+        void rotarY(float angulo);
+        void rotarZ(float angulo);
         float distAbsoluta();
         float punto(Vectores vector);
         float distDosPuntos(Vectores p2);
@@ -90,6 +93,7 @@ class Vectores {
         Vectores ProductoVectorial(Vectores p2);
         Vectores normalizar();
         void traspConMatriz(Matrix4x4 matriz);
+
 };
 Vectores::Vectores(float x , float y , float z , int tipoDePunto){
     c[ 0 ] =x ; c[ 1 ] =y ; c[ 2 ] =z ; tipoPunto = tipoDePunto;
@@ -110,12 +114,38 @@ void Vectores::setZ(float Z){
     c[2]=Z;
 }
 
+void Vectores::rotarX(float angulo){
+    float radianes = angulo*M_PI/180;
+    Matrix4x4 rotateX(  1.0, 0.0, 0.0, 0.0, 
+                        0.0, cos(radianes) , -sin(radianes) , 0.0,
+                        0.0, sin(radianes) , cos(radianes) , 0.0,
+                        0.0, 0.0, 0.0, 1.0);
+    traspConMatriz(rotateX);    
+}
+void Vectores::rotarY(float angulo){
+    float radianes = angulo*M_PI/180;
+    Matrix4x4 rotateY(  cos(radianes), 0.0, sin(radianes), 0.0, 
+                    0.0, 1.0 , 0.0 , 0.0,
+                    -sin(radianes), 0.0 , cos(radianes) , 0.0,
+                    0.0, 0.0, 0.0, 1.0);
+    traspConMatriz(rotateY);
+}
+
+void Vectores::rotarZ(float angulo){
+    float radianes = angulo*M_PI/180;
+    Matrix4x4 rotateZ( cos(radianes), -sin(radianes), 0.0, 0.0, 
+                            sin(radianes), cos(radianes) , 0.0 , 0.0,
+                            0.0, 0.0 , 1.0 , 0.0,
+                            0.0, 0.0, 0.0, 1.0);
+    traspConMatriz(rotateZ);    
+}
+
 float Vectores::distAbsoluta(){
     return sqrt(c[0]*c[0] + c[1]*c[1] + c[2]*c[2]);
 }
 
 float Vectores::punto(Vectores vector){
-    return sqrt(c[0]*vector.c[0] + c[1]*vector.c[1] + c[2]*vector.c[2]);
+    return (c[0]*vector.c[0] + c[1]*vector.c[1] + c[2]*vector.c[2]);
 }
 
 float Vectores::distDosPuntos(Vectores p2){
