@@ -85,15 +85,15 @@ class Vectores {
         void rotarX(float angulo);
         void rotarY(float angulo);
         void rotarZ(float angulo);
-        float distAbsoluta();
+        Vectores negado() const;
+        float distAbsoluta() const;
         float punto(Vectores vector);
-        float distDosPuntos(Vectores p2);
+        float distDosPuntos(Vectores p2) const;
         Vectores desplazarPuntoVector(Vectores p2);
-        Vectores VectorDosPuntos(Vectores p2);
+        Vectores VectorDosPuntos(Vectores p2) const;
         Vectores ProductoVectorial(Vectores p2);
         Vectores normalizar();
         void traspConMatriz(Matrix4x4 matriz);
-
 };
 Vectores::Vectores(float x , float y , float z , int tipoDePunto){
     c[ 0 ] =x ; c[ 1 ] =y ; c[ 2 ] =z ; tipoPunto = tipoDePunto;
@@ -140,7 +140,16 @@ void Vectores::rotarZ(float angulo){
     traspConMatriz(rotateZ);    
 }
 
-float Vectores::distAbsoluta(){
+Vectores Vectores::negado () const {
+    Vectores aux;
+    aux.c[0] = -this->c[0];
+    aux.c[1] = -this->c[1];
+    aux.c[2] = -this->c[2];
+    aux.tipoPunto = this->tipoPunto;
+    return aux;
+}
+
+float Vectores::distAbsoluta() const{
     return sqrt(c[0]*c[0] + c[1]*c[1] + c[2]*c[2]);
 }
 
@@ -148,7 +157,7 @@ float Vectores::punto(Vectores vector){
     return (c[0]*vector.c[0] + c[1]*vector.c[1] + c[2]*vector.c[2]);
 }
 
-float Vectores::distDosPuntos(Vectores p2){
+float Vectores::distDosPuntos(Vectores p2) const{
     Vectores aux (this->c[0]-p2.c[0], this->c[1]-p2.c[1], this->c[2]-p2.c[2], 0); //Todo vector debe tener un 0 en el cuarto parámetro
     return aux.distAbsoluta();
 }
@@ -158,9 +167,9 @@ Vectores Vectores::desplazarPuntoVector(Vectores p2){
     return aux;
 }
 
-Vectores Vectores::VectorDosPuntos(Vectores p2){
-    Vectores aux (this->c[0]-p2.c[0], this->c[1]-p2.c[1], this->c[2]-p2.c[2], 0); //Todo vector debe tener un 0 en el cuarto parámetro
-    return aux;
+Vectores Vectores::VectorDosPuntos(Vectores p2) const{
+      //Todo vector debe tener un 0 en el cuarto parámetro
+    return Vectores(this->c[0]-p2.c[0], this->c[1]-p2.c[1], this->c[2]-p2.c[2], 0);
 }
 
 Vectores Vectores::ProductoVectorial(Vectores p2){

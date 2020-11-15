@@ -9,18 +9,18 @@
 using namespace std;
 
 struct Emission{
-    int red;
-    int green;
-    int blue;
+    float red;
+    float green;
+    float blue;
 
-    Emission(int Ered, int Egreen, int Eblue){
+    Emission(float Ered, float Egreen, float Eblue){
         red=Ered;
         green=Egreen;
         blue=Eblue;
     }
     Emission(){}
 
-    void getEmision(int& Rred, int& Rgreen, int& Rblue){
+    void getEmision(float& Rred, float& Rgreen, float& Rblue){
         Rred=red;
         Rgreen=green;
         Rblue=blue;
@@ -29,14 +29,14 @@ struct Emission{
 
 class Pixel {
     public:
-        int R;
-        int G;
-        int B;
+        float R;
+        float G;
+        float B;
         Pixel();
-        Pixel(int Rgb, int rGb, int rgB);
+        Pixel(float Rgb, float rGb, float rgB);
         Pixel(Emission emision);
         void update(Emission emision);
-        Pixel GammaCurve(float gamma, int max, float m, int c);
+        Pixel GammaCurve(float gamma, float max, float m, float c);
 };
 
 Pixel::Pixel(){
@@ -47,7 +47,7 @@ Pixel::Pixel(Emission emission){
     this->G=emission.green;
     this->B=emission.blue;
 }
-Pixel::Pixel(int Rgb, int rGb, int rgB){
+Pixel::Pixel(float Rgb, float rGb, float rgB){
     this->R=Rgb;
     this->G=rGb;
     this->B=rgB;
@@ -59,8 +59,8 @@ void Pixel::update(Emission emission){
     this->B=emission.blue;
 }
 
-Pixel Pixel::GammaCurve(float gamma, int max, float m, int c){
-    int newR,newG,newB;
+Pixel Pixel::GammaCurve(float gamma, float max, float m, float c){
+    float newR,newG,newB;
     if (this->R<max){
         float Rdec = this->R*m/c;
         float valorAux = pow(Rdec,1/gamma);
@@ -140,7 +140,7 @@ Image::Image(string fileName, bool nueva, int Nwidth, int Nheight){ //P3 #MAX=48
         name=fileName;
         width=Nwidth;
         height=Nheight;
-        c=1000000;
+        c=255;
         imageMatrix.resize(width*height);
         total = height*width;
         for (int i = 0; i < total; i++){
@@ -163,7 +163,7 @@ void Image::save(string newFileName){
         int pos=0;
         for (int i=0; i<this->height;i++){    //this->height
             for (int j=0; j<this->width;j++){ //this->width
-                fileTarget << this->imageMatrix[pos].R << " "<< this->imageMatrix[pos].G << " "<< this->imageMatrix[pos].B << "     ";
+                fileTarget << this->imageMatrix[pos].R*this->c << " "<< this->imageMatrix[pos].G*this->c << " "<< this->imageMatrix[pos].B*this->c << "     ";
                 pos++;
             }
             cout<<i<<"/"<<this->height<<endl;
