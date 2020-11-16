@@ -5,6 +5,7 @@
 #include <string.h> 
 #include <stdio.h> 
 #include <vector>
+#include <time.h>  
 #include "vector.hpp"
 
 using namespace std;
@@ -152,6 +153,7 @@ class Plane: public Obstacle{
         return ret;
     };
 
+
 struct Sensor{
     Vectores coordenadasO;
     Vectores coordenadasU;
@@ -194,22 +196,49 @@ struct Sensor{
             float x = (2 * (alto + 0.5) / (float)anchototal - 1) * imageAspectRatio; 
             float y = (1 - 2 * (ancho + 0.5) / (float)altoTotal); 
 
-            Vectores rayDirection(x, y, apunta.c[2], 0);
-            Ray rayoAux(this->coordenadasO,rayDirection); //Generar rayo
+            //Vectores rayDirection(x, y, apunta.c[2], 0);
+            //Ray rayoAux(this->coordenadasO,rayDirection); //Generar rayo
+            //rayoAux.direccion.traspConMatriz(cameraToWorld);
 
-            rayoAux.direccion.traspConMatriz(cameraToWorld);
+            float X1 = (float)((rand() % 20)+5)/100;
+            float X2 = (float)((rand() % 20)+5)/100;
+            float Y1 = (float)((rand() % 20)+5)/100;
+            float Y2 = (float)((rand() % 20)+5)/100;
+            vector<Ray> rayos;
+            Vectores rayDirection1(x-X1/(float)anchototal, y-Y1/(float)altoTotal, apunta.c[2], 0);
+            Ray rayoAux1(this->coordenadasO,rayDirection1); //Generar rayo
+            rayoAux1.direccion.traspConMatriz(cameraToWorld);
+            rayos.push_back(rayoAux1);
+            Vectores rayDirection2(x-X2/(float)anchototal, y+Y1/(float)altoTotal, apunta.c[2], 0);
+            Ray rayoAux2(this->coordenadasO,rayDirection2); //Generar rayo
+            rayoAux2.direccion.traspConMatriz(cameraToWorld);
+            rayos.push_back(rayoAux2);
+            Vectores rayDirection3(x+X1/(float)anchototal, y-Y2/(float)altoTotal, apunta.c[2], 0);
+            Ray rayoAux3(this->coordenadasO,rayDirection3); //Generar rayo
+            rayoAux3.direccion.traspConMatriz(cameraToWorld);
+            rayos.push_back(rayoAux3);
+            Vectores rayDirection4(x+X2/(float)anchototal, y+Y2/(float)altoTotal, apunta.c[2], 0);
+            Ray rayoAux4(this->coordenadasO,rayDirection4); //Generar rayo
+            rayoAux4.direccion.traspConMatriz(cameraToWorld);
+            rayos.push_back(rayoAux4);
 
-            for (auto obstacle : entorno){
-                if(obstacle->ray_intersect(rayoAux,visto,aux)){ 
-                    impactado = true;
-                    if(aux<menorDistancia){
-                        pixel.update(visto);
-                        menorDistancia=aux;
+            vector<Pixel> recibidos;
+            for (auto ray : rayos){
+                for (auto obstacle : entorno){
+                    if(obstacle->ray_intersect(ray,visto,aux)){ 
+                        impactado = true;
+                        if(aux<menorDistancia){
+                            pixel.update(visto);
+                            menorDistancia=aux;
+                        }
                     }
-                };
+                }
+                if(impactado){
+                    recibidos.push_back(pixel);
+                }
             }
             if (impactado){
-                imagen.imageMatrix[miraPixel]=pixel;
+                imagen.imageMatrix[miraPixel]=media(recibidos);
             //    cout << imagen.imageMatrix[miraPixel].R << " " <<imagen.imageMatrix[miraPixel].G << " " <<imagen.imageMatrix[miraPixel].B << " " << endl;
 
             }
@@ -220,6 +249,7 @@ struct Sensor{
 
 
 int main () {   //Todos los planos deben mirar hacia la cámara
+    srand (time(NULL));
     Vectores sensorCentro(0.0, 0.0, 0.0, 1);
     Vectores sensorApuntaF(0.0, 0.0, 1.0, 0);
     Vectores sensorApuntaI(1.0, 0.0, 0.0, 0);

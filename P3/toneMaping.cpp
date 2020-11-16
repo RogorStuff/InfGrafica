@@ -87,6 +87,20 @@ Pixel Pixel::GammaCurve(float gamma, float max, float m, float c){
     return Pixel(newR,newG,newB);
 }
 
+Pixel media(vector<Pixel> colores){
+    float redValue=0.0;
+    float greenValue=0.0;
+    float blueValue=0.0;
+    int pixeles=0;
+    for (auto pixel : colores){
+        redValue = redValue + pixel.R;
+        greenValue = greenValue + pixel.G;
+        blueValue = blueValue + pixel.B;
+        pixeles++;
+    }
+    return Pixel(redValue/pixeles,greenValue/pixeles,blueValue/pixeles);
+}
+
 class Image {
     public:
         string formatID;
