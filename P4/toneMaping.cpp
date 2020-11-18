@@ -5,9 +5,8 @@
 #include <string.h> 
 #include <stdio.h> 
 
-
 using namespace std;
-
+/*
 struct Emission{
     float red;
     float green;
@@ -25,8 +24,8 @@ struct Emission{
         Rgreen=green;
         Rblue=blue;
     }
-};
-
+};*/
+/*
 class Pixel {
     public:
         float R;
@@ -36,6 +35,8 @@ class Pixel {
         Pixel(float Rgb, float rGb, float rgB);
         Pixel(Emission emision);
         void update(Emission emision);
+        void update(float Rgb, float rGb, float rgB);
+        void divideTotal(int divisor);
         Pixel GammaCurve(float gamma, float max, float m, float c);
 };
 
@@ -57,6 +58,20 @@ void Pixel::update(Emission emission){
     this->R=emission.red;
     this->G=emission.green;
     this->B=emission.blue;
+}
+
+void Pixel::update(float Rgb, float rGb, float rgB){
+    this->R=Rgb;
+    this->G=rGb;
+    this->B=rgB;
+}
+
+void Pixel::divideTotal(int divisor){
+    if (divisor != 0){
+        this->R = this->R/divisor;
+        this->G = this->G/divisor;
+        this->B = this->B/divisor;
+    }
 }
 
 Pixel Pixel::GammaCurve(float gamma, float max, float m, float c){
@@ -100,7 +115,7 @@ Pixel media(vector<Pixel> colores){
     }
     return Pixel(redValue/pixeles,greenValue/pixeles,blueValue/pixeles);
 }
-
+*//*
 class Image {
     public:
         string formatID;
@@ -207,4 +222,4 @@ Image GammaCurve (Image imagen, float gammaValue, int max){
         }
     }
     return retImage;
-}
+}*/
