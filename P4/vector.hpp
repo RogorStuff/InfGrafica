@@ -92,6 +92,7 @@ class Vectores {
         Vectores desplazarPuntoVector(Vectores p2);
         Vectores VectorDosPuntos(Vectores p2) const;
         Vectores ProductoVectorial(Vectores p2);
+        Vectores calculaPunto(Vectores origen, Vectores direccion, float distancia);
         Vectores normalizar();
         void traspConMatriz(Matrix4x4 matriz);
 };
@@ -177,6 +178,15 @@ Vectores Vectores::ProductoVectorial(Vectores p2){
     return aux;
 }
 
+Vectores Vectores::calculaPunto(Vectores origen, Vectores direccion, float distancia){
+    Vectores aux;
+    aux.c[0] =origen.c[0]+direccion.c[0]*distancia;
+    aux.c[1] =origen.c[1]+direccion.c[1]*distancia;
+    aux.c[2] =origen.c[2]+direccion.c[2]*distancia;
+    aux.c[3] =0;
+    return aux;
+}
+
 Vectores Vectores::normalizar(){
     float modulo = this->distAbsoluta();
     this->c[0] = this->c[0]/modulo;
@@ -190,33 +200,4 @@ void Vectores::traspConMatriz(Matrix4x4 matriz){
     float tres = this->c[0]*matriz.m[2][0] + this->c[1]*matriz.m[2][1] + this->c[2]*matriz.m[2][2] + this->tipoPunto*matriz.m[2][3];
     float cuatro = this->c[0]*matriz.m[3][0] + this->c[1]*matriz.m[3][1] + this->c[2]*matriz.m[3][2] + this->tipoPunto*matriz.m[3][3];
     this->c[0] = uno; this->c[1] = dos; this->c[2] = tres; this->tipoPunto = cuatro; 
-}
-
-class Planeta {
-    public:
-        Vectores centro;
-        Vectores eje;
-        Vectores ciudadRef;
-        float azimuth;
-        float inclination;
-        Planeta(Vectores centro2, Vectores eje2, Vectores ciudadRef2, float azi, float incl);
-        bool comprobarRadio();
-        Vectores medioEje();
-} ;
-
-Planeta::Planeta (Vectores centro2, Vectores eje2, Vectores ciudadRef2, float azi, float incl){
-    centro = centro2; eje = eje2; ciudadRef = ciudadRef2; azimuth = azi; inclination = incl;
-};
-
-bool Planeta::comprobarRadio(){
-    float mediaAbs = this->eje.distAbsoluta() / 2;
-    float distanciaPuntos = centro.distDosPuntos(ciudadRef);
-
-    if (fabs(mediaAbs - distanciaPuntos) < pow(10, -6)) {
-        return true;
-    }
-    return false;
-}
-Vectores Planeta::medioEje(){
-    Vectores aux(this->eje.c[0]/2, this->eje.c[1]/2, this->eje.c[2]/2, 1);
 }
