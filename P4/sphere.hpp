@@ -12,6 +12,7 @@ class Sphere: public Obstacle{
         float radius;
         Emission emision;
         Vectores center;
+        //Meter material
         Sphere();
         Sphere(Vectores Ncentro, float Nradio, Emission Nemision);
         bool ray_intersect(Ray& rayo, Emission& emite, float& distancia)const override;

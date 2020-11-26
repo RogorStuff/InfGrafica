@@ -4,6 +4,7 @@
 #include "sensor.hpp"
 #include "plane.hpp"
 #include "sphere.hpp"
+#include "material.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -13,6 +14,57 @@
 #include <time.h>
 
 using namespace std;
+
+enum EVENT {
+    REFRACTION,
+    REFLECTION,
+    PHONG_DIFFUSE,
+    PHONG_SPECULAR,
+    DEAD
+};
+EVENT getRandomEvent(const Material &material, const Vectores &position) {
+    // Russian roulette
+
+    // get percentages based on the max value of each color
+    float maxKd = getColor(material.reflectance.kd, position).max();
+    float maxKs = getColor(material.reflectance.ks, position).max();
+    float maxKdPhong = getColor(material.reflectance.kdPhong, position).max();
+    float maxKsPhong = getColor(material.reflectance.ksPhong, position).max();
+
+    // cap to max value
+    const float MAX = 0.99f;
+    float sum = maxKd + maxKs + maxKdPhong + maxKsPhong;
+    if (sum > MAX) {
+        maxKd *= MAX / sum;
+        maxKs *= MAX / sum;
+        maxKdPhong *= MAX / sum;
+        maxKsPhong *= MAX / sum;
+    }
+
+    float randomZeroToOne = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    if ((randomZeroToOne -= maxKd) < 0) {
+        // Perfect refraction case (delta BTDF)
+        return REFRACTION;
+    } else if ((randomZeroToOne -= maxKs) < 0) {
+        // Perfect specular reflectance case (delta BRDF)
+        return REFLECTION;
+    } else if ((randomZeroToOne -= maxKdPhong) < 0) {
+        // Perfect Phong case (Phong BRDF)
+        return PHONG_DIFFUSE;
+    } else if ((randomZeroToOne -= maxKsPhong) < 0) {
+        // Perfect Phong case (Phong BRDF)
+        return PHONG_SPECULAR;
+    } else {
+        // Path deaths
+        return DEAD;
+    }
+}
+
+
+Vectores nuevaDireccion(){
+
+}
+
 
 /*
 Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
@@ -40,6 +92,7 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
                     obstaculoGolpeado = obstacle;
                     pixelaux.update(visto);
                     menorDistancia=distancia;
+                    //Sacar material del objeto
                 }
             }
         }
@@ -58,11 +111,11 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
                 //TODO GENERAR DIRECCION
 
             //Actualizar rayo
-                //TOOD actualizar direccion
+                //TODO actualizar direccion
             ray.origen = nuevoOrigen;
 
             rebotes++;  //Mira a ver si es el último rebote
-            if (rebotes == 2){
+            if (rebotes >= 2){
                 sigueRebotando = false;
             }
         }

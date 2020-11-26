@@ -1,4 +1,6 @@
 #include "pixel.hpp"
+#include "vector.hpp"
+#include "material.hpp"
 #include "math.h"
 #include <vector>
 
@@ -78,4 +80,31 @@ Pixel media(vector<Pixel> colores){
         pixeles++;
     }
     return Pixel(redValue/pixeles,greenValue/pixeles,blueValue/pixeles);
+}
+
+Pixel getColor(const Material &material, const Vectores &position) {
+    float mods[3] = {mod(position - material.vertices[0]),
+                     mod(position - material.vertices[1]),
+                     mod(position - material.vertices[2])};
+
+    if (mods[0] == 0.0f) return material.colors[0];
+    else if (mods[1] == 0.0f) return material.colors[1];
+    else if (mods[2] == 0.0f) return material.colors[2];
+
+    switch (vertexColor.type) {
+        case VertexColor::NEAREST: {
+            if (mods[0] < mods[1] && mods[0] < mods[2]) return vertexColor.colors[0];
+            else if (mods[1] < mods[0] && mods[1] < mods[2]) return vertexColor.colors[1];
+            else return vertexColor.colors[2];
+        }
+        case VertexColor::DISTANCE_WEIGHTING: {
+            return ((vertexColor.colors[0] / mods[0] + vertexColor.colors[1] / mods[1] + vertexColor.colors[2] / mods[2])
+                    / (1.0f / mods[0] + 1.0f / mods[1] + 1.0f / mods[2]));
+        }
+        case VertexColor::DISTANCE_WEIGHTING_SQUARE: {
+            return ((vertexColor.colors[0] / (mods[0] * mods[0]) + vertexColor.colors[1] / (mods[1] * mods[1])
+                     + vertexColor.colors[2] / (mods[2] * mods[2]))
+                    / (1.0f / (mods[0] * mods[0]) + 1.0f / (mods[1] * mods[1]) + 1.0f / (mods[2] * mods[2])));
+        }
+    }
 }
