@@ -15,6 +15,10 @@
 
 using namespace std;
 
+float random_cero_to_uno(){
+    return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+}
+
 enum EVENT {
     REFRACTION,
     REFLECTION,
@@ -22,6 +26,7 @@ enum EVENT {
     PHONG_SPECULAR,
     DEAD
 };
+
 EVENT getRandomEvent(const Material &material, const Vectores &position) {
     // Russian roulette
 
@@ -41,7 +46,7 @@ EVENT getRandomEvent(const Material &material, const Vectores &position) {
         maxKsPhong *= MAX / sum;
     }
 
-    float randomZeroToOne = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float randomZeroToOne = random_cero_to_uno();
     if ((randomZeroToOne -= maxKd) < 0) {
         // Perfect refraction case (delta BTDF)
         return REFRACTION;
@@ -60,9 +65,89 @@ EVENT getRandomEvent(const Material &material, const Vectores &position) {
     }
 }
 
+/*
+Vectores reflect(Vectores &in, Vectores &n) {
+    return (in - n * in.punto(n) * 2.0f).normalizar();
+}
 
-Vectores nuevaDireccion(){
+Vectores refract(Vectores &in, Vectores n, stack<const Object *> &refractionStack,
+               float sceneRefractiveIndex, const Object *object) {
+    float c = -dot(n, in), refractionRatio;
 
+    refractionRatio = sceneRefractiveIndex / object->refractiveIndex;
+
+    if (c < 0) {
+        // the normal and the ray have the same direction
+        refractionRatio = 1.0f / refractionRatio;
+        c = -c;
+        n = -n;
+    }
+    float radicand = 1.0f - refractionRatio * refractionRatio * (1.0f - c * c);
+    if (radicand < 0.0f) {
+        return reflect(in, n);
+    } else {
+        return norm(in * refractionRatio + n * (refractionRatio * c - sqrt(radicand)));
+    }
+}*/
+
+
+Vectores nuevaDireccion(EVENT event, Vectores &position, Vectores &direction,string objeto, Vectores objetoV ,stack<const Object *> &refractionStack, float sceneRefractiveIndex){ //objeto será esfera o plano, y su vector o el centro (esfera) o la normal del plano
+    Vectores n;
+    if (objeto == "esfera"){
+        n = position.restarVector(objetoV).normalizar();
+    }else{ //plano
+        n = objetoV.normalizar();
+    }
+    switch (event) {
+        case REFRACTION:
+            return refract(direction, n, refractionStack, sceneRefractiveIndex, &object);
+        case REFLECTION:
+            return reflect(direction, n);
+        case PHONG_DIFFUSE: {
+            Vectores Z;
+            Vectores Y;
+            Vectores X;
+
+            if (direction.punto(n) < 0) {
+                // good side
+                Z = n;
+            } else {
+                // opposite side
+                Z = n.negado();
+            }
+            Y = (Z.cruce(direction)).normalizar();
+            X = (Y.cruce(Z)).normalizar();
+
+            float theta = acos(sqrt(random_cero_to_uno()));
+            float phi = 2.0f * (float) M_PI * random_cero_to_uno();
+
+            return (changeFromBase(X, Y, Z, position) * Vectores(cos(phi) * sin(theta), sin(phi) * sin(theta), cos(theta),0)).normalizar();
+        }
+        case PHONG_SPECULAR: {
+            Vectores ref = reflect(direction, n);
+
+            Vectores Z;
+            Vectores Y;
+            Vectores X;
+
+            if (direction.punto(n) < nearZero) {
+                Z = direction;
+                Y = n;
+                X = Y.cruce(Z);
+            } else {
+                X = direction.cruce(ref).normalizar();
+                Y = ref;
+                Z = Y.cruce(X);
+            }
+
+            float theta = acos(pow(random_cero_to_uno(), (1.0f / (object.material.property.reflectance.s + 1.0f))));
+            float phi = 2.0f * (float) M_PI * random_cero_to_uno();
+
+            return changeFromBase(X, Y, Z, position).multiplicarVector(Vectores(cos(phi) * sin(theta), cos(theta), sin(phi) * sin(theta),0)).normalizar();
+        }
+        case DEAD:
+            return Vectores(0.0,0.0,0.0,2); //El 2 al final indica el final
+    }
 }
 
 

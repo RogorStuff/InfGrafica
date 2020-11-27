@@ -4,6 +4,7 @@ using namespace std;
 
 # define M_PI           3.14159265358979323846  /* pi */
 
+static const float nearZero = 1e-6;
 
 struct Matrix4x4 {
     
@@ -89,6 +90,9 @@ class Vectores {
         float distAbsoluta() const;
         float punto(Vectores vector);
         float distDosPuntos(Vectores p2) const;
+        Vectores restarVector(Vectores p2);
+        Vectores multiplicarVector(Vectores p2);
+        Vectores cruce(Vectores p2);
         Vectores desplazarPuntoVector(Vectores p2);
         Vectores VectorDosPuntos(Vectores p2) const;
         Vectores ProductoVectorial(Vectores p2);
@@ -156,6 +160,18 @@ float Vectores::distAbsoluta() const{
 
 float Vectores::punto(Vectores vector){
     return (c[0]*vector.c[0] + c[1]*vector.c[1] + c[2]*vector.c[2]);
+}
+
+Vectores Vectores::cruce(Vectores p2) {
+    return Vectores(c[1] * p2.c[2] - c[2] * p2.c[1],c[2] * p2.c[0] - c[0] * p2.c[2],c[0] * p2.c[1] - c[1] * p2.c[0],0);
+}
+
+Vectores Vectores::restarVector(Vectores p2){
+    return Vectores(this->c[0]-p2.c[0], this->c[1]-p2.c[1], this->c[2]-p2.c[2], 0);
+}
+
+Vectores Vectores::multiplicarVector(Vectores p2){
+    return Vectores(this->c[0]*p2.c[0], this->c[1]*p2.c[1], this->c[2]*p2.c[2], 0);
 }
 
 float Vectores::distDosPuntos(Vectores p2) const{
