@@ -1,15 +1,17 @@
 #include "plane.hpp"
 
 Plane::Plane(){
+    material = Material();
 }
 
-Plane::Plane(Vectores Ncentro, Vectores Nnormal, Emission Nemision){
+Plane::Plane(Vectores Ncentro, Vectores Nnormal, Emission Nemision, Material Nmaterial){
     center = Ncentro;
     emision = Nemision;
     normal = Nnormal;
+    material = Nmaterial;
 }
 
-bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia) const{
+bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material& material) const{
     float t_min = 0;
     float t_max = 99999999;
 

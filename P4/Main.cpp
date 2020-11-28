@@ -91,7 +91,7 @@ Vectores refract(Vectores &in, Vectores n, stack<const Object *> &refractionStac
 }*/
 
 
-Vectores nuevaDireccion(EVENT event, Vectores &position, Vectores &direction,string objeto, Vectores objetoV ,stack<const Object *> &refractionStack, float sceneRefractiveIndex){ //objeto será esfera o plano, y su vector o el centro (esfera) o la normal del plano
+Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,string objeto, Vectores objetoV ,stack<const Object *> &refractionStack, float sceneRefractiveIndex){ //objeto será esfera o plano, y su vector o el centro (esfera) o la normal del plano
     Vectores n;
     if (objeto == "esfera"){
         n = position.restarVector(objetoV).normalizar();
@@ -121,7 +121,14 @@ Vectores nuevaDireccion(EVENT event, Vectores &position, Vectores &direction,str
             float theta = acos(sqrt(random_cero_to_uno()));
             float phi = 2.0f * (float) M_PI * random_cero_to_uno();
 
-            return (changeFromBase(X, Y, Z, position) * Vectores(cos(phi) * sin(theta), sin(phi) * sin(theta), cos(theta),0)).normalizar();
+            Matrix4x4 matrizTransformation(X.c[0], Y.c[0], Z.c[0], position.c[0], 
+                                           X.c[1], Y.c[1], Z.c[1], position.c[1],
+                                           X.c[2], Y.c[2], Z.c[2], position.c[2],
+                                           0.0, 0.0, 0.0, 1.0);
+
+            Vectores aux(cos(phi) * sin(theta), sin(phi) * sin(theta), cos(theta),0);
+            aux.traspConMatriz(matrizTransformation);
+            return aux.normalizar();
         }
         case PHONG_SPECULAR: {
             Vectores ref = reflect(direction, n);
@@ -139,11 +146,17 @@ Vectores nuevaDireccion(EVENT event, Vectores &position, Vectores &direction,str
                 Y = ref;
                 Z = Y.cruce(X);
             }
-
+            Matrix4x4 matrizTransformation(X.c[0], Y.c[0], Z.c[0], position.c[0], 
+                                           X.c[1], Y.c[1], Z.c[1], position.c[1],
+                                           X.c[2], Y.c[2], Z.c[2], position.c[2],
+                                           0.0, 0.0, 0.0, 1.0);
+             
             float theta = acos(pow(random_cero_to_uno(), (1.0f / (object.material.property.reflectance.s + 1.0f))));
             float phi = 2.0f * (float) M_PI * random_cero_to_uno();
 
-            return changeFromBase(X, Y, Z, position).multiplicarVector(Vectores(cos(phi) * sin(theta), cos(theta), sin(phi) * sin(theta),0)).normalizar();
+            Vectores aux(cos(phi) * sin(theta), cos(theta), sin(phi) * sin(theta),0);
+            aux.traspConMatriz(matrizTransformation);
+            return aux.normalizar();
         }
         case DEAD:
             return Vectores(0.0,0.0,0.0,2); //El 2 al final indica el final
@@ -151,8 +164,8 @@ Vectores nuevaDireccion(EVENT event, Vectores &position, Vectores &direction,str
 }
 
 
-/*
-Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
+
+Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno, bool& impactado){
 
     Pixel pixelResultado(0.0, 0.0, 0.0);
     int rebotes = 0;
@@ -168,30 +181,54 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
         Pixel pixelaux;
         Obstacle* obstaculoGolpeado;
         float menorDistancia=1000000.0;
-
+        Material materialGolpeado;
+        Material materialFinal;
 
         for (auto obstacle : entorno){          //Calcula con que obstaculo golpea
-            if(obstacle->ray_intersect(ray,visto,distancia)){ 
+            if(obstacle->ray_intersect(ray,visto,distancia, materialGolpeado)){ 
                 impactado = true;
                 if(distancia<menorDistancia){
+                    materialFinal = materialGolpeado;
                     obstaculoGolpeado = obstacle;
                     pixelaux.update(visto);
                     menorDistancia=distancia;
-                    //Sacar material del objeto
                 }
             }
         }
 
         if (!impactado){    //Si no impacta con nada, termina
             pixelResultado.update(0.0, 0.0, 0.0);
-            break;
+            impactado = false;
+            sigueRebotando = false;
         }else {  //Ha impactado con algun objeto:     p = o + rayo * distnacia
-            Vectores nuevoOrigen(ray.origen, ray.direccion, menorDistancia);
-            //Suponer siempre refractor: TODO POR SI ES LUZ
+            Vectores nuevoOrigen;
+            nuevoOrigen = nuevoOrigen.calculaPunto(ray.origen, ray.direccion, menorDistancia);
 
-            //Calcular color:
-                //TODO GENERAR COLOR CON BRDF Y ACTUALIZAR BRDF
+            EVENT eventoActual = getRandomEvent(materialFinal, nuevoOrigen);
 
+            //Calcular color y actualizar BRDF
+            pixelaux.multiplicaTotal(BRDF);
+             if (eventoActual == PHONG_DIFFUSE || eventoActual == PHONG_SPECULAR) {
+
+             }
+                    /*
+                    if (event == PHONG_DIFFUSE || event == PHONG_SPECULAR) {
+                        for (const LightPoint &lightPoint : scene.lightPoints) {
+                            // foreach light
+                            if (isLightVisible(lightPoint, position, scene.objects)) {
+
+                                // if visible, compute path light
+                                HCoord lightVect = position - lightPoint.position;
+                                float lightDist = mod(lightVect);
+                                Color direct = lightPoint.color
+                                               * getBRDF(event, norm(lightVect), -direction, position, *intersection)
+                                               * rayFactor
+                                               / (lightDist * lightDist);
+
+                                directTotal = directTotal + direct;
+                            }
+                        }
+                    }*/
             //Calcular nueva direccion de rebote:
                 //TODO GENERAR DIRECCION
 
@@ -200,19 +237,21 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
             ray.origen = nuevoOrigen;
 
             rebotes++;  //Mira a ver si es el último rebote
-            if (rebotes >= 2){
+            if (eventoActual == DEAD){
+                impactado = true;
                 sigueRebotando = false;
             }
         }
                 
     if (BRDF <= 0.0){   //Si se ha quedado sin luz el rayo
+        impactado = false;
         sigueRebotando = false;
     }
 
     pixelResultado.divideTotal(rebotes); 
     return pixelResultado;
 }
-*/
+
 
 
 int main () {

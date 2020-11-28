@@ -1,35 +1,35 @@
 #include "material.hpp"
 #include "pixel.hpp"
 
-Material Emitter() {
-    return Material {
-            .type = EMITTER
-    };
+
+Material::Material() {
 }
 
-Material Reflector(Pixel &kd, Pixel &ks, const float s, Pixel &kdPhong, Pixel &ksPhong) {
-    return Material {
-            .type = REFLECTOR,
-            .reflectance = {.kd = kd, .ks = ks, .kdPhong = kdPhong, .ksPhong = ksPhong, .s = s}
-    };
+Material Material::Emitter() {
+    type = EMITTER;
 }
 
-Material Phong(const Pixel &kdPhong, const Pixel &ksPhong, const float s) {
+Material Material::Reflector(Pixel kd, Pixel ks, float s, Pixel kdPhong, Pixel ksPhong) {
+    type = REFLECTOR;
+    reflectance = Reflectance(kd, ks, kdPhong, ksPhong, s);
+}
+
+Material Material::Phong(Pixel kdPhong, Pixel ksPhong, float s) {
     return Reflector(Pixel(0.0,0.0,0.0), Pixel(0.0,0.0,0.0), s, kdPhong, ksPhong);
 }
 
-Material Diffuse(const Pixel &k) {
+Material Material::Diffuse(Pixel k) {
     return Phong(k, Pixel(0.0,0.0,0.0), 1);
 }
 
-Material Delta(const Pixel &kd, const Pixel &ks) {
+Material Material::Delta(Pixel kd, Pixel ks) {
     return Reflector(kd, ks, 1, Pixel(0.0,0.0,0.0), Pixel(0.0,0.0,0.0));
 }
 
-Material Refractor(const Pixel &kd) {
+Material Material::Refractor(Pixel kd) {
     return Delta(kd, Pixel(0.0,0.0,0.0));
 }
 
-Material Specular(const Pixel &ks) {
+Material Material::Specular(Pixel ks) {
     return Delta(Pixel(0.0,0.0,0.0), ks);
 }

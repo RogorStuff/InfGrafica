@@ -25,6 +25,12 @@ struct Matrix4x4 {
                }
            }
        }
+       Matrix4x4(Vectores Nx,Vectores Ny,Vectores Nz,Vectores origen){
+                     m[0][0] = Nx.c[0]; m[0][1] = Ny.c[0]; m[0][2] = Nz.c[0]; m[0][3] = origen.c[0];
+                     m[1][0] = Nx.c[1]; m[1][1] = Ny.c[1]; m[1][2] = Nz.c[1]; m[1][3] = origen.c[1];
+                     m[2][0] = Nx.c[2]; m[2][1] = Ny.c[2]; m[2][2] = Nz.c[2]; m[2][3] = origen.c[2];
+                     m[3][0] = 0; m[3][1] = 0; m[3][2] = 0; m[3][3] = 1;
+                 }
        Matrix4x4(float t00, float t01, float t02, float t03,
                  float t10, float t11, float t12, float t13,
                  float t20, float t21, float t22, float t23,
@@ -99,6 +105,7 @@ class Vectores {
         Vectores calculaPunto(Vectores origen, Vectores direccion, float distancia);
         Vectores normalizar();
         void traspConMatriz(Matrix4x4 matriz);
+        
 };
 Vectores::Vectores(float x , float y , float z , int tipoDePunto){
     c[ 0 ] =x ; c[ 1 ] =y ; c[ 2 ] =z ; tipoPunto = tipoDePunto;

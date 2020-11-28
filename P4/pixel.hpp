@@ -18,6 +18,7 @@ class Pixel {
         void update(Emission emision);
         void update(float Rgb, float rGb, float rgB);
         void divideTotal(int divisor);
+        void multiplicaTotal(float multiplicador);
         Pixel GammaCurve(float gamma, float max, float m, float c);
 };
 

@@ -40,6 +40,12 @@ void Pixel::divideTotal(int divisor){
     }
 }
 
+void Pixel::multiplicaTotal(float multiplicador){
+    R = this->R*multiplicador;
+    G = this->G*multiplicador;
+    B = this->B*multiplicador;
+}
+
 Pixel Pixel::GammaCurve(float gamma, float max, float m, float c){
     float newR,newG,newB;
     if (this->R<max){
@@ -81,7 +87,7 @@ Pixel media(vector<Pixel> colores){
     }
     return Pixel(redValue/pixeles,greenValue/pixeles,blueValue/pixeles);
 }
-
+/*
 Pixel getColor(const Material &material, const Vectores &position) {
     float mods[3] = {mod(position - material.vertices[0]),
                      mod(position - material.vertices[1]),
@@ -107,4 +113,4 @@ Pixel getColor(const Material &material, const Vectores &position) {
                     / (1.0f / (mods[0] * mods[0]) + 1.0f / (mods[1] * mods[1]) + 1.0f / (mods[2] * mods[2])));
         }
     }
-}
+}*/

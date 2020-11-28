@@ -48,11 +48,12 @@ Image Sensor::ver(vector<Obstacle*> &entorno, string imagenNombre, int anchotota
         //Ray rayoAux(this->coordenadasO,rayDirection); //Generar rayo
         //rayoAux.direccion.traspConMatriz(cameraToWorld);
 
+        //TODO: cambiar a valor por entrada y generación de array
         float X1 = (float)((rand() % 20)+5)/100;
         float X2 = (float)((rand() % 20)+5)/100;
         float Y1 = (float)((rand() % 20)+5)/100;
         float Y2 = (float)((rand() % 20)+5)/100;
-        vector<Ray> rayos;
+        vector<Ray> rayos; //La array está aquí
         Vectores rayDirection1(x-X1/(float)anchototal, y-Y1/(float)altoTotal, apunta.c[2], 0);
         Ray rayoAux1(this->coordenadasO,rayDirection1); //Generar rayo
         rayoAux1.direccion.traspConMatriz(cameraToWorld);
@@ -73,23 +74,24 @@ Image Sensor::ver(vector<Obstacle*> &entorno, string imagenNombre, int anchotota
         vector<Pixel> recibidos;
         for (auto ray : rayos){
             float menorDistancia=1000000.0;
-            bool impactado =false;
+            bool impactado =false;  //Hacia abajo, cambiar por colorRayo(...)
+            Material materialGolpeado;
             for (auto obstacle : entorno){
-                if(obstacle->ray_intersect(ray,visto,aux)){ 
+                if(obstacle->ray_intersect(ray,visto,aux, materialGolpeado)){ 
                     impactado = true;
                     if(aux<menorDistancia){
                         pixel.update(visto);
                         menorDistancia=aux;
                     }
                 }
-            }
+            }                   // Hacia arriba
             if(impactado){
                 recibidos.push_back(pixel);
             }
         }
         if (recibidos.size()>0){
             imagen.imageMatrix[miraPixel]=media(recibidos);
-        }
+        } //Else de por si ya es negro
     }
     return imagen;
 }
