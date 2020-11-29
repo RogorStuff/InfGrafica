@@ -27,8 +27,8 @@ class Material{
         Reflectance reflectance;
         Material();
         Material Emitter();
-        Material Reflector(Pixel kd, Pixel ks, float s, Pixel kdPhong, Pixel ksPhong);
-        Material Phong(Pixel kdPhong, Pixel ksPhong, float s);
+        Material Reflector(Pixel kd, Pixel ks, Pixel kdDiffuse, Pixel ksDiffuse);
+        Material Phong(Pixel kdDiffuse, Pixel ksDiffuse);
         Material Diffuse(Pixel k);
         Material Delta(Pixel kd, Pixel ks);
         Material Refractor(Pixel kd);

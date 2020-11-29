@@ -9,21 +9,21 @@ Material Material::Emitter() {
     type = EMITTER;
 }
 
-Material Material::Reflector(Pixel kd, Pixel ks, float s, Pixel kdPhong, Pixel ksPhong) {
+Material Material::Reflector(Pixel kd, Pixel ks, Pixel kdDiffuse, Pixel ksDiffuse) {
     type = REFLECTOR;
-    reflectance = Reflectance(kd, ks, kdPhong, ksPhong, s);
+    reflectance = Reflectance(kd, ks, kdDiffuse, ksDiffuse);
 }
 
-Material Material::Phong(Pixel kdPhong, Pixel ksPhong, float s) {
-    return Reflector(Pixel(0.0,0.0,0.0), Pixel(0.0,0.0,0.0), s, kdPhong, ksPhong);
+Material Material::Phong(Pixel kdDiffuse, Pixel ksDiffuse) {
+    return Reflector(Pixel(0.0,0.0,0.0), Pixel(0.0,0.0,0.0), kdDiffuse, ksDiffuse);
 }
 
 Material Material::Diffuse(Pixel k) {
-    return Phong(k, Pixel(0.0,0.0,0.0), 1);
+    return Phong(k, Pixel(0.0,0.0,0.0));
 }
 
 Material Material::Delta(Pixel kd, Pixel ks) {
-    return Reflector(kd, ks, 1, Pixel(0.0,0.0,0.0), Pixel(0.0,0.0,0.0));
+    return Reflector(kd, ks, Pixel(0.0,0.0,0.0), Pixel(0.0,0.0,0.0));
 }
 
 Material Material::Refractor(Pixel kd) {

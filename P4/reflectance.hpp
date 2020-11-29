@@ -5,13 +5,12 @@
 
 class Reflectance{
     public:
-        Pixel kd; // Refraction (delta BTDF)
-        Pixel ks; // Specular (delta BRDF)
-        Pixel kdPhong; //Phong BRDF
-        Pixel ksPhong; // Phong BRDF
-        float s; // Shininess
+        Pixel kd;
+        Pixel ks; 
+        Pixel kdDiffuse;
+        Pixel ksDiffuse;
         Reflectance();
-        Reflectance(Pixel Nkd, Pixel Nks, Pixel NkdPhong, Pixel NksPhong, float Ns);
+        Reflectance(Pixel Nkd, Pixel Nks, Pixel NkdDiffuse, Pixel NksDiffuse);
 };
 
 #endif

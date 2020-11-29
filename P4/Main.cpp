@@ -22,8 +22,8 @@ float random_cero_to_uno(){
 enum EVENT {
     REFRACTION,
     REFLECTION,
-    PHONG_DIFFUSE,
-    PHONG_SPECULAR,
+    DIFFUSE,
+    SPECULAR,
     DEAD
 };
 
@@ -31,34 +31,34 @@ EVENT getRandomEvent(const Material &material, const Vectores &position) {
     // Russian roulette
 
     // get percentages based on the max value of each color
-    float maxKd = getColor(material.reflectance.kd, position).max();
-    float maxKs = getColor(material.reflectance.ks, position).max();
-    float maxKdPhong = getColor(material.reflectance.kdPhong, position).max();
-    float maxKsPhong = getColor(material.reflectance.ksPhong, position).max();
+    float Kd = getPixelValue(material.reflectance.kd);
+    float Ks = getPixelValue(material.reflectance.ks);
+    float kdDiffuse = getPixelValue(material.reflectance.kdDiffuse);
+    float ksDiffuse = getPixelValue(material.reflectance.ksDiffuse);
 
     // cap to max value
     const float MAX = 0.99f;
-    float sum = maxKd + maxKs + maxKdPhong + maxKsPhong;
+    float sum = Kd + Ks + kdDiffuse + ksDiffuse;
     if (sum > MAX) {
-        maxKd *= MAX / sum;
-        maxKs *= MAX / sum;
-        maxKdPhong *= MAX / sum;
-        maxKsPhong *= MAX / sum;
+        Kd *= MAX / sum;
+        Ks *= MAX / sum;
+        kdDiffuse *= MAX / sum;
+        ksDiffuse *= MAX / sum;
     }
 
     float randomZeroToOne = random_cero_to_uno();
-    if ((randomZeroToOne -= maxKd) < 0) {
+    if ((randomZeroToOne -= Kd) < 0) {
         // Perfect refraction case (delta BTDF)
         return REFRACTION;
-    } else if ((randomZeroToOne -= maxKs) < 0) {
+    } else if ((randomZeroToOne -= Ks) < 0) {
         // Perfect specular reflectance case (delta BRDF)
         return REFLECTION;
-    } else if ((randomZeroToOne -= maxKdPhong) < 0) {
-        // Perfect Phong case (Phong BRDF)
-        return PHONG_DIFFUSE;
-    } else if ((randomZeroToOne -= maxKsPhong) < 0) {
-        // Perfect Phong case (Phong BRDF)
-        return PHONG_SPECULAR;
+    } else if ((randomZeroToOne -= kdDiffuse) < 0) {
+        // Diffuse case 
+        return DIFFUSE;
+    } else if ((randomZeroToOne -= ksDiffuse) < 0) {
+        // Specular case
+        return SPECULAR;
     } else {
         // Path deaths
         return DEAD;
@@ -74,7 +74,6 @@ Vectores reflect(Vectores &in, Vectores &n) { //n is the normal of the surface (
 
 Vectores refract(Vectores in, Vectores n, float obstacleRefractiveIndex) {
     float c = -(n.punto(in));
-
     float refractionRatio = 1.0f / obstacleRefractiveIndex;
 
     if (c < 0) {
@@ -95,7 +94,7 @@ Vectores refract(Vectores in, Vectores n, float obstacleRefractiveIndex) {
 }
 
 
-Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,string objeto, Vectores objetoV ,stack<const Object *> &refractionStack, float obstacleRefractiveIndex){ //objeto será esfera o plano, y su vector o el centro (esfera) o la normal del plano
+Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,string objeto, Vectores objetoV, float obstacleRefractiveIndex){ //objeto será esfera o plano, y su vector o el centro (esfera) o la normal del plano
     Vectores n;
     if (objeto == "esfera"){
         n = position.restarVector(objetoV).normalizar();
@@ -107,7 +106,7 @@ Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,strin
             return refract(direction, n, obstacleRefractiveIndex);
         case REFLECTION:
             return reflect(direction, n);
-        case PHONG_DIFFUSE: {
+        case DIFFUSE: {
             Vectores Z;
             Vectores Y;
             Vectores X;
@@ -134,7 +133,7 @@ Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,strin
             aux.traspConMatriz(matrizTransformation);
             return aux.normalizar();
         }
-        case PHONG_SPECULAR: {
+        case SPECULAR: {
             Vectores ref = reflect(direction, n);
 
             Vectores Z;
@@ -155,7 +154,7 @@ Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,strin
                                            X.c[2], Y.c[2], Z.c[2], position.c[2],
                                            0.0, 0.0, 0.0, 1.0);
              
-            float theta = acos(pow(random_cero_to_uno(), (1.0f / (object.material.property.reflectance.s + 1.0f))));
+            float theta = acos(random_cero_to_uno());
             float phi = 2.0f * (float) M_PI * random_cero_to_uno();
 
             Vectores aux(cos(phi) * sin(theta), cos(theta), sin(phi) * sin(theta),0);
@@ -213,7 +212,7 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno, bool& impactado){
 
             //Calcular color y actualizar BRDF
             pixelaux.multiplicaTotal(BRDF);
-             if (eventoActual == PHONG_DIFFUSE || eventoActual == PHONG_SPECULAR) {
+             if (eventoActual == DIFFUSE || eventoActual == SPECULAR) {
 
              }
                     /*
