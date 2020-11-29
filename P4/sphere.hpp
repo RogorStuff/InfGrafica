@@ -13,9 +13,10 @@ class Sphere: public Obstacle{
         Emission emision;
         Vectores center;
         Material material;
+        float refractiveIndex;
         Sphere();
-        Sphere(Vectores Ncentro, float Nradio, Emission Nemision, Material material);
-        bool ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material& material)const override;
+        Sphere(Vectores Ncentro, float Nradio, Emission Nemision, Material material, float NrefractiveIndex);
+        bool ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material& material, float &refractive)const override;
 };
 
 #endif sphere_HPP

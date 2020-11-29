@@ -4,14 +4,15 @@ Plane::Plane(){
     material = Material();
 }
 
-Plane::Plane(Vectores Ncentro, Vectores Nnormal, Emission Nemision, Material Nmaterial){
+Plane::Plane(Vectores Ncentro, Vectores Nnormal, Emission Nemision, Material Nmaterial, float NrefractiveIndex){
     center = Ncentro;
     emision = Nemision;
     normal = Nnormal;
     material = Nmaterial;
+    refractiveIndex = NrefractiveIndex;
 }
 
-bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material& material) const{
+bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material& material, float &refractive) const{
     float t_min = 0;
     float t_max = 99999999;
 

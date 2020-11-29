@@ -13,9 +13,10 @@ class Plane: public Obstacle{//Todos los planos deben mirar hacia la cámara
         Vectores normal;
         Vectores center;
         Material material;
+        float refractiveIndex;
         Plane();
-        Plane(Vectores Ncentro, Vectores Nnormal, Emission Nemision, Material Nmaterial);
-        bool ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material& material) const override;
+        Plane(Vectores Ncentro, Vectores Nnormal, Emission Nemision, Material Nmaterial, float NrefractiveIndex);
+        bool ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material& material, float &refractive) const override;
     
 };
 

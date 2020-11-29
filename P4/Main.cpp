@@ -65,33 +65,37 @@ EVENT getRandomEvent(const Material &material, const Vectores &position) {
     }
 }
 
-/*
-Vectores reflect(Vectores &in, Vectores &n) {
-    return (in - n * in.punto(n) * 2.0f).normalizar();
+
+Vectores reflect(Vectores &in, Vectores &n) { //n is the normal of the surface (mirror), in is the received vector
+    Vectores aux = n.multiplicarValor(in.punto(n));
+    aux.multiplicarValor(2.0);
+    return (in.restarVector(aux)).normalizar();
 }
 
-Vectores refract(Vectores &in, Vectores n, stack<const Object *> &refractionStack,
-               float sceneRefractiveIndex, const Object *object) {
-    float c = -dot(n, in), refractionRatio;
+Vectores refract(Vectores in, Vectores n, float obstacleRefractiveIndex) {
+    float c = -(n.punto(in));
 
-    refractionRatio = sceneRefractiveIndex / object->refractiveIndex;
+    float refractionRatio = 1.0f / obstacleRefractiveIndex;
 
     if (c < 0) {
         // the normal and the ray have the same direction
         refractionRatio = 1.0f / refractionRatio;
         c = -c;
-        n = -n;
+        n = n.negado();
     }
     float radicand = 1.0f - refractionRatio * refractionRatio * (1.0f - c * c);
     if (radicand < 0.0f) {
         return reflect(in, n);
     } else {
-        return norm(in * refractionRatio + n * (refractionRatio * c - sqrt(radicand)));
+        Vectores aux = in.multiplicarValor(refractionRatio);
+        Vectores aux2 = n.multiplicarValor(refractionRatio * c - sqrt(radicand));
+        aux.sumarVector(aux2);
+        return aux.normalizar();
     }
-}*/
+}
 
 
-Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,string objeto, Vectores objetoV ,stack<const Object *> &refractionStack, float sceneRefractiveIndex){ //objeto será esfera o plano, y su vector o el centro (esfera) o la normal del plano
+Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,string objeto, Vectores objetoV ,stack<const Object *> &refractionStack, float obstacleRefractiveIndex){ //objeto será esfera o plano, y su vector o el centro (esfera) o la normal del plano
     Vectores n;
     if (objeto == "esfera"){
         n = position.restarVector(objetoV).normalizar();
@@ -100,7 +104,7 @@ Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,strin
     }
     switch (event) {
         case REFRACTION:
-            return refract(direction, n, refractionStack, sceneRefractiveIndex, &object);
+            return refract(direction, n, obstacleRefractiveIndex);
         case REFLECTION:
             return reflect(direction, n);
         case PHONG_DIFFUSE: {
@@ -183,9 +187,10 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno, bool& impactado){
         float menorDistancia=1000000.0;
         Material materialGolpeado;
         Material materialFinal;
+        float refractive;
 
         for (auto obstacle : entorno){          //Calcula con que obstaculo golpea
-            if(obstacle->ray_intersect(ray,visto,distancia, materialGolpeado)){ 
+            if(obstacle->ray_intersect(ray,visto,distancia, materialGolpeado, refractive)){ 
                 impactado = true;
                 if(distancia<menorDistancia){
                     materialFinal = materialGolpeado;
@@ -242,6 +247,7 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno, bool& impactado){
                 sigueRebotando = false;
             }
         }
+    }
                 
     if (BRDF <= 0.0){   //Si se ha quedado sin luz el rayo
         impactado = false;
@@ -256,6 +262,7 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno, bool& impactado){
 
 int main () {
     srand (time(NULL));
+    /*
     Vectores sensorCentro(0.0, 0.0, 0.0, 1);
     Vectores sensorApuntaF(0.0, 0.0, 1.0, 0);
     Vectores sensorApuntaI(1.0, 0.0, 0.0, 0);
@@ -303,4 +310,5 @@ int main () {
     imagen = sensor.ver(scene, "patata", 200, 200);
 
     imagen.save("patata");
+    */
 }

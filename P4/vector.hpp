@@ -96,8 +96,10 @@ class Vectores {
         float distAbsoluta() const;
         float punto(Vectores vector);
         float distDosPuntos(Vectores p2) const;
+        Vectores sumarVector(Vectores p2);
         Vectores restarVector(Vectores p2);
         Vectores multiplicarVector(Vectores p2);
+        Vectores multiplicarValor(float p2);
         Vectores cruce(Vectores p2);
         Vectores desplazarPuntoVector(Vectores p2);
         Vectores VectorDosPuntos(Vectores p2) const;
@@ -173,12 +175,20 @@ Vectores Vectores::cruce(Vectores p2) {
     return Vectores(c[1] * p2.c[2] - c[2] * p2.c[1],c[2] * p2.c[0] - c[0] * p2.c[2],c[0] * p2.c[1] - c[1] * p2.c[0],0);
 }
 
+Vectores Vectores::sumarVector(Vectores p2){
+    return Vectores(this->c[0]+p2.c[0], this->c[1]+p2.c[1], this->c[2]+p2.c[2], 0);
+}
+
 Vectores Vectores::restarVector(Vectores p2){
     return Vectores(this->c[0]-p2.c[0], this->c[1]-p2.c[1], this->c[2]-p2.c[2], 0);
 }
 
 Vectores Vectores::multiplicarVector(Vectores p2){
     return Vectores(this->c[0]*p2.c[0], this->c[1]*p2.c[1], this->c[2]*p2.c[2], 0);
+}
+
+Vectores Vectores::multiplicarValor(float p2){
+    return Vectores(this->c[0]*p2, this->c[1]*p2, this->c[2]*p2, 0);
 }
 
 float Vectores::distDosPuntos(Vectores p2) const{

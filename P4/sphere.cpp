@@ -3,14 +3,15 @@
 Sphere::Sphere(){
 }
 
-Sphere::Sphere(Vectores Ncentro, float Nradio, Emission Nemision, Material Nmaterial){
+Sphere::Sphere(Vectores Ncentro, float Nradio, Emission Nemision, Material Nmaterial, float NrefractiveIndex){
     center=Ncentro;
     radius=Nradio;
     emision=Nemision;
     material = Nmaterial;
+    refractiveIndex = NrefractiveIndex;
 }
 
-bool Sphere::ray_intersect(Ray& r, Emission& emite, float& distancia, Material& material) const{
+bool Sphere::ray_intersect(Ray& r, Emission& emite, float& distancia, Material& material, float &refractive) const{
     Vectores d = r.direccion;
     Vectores o = r.origen;
 
