@@ -22,6 +22,8 @@ In no event shall copyright holders be liable for any damage.
 #include "Vector3.h"
 #include "KDTree.h"
 
+using namespace std;
+
 class World;
 class Intersection;
 class Ray;
@@ -70,7 +72,7 @@ class PhotonMapping
 	// The function will return true when there are more photons (caustic
 	// or diffuse) to be shot, and false otherwise.
 	bool trace_ray(const Ray& r, const Vector3 &p, 
-			   std::list<Photon> &global_photons, std::list<Photon> &caustic_photons, bool direct, bool direct_only);
+			   list<Photon> &global_photons, list<Photon> &caustic_photons, bool direct, bool direct_only);
 public:
 
  	PhotonMapping( World *_world, unsigned int nb_global_photons, unsigned int nb_caustic_photons,

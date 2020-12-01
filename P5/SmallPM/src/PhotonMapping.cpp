@@ -16,6 +16,10 @@ In no event shall copyright holders be liable for any damage.
 #include "Intersection.h"
 #include "Ray.h"
 #include "BSDF.h"
+#include "math.h"
+#include <iostream>
+
+using namespace std;
 
 //*********************************************************************
 // Compute the photons by tracing the Ray 'r' from the light source
@@ -32,7 +36,7 @@ In no event shall copyright holders be liable for any damage.
 // or diffuse) to be shot, and false otherwise.
 //---------------------------------------------------------------------
 bool PhotonMapping::trace_ray(const Ray& r, const Vector3 &p, 
-			   std::list<Photon> &global_photons, std::list<Photon> &caustic_photons, bool direct, bool direct_only)
+			   list<Photon> &global_photons, list<Photon> &caustic_photons, bool direct, bool direct_only)
 {
 #ifndef MAX_PHOTON_ITERATIONS
 #define MAX_PHOTON_ITERATIONS 20
@@ -104,6 +108,7 @@ bool PhotonMapping::trace_ray(const Ray& r, const Vector3 &p,
 		if (direct_only && !is_caustic_particle && photon_ray.get_level() > 1)
 			break;
 
+
 		// Random walk's next step
 		// Get sampled direction plus pdf, and update attenuation
 		it.intersected()->material()->get_outgoing_sample_ray(it, photon_ray, pdf );
@@ -126,6 +131,23 @@ bool PhotonMapping::trace_ray(const Ray& r, const Vector3 &p,
 	return true;
 }
 
+double fRand(double fMin, double fMax)
+{
+	double f = (double)rand() / RAND_MAX;
+	return fMin + f* (fMax - fMin);
+}
+
+/*Return a random Vector3d*/
+Vector3 randomDirection() {
+	double o(fRand(0, 2 * 3.141593));
+	double t(fRand(0, 2 * 3.141593));
+	double x = cos(t) * sin(o);
+	double y = cos(t) * cos(o);
+	double z = sin(t);
+	Vector3 direction(x, y, z);
+	return direction;
+}
+
 //*********************************************************************
 // TODO: Implement the preprocess step of photon mapping,
 // where the photons are traced through the scene. To do it,
@@ -140,8 +162,50 @@ bool PhotonMapping::trace_ray(const Ray& r, const Vector3 &p,
 //		for rendering. 
 //		NOTE: Careful with function
 //---------------------------------------------------------------------
-void PhotonMapping::preprocess()
-{
+void PhotonMapping::preprocess() {
+	list<Photon> global;
+	list<Photon> caustic;
+	Ray* rayo;
+
+	for (int i = 0; i < world->nb_lights(); i++) {
+		//Obtener posicion e intensidad de la luz actual
+		Vector3 posicion = world->light(i).get_position();
+		Vector3 intensidad = world->light(i).get_intensities();
+		Vector3 direction = randomDirection();
+		rayo = new Ray(posicion, direction);
+
+		bool continueLoop = trace_ray(*rayo, intensidad, global, caustic, false, false);
+		while (continueLoop){		//Esto era un do/while antes, pero jaja salu2 !
+			//Get random direction to shoot a photon
+			Vector3 direction = randomDirection();
+			rayo = new Ray(posicion, direction);
+			continueLoop = trace_ray(*rayo, intensidad, global, caustic, false, false);
+			//Until all photons are done (20 rebounds per photon or not hit/glass/mirror)
+		}
+	}
+
+	//Se añade al mapa global de luz m_global_map
+	while (global.size() > 0) {
+		Photon photon = global.front();
+		global.pop_front();
+		vector<Real> photonActual(photon.position.data, photon.position.data + 3); 	//TODO PATATA probar con otros valores en el +3
+		m_global_map.store(photonActual, photon);
+	}
+	m_global_map.balance();	//Una vez añadidos todos, se crea el kdtree balanceado
+
+	//Se añade al mapa de causticas las causticas actuales
+	bool editado = false;
+	while (caustic.size() > 0) {
+		Photon photon = caustic.front();
+		caustic.pop_front();
+		vector<Real> causticaActual (photon.position.data, photon.position.data + 3);
+		m_caustics_map.store(causticaActual, photon);
+		editado = true;
+	}
+	//Y si se ha añadido algo, balanceado kdtree
+	if (editado) {		//TODO PATATA probar balance sin datos y quitar el if
+		m_caustics_map.balance();
+	}
 }
 
 //*********************************************************************
@@ -155,12 +219,127 @@ void PhotonMapping::preprocess()
 // using k-nearest neighbors ('m_nb_photons') to define the bandwidth
 // of the kernel.
 //---------------------------------------------------------------------
-Vector3 PhotonMapping::shade(Intersection &it0)const
-{
-	Vector3 L(0);
-	Vector3 W(1);
-	
+Vector3 PhotonMapping::shade(Intersection &it0)const {
 	Intersection it(it0);
+
+	int current_bounds = 0;
+	int maximum_bounds = 5;
+	Ray transmitted_ray;
+	while (it.intersected()->material()->is_delta() && current_bounds < maximum_bounds) {
+		Real pdf;	//Useless
+		it.intersected()->material()->get_outgoing_sample_ray(it, transmitted_ray, pdf);
+		transmitted_ray.shift();
+		world->first_intersection(transmitted_ray, it);
+		current_bounds++;
+	}
+	Vector3 intersection = it.get_position();
+	Vector3 normal = it.get_normal();
+
+	Vector3 L(world->get_background());
+
+	//Ambiental light
+	//Vector3 L = it.intersected()->material()->get_albedo(it) * world->get_ambient();
+
+	//Direct light
+	//For each light
+	for (int i = 0; i < world->nb_lights(); i++) {
+		Vector3 light_position = world->light(i).get_position();
+		Vector3 light_intensity = world->light(i).get_intensities();
+		LightSource* light_source = new PointLightSource(world, light_position, light_intensity);
+
+		Vector3 r_light = Vector3(0) - light_source->get_incoming_direction(intersection);
+		//If direct light
+		if (light_source->is_visible(intersection)) {
+			Vector3 id = light_source->get_incoming_light(intersection);
+			Vector3 kd = it.intersected()->material()->get_albedo(it);
+			Vector3 r_light_norm = r_light.normalize();
+			Real cos = r_light_norm.dot(normal);
+			L += kd * id * cos;		//Diffuse
+
+			/*Vector3 is = light_source->get_incoming_light(intersection);
+			Vector3 ks = it.intersected()->material()->get_albedo(it);
+			Vector3 R = r_light.reflect(normal);
+			Vector3 V = it.get_ray().get_direction();
+			R = R.normalize();
+			V = V.normalize();
+			cos = R.dot(V);
+			if (cos > 0.0) {
+				L += ks * is * pow(cos, 100);	//Specular
+			}*/
+		}
+	}
+
+
+	vector<const KDTree<Photon, 3>::Node*> global_photons;
+	Real max_distance = 100;
+	m_global_map.find(vector<Real>(it.get_position().data, it.get_position().data + 3), m_nb_photons, global_photons, max_distance);
+
+	//cout << global_photons.size();
+
+	vector<const KDTree<Photon, 3>::Node*> causics_photons;
+	m_caustics_map.find(vector<Real>(it.get_position().data, it.get_position().data + 3), m_nb_photons, causics_photons, max_distance);
+
+
+	if (global_photons.size() > 1) {
+		//cout << "Global " << global_photons.size() << "\n";
+
+		Vector3 color_bleeding(0);
+		Real max_radious = 0.0;
+
+		for (long i = 0; i<global_photons.size(); ++i) {
+			KDTree<Photon, 3>::Node node = *global_photons[i];
+			Photon photon = node.data();
+			Vector3 photon_position = photon.position;
+
+			Real photon_distance = sqrt(pow(photon_position[0] - intersection[0], 2) + pow(photon_position[1] - intersection[1], 2) + 
+				pow(photon_position[2] - intersection[2], 2));
+			if (max_radious < photon_distance) {
+				max_radious = photon_distance;
+			}
+
+			color_bleeding += photon.flux * it.intersected()->material()->get_albedo(it);
+
+		}
+
+		// Circle area
+		Real area = 3.141593 * pow(max_radious, 2);
+		//L += color_bleeding / (area*global_photons.size());
+		L += color_bleeding / (area*m_nb_global_photons);
+		//L += color_bleeding / (area);
+	}
+
+
+	if (causics_photons.size() > 1) {
+		//cout << "Caustic " << causics_photons.size() << "\n";
+
+		Vector3 caustic(0);
+		Real max_radious = 0.0;
+
+		for (long i = 0; i<causics_photons.size(); ++i) {
+			KDTree<Photon, 3>::Node node = *causics_photons[i];
+			Photon photon = node.data();
+			Vector3 photon_position = photon.position;
+
+			Real photon_distance = sqrt(pow(photon_position[0] - intersection[0], 2) + pow(photon_position[1] - intersection[1], 2) + 
+				pow(photon_position[2] - intersection[2], 2));
+			if (max_radious < photon_distance) {
+				max_radious = photon_distance;
+			}
+
+			caustic += photon.flux * it.intersected()->material()->get_albedo(it);
+
+			//cout << "Photon " << photon.direction.data[0] << "\n";
+		}
+
+		Real area = 3.141593 * pow(max_radious, 2);
+		//L += caustic / (area*causics_photons.size());
+		L += caustic / (area*m_nb_caustic_photons);
+		//L += caustic / (area);
+
+	}
+
+	//cout << m_nb_photons << "\n";
+	return L;
 
 	//**********************************************************************
 	// The following piece of code is included here for two reasons: first
@@ -169,7 +348,7 @@ Vector3 PhotonMapping::shade(Intersection &it0)const
 	// will need when doing the work. Goes without saying: remove the 
 	// pieces of code that you won't be using.
 	//
-	unsigned int debug_mode = 7;
+	unsigned int debug_mode = 1;
 
 	switch (debug_mode)
 	{
@@ -207,25 +386,9 @@ Vector3 PhotonMapping::shade(Intersection &it0)const
 		if (world->light(0).is_visible(it.get_position()))
 			L = Vector3(1.);
 		break;
-	case 7:
-		// ----------------------------------------------------------------
-		// Reflect and refract until a diffuse surface is found, then show its albedo...
-		int nb_bounces = 0;
-		// MAX_NB_BOUNCES defined in ./SmallRT/include/globals.h
-		while( it.intersected()->material()->is_delta() && ++nb_bounces < MAX_NB_BOUNCES)
-		{
-			Ray r; float pdf;
-			it.intersected()->material()->get_outgoing_sample_ray(it, r, pdf );		
-			W = W * it.intersected()->material()->get_albedo(it)/pdf;
-			
-			r.shift();
-			world->first_intersection(r, it);
-		}
-		L = it.intersected()->material()->get_albedo(it);
-
 	}
 	// End of exampled code
 	//**********************************************************************
 
-	return L*W;
+	return L;
 }

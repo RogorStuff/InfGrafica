@@ -14,20 +14,20 @@ In no event shall copyright holders be liable for any damage.
 
 #include <iostream>
 #include <string.h>
-#include "globals.h"
+#include "../SmallRT/include/globals.h"
 
-#include "World.h"
-#include "RenderEngine.h"
-#include "PhotonMapping.h"
-#include "Film.h"
-#include "Sphere.h"
-#include "Triangle.h"
-#include "Plane.h"
-#include "Mesh.h"
-#include "BSDF.h"
-#include "Lambertian.h"
-#include "Specular.h"
-#include "Transmissive.h"
+#include "../SmallRT/include/World.h"
+#include "../include/RenderEngine.h"
+#include "../include/PhotonMapping.h"
+#include "../SmallRT/include/Film.h"
+#include "../SmallRT/include/Sphere.h"
+#include "../SmallRT/include/Triangle.h"
+#include "../SmallRT/include/Plane.h"
+#include "../SmallRT/include/Mesh.h"
+#include "../SmallRT/include/BSDF.h"
+#include "../SmallRT/include/Lambertian.h"
+#include "../SmallRT/include/Specular.h"
+#include "../SmallRT/include/Transmissive.h"
 
 using namespace std;
 
