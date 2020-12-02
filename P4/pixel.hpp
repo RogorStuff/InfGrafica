@@ -22,6 +22,4 @@ class Pixel {
         Pixel GammaCurve(float gamma, float max, float m, float c);
 };
 
-float getPixelValue(Pixel pixel);
-
 #endif pixel_HPP

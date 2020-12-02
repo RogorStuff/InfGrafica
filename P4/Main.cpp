@@ -30,11 +30,10 @@ enum EVENT {
 EVENT getRandomEvent(const Material &material, const Vectores &position) {
     // Russian roulette
 
-    // get percentages based on the max value of each color
-    float Kd = getPixelValue(material.reflectance.kd);
-    float Ks = getPixelValue(material.reflectance.ks);
-    float kdDiffuse = getPixelValue(material.reflectance.kdDiffuse);
-    float ksDiffuse = getPixelValue(material.reflectance.ksDiffuse);
+    float Kd = material.reflectance.kd;
+    float Ks = material.reflectance.ks;
+    float kdDiffuse = material.reflectance.kdDiffuse;
+    float ksDiffuse = material.reflectance.ksDiffuse;
 
     // cap to max value
     const float MAX = 0.99f;

@@ -5,12 +5,12 @@
 
 class Reflectance{
     public:
-        Pixel kd;
-        Pixel ks; 
-        Pixel kdDiffuse;
-        Pixel ksDiffuse;
+        float kd;
+        float ks; 
+        float kdDiffuse;
+        float ksDiffuse;
         Reflectance();
-        Reflectance(Pixel Nkd, Pixel Nks, Pixel NkdDiffuse, Pixel NksDiffuse);
+        Reflectance(float Nkd, float Nks, float NkdDiffuse, float NksDiffuse);
 };
 
 #endif
