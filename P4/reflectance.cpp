@@ -3,7 +3,7 @@
 Reflectance::Reflectance(){
 }
 
-Reflectance::Reflectance(Pixel Nkd, Pixel Nks, Pixel NkdDiffuse, Pixel NksDiffuse){
+Reflectance::Reflectance(float Nkd, float Nks, float NkdDiffuse, float NksDiffuse){
     kd=Nkd;
     ks=Nks;
     kdDiffuse=NkdDiffuse;

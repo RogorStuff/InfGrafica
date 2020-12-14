@@ -6,14 +6,14 @@ Material::Material() {
 }
 
 Material Material::Emitter() {
-    type = EMITTER;
+    emisor = true;
 }
 
-Material Material::Reflector(Pixel kd, Pixel ks, Pixel kdDiffuse, Pixel ksDiffuse) {
-    type = REFLECTOR;
+Material Material::Reflector(float kd, float ks, float kdDiffuse, float ksDiffuse) {
+    emisor = false;
     reflectance = Reflectance(kd, ks, kdDiffuse, ksDiffuse);
 }
-
+/*
 Material Material::Phong(Pixel kdDiffuse, Pixel ksDiffuse) {
     return Reflector(Pixel(0.0,0.0,0.0), Pixel(0.0,0.0,0.0), kdDiffuse, ksDiffuse);
 }
@@ -32,4 +32,4 @@ Material Material::Refractor(Pixel kd) {
 
 Material Material::Specular(Pixel ks) {
     return Delta(Pixel(0.0,0.0,0.0), ks);
-}
+}*/
