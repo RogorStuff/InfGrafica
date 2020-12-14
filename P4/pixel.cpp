@@ -46,6 +46,12 @@ void Pixel::multiplicaTotal(float multiplicador){
     B = this->B*multiplicador;
 }
 
+void Pixel::multiplicaTotal(Emission multiplicador){
+    R = this->R*multiplicador.red;
+    G = this->G*multiplicador.green;
+    B = this->B*multiplicador.blue;
+}
+
 Pixel Pixel::GammaCurve(float gamma, float max, float m, float c){
     float newR,newG,newB;
     if (this->R<max){
@@ -76,6 +82,10 @@ Pixel Pixel::GammaCurve(float gamma, float max, float m, float c){
 
 float getPixelValue(Pixel pixel){
     return (pixel.R+pixel.G+pixel.B)/3;
+}
+
+bool Pixel::escero(){
+    return (R+G+B) < 0.03;
 }
 
 Pixel media(vector<Pixel> colores){

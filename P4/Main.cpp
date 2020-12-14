@@ -27,7 +27,7 @@ enum EVENT {
     DEAD
 };
 
-EVENT getRandomEvent(const Material &material, const Vectores &position) {
+EVENT getRandomEvent(const Material &material) {
     // Russian roulette
 
     // get percentages based on the max value of each color
@@ -170,11 +170,12 @@ Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,strin
 
 Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno, bool& impactado){
 
-    Pixel pixelResultado(0.0, 0.0, 0.0);
+    Pixel pixelResultado(1.0, 1.0, 1.0);    //En cada rebote, pixel = pixel + NuevoColor*BRDF
+    Pixel BRDF (1.0, 1.0, 1.0);             //
     int rebotes = 0;
     bool sigueRebotando = true;
     Vectores origen = ray.origen;
-    float BRDF = 1.0;
+//    float BRDF = 1.0;
 
     while (sigueRebotando){
 
@@ -184,12 +185,12 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno, bool& impactado){
         Pixel pixelaux;
         Obstacle* obstaculoGolpeado;
         float menorDistancia=1000000.0;
-        Material materialGolpeado;
-        Material materialFinal;
+        Material* materialGolpeado;
+        Material* materialFinal;
         float refractive;
 
         for (auto obstacle : entorno){          //Calcula con que obstaculo golpea
-            if(obstacle->ray_intersect(ray,visto,distancia, materialGolpeado, refractive)){ 
+            if(obstacle->ray_intersect(ray,visto,distancia, *materialGolpeado, refractive)){ 
                 impactado = true;
                 if(distancia<menorDistancia){
                     materialFinal = materialGolpeado;
@@ -204,54 +205,38 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno, bool& impactado){
             pixelResultado.update(0.0, 0.0, 0.0);
             impactado = false;
             sigueRebotando = false;
-        }else {  //Ha impactado con algun objeto:     p = o + rayo * distnacia
-            Vectores nuevoOrigen;
-            nuevoOrigen = nuevoOrigen.calculaPunto(ray.origen, ray.direccion, menorDistancia);
+        }
 
-            EVENT eventoActual = getRandomEvent(materialFinal, nuevoOrigen);
+        else {  //Ha impactado con algun objeto:     p = o + rayo * distnacia
 
-            //Calcular color y actualizar BRDF
-            pixelaux.multiplicaTotal(BRDF);
-             if (eventoActual == DIFFUSE || eventoActual == SPECULAR) {
-
-             }
-                    /*
-                    if (event == PHONG_DIFFUSE || event == PHONG_SPECULAR) {
-                        for (const LightPoint &lightPoint : scene.lightPoints) {
-                            // foreach light
-                            if (isLightVisible(lightPoint, position, scene.objects)) {
-
-                                // if visible, compute path light
-                                HCoord lightVect = position - lightPoint.position;
-                                float lightDist = mod(lightVect);
-                                Color direct = lightPoint.color
-                                               * getBRDF(event, norm(lightVect), -direction, position, *intersection)
-                                               * rayFactor
-                                               / (lightDist * lightDist);
-
-                                directTotal = directTotal + direct;
-                            }
-                        }
-                    }*/
-            //Calcular nueva direccion de rebote:
-                //TODO GENERAR DIRECCION
-
-            //Actualizar rayo
-                //TODO actualizar direccion
-            ray.origen = nuevoOrigen;
-
-            rebotes++;  //Mira a ver si es el último rebote
-            if (eventoActual == DEAD){
-                impactado = true;
+            if (materialFinal->type == EMITTER){  //Es una luz, conseguir color y devolver todo
+                pixelResultado.multiplicaTotal(obstaculoGolpeado->getColor());
                 sigueRebotando = false;
             }
+            else {  //Era un objeto no luz, calcular color, preparar siguiente color, calcular dirección y seguir el loop
+                EVENT eventoActual = getRandomEvent(*materialFinal);
+                pixelResultado.multiplicaTotal(obstaculoGolpeado->getColor());
+
+                Vectores nuevoOrigen;
+                nuevoOrigen = nuevoOrigen.calculaPunto(ray.origen, ray.direccion, menorDistancia);
+                ray.origen = nuevoOrigen;
+                //Mirar el tema direcciones segun evento.
+
+                rebotes++;  //Contador de
+                if (eventoActual == DEAD){
+                    impactado = true;
+                    sigueRebotando = false;
+                }
+            }
         }
-    }
-                
-    if (BRDF <= 0.0){   //Si se ha quedado sin luz el rayo
-        impactado = false;
-        sigueRebotando = false;
-    }
+
+        if (BRDF.escero()){   //Si se ha quedado sin luz el rayo
+            impactado = false;
+            sigueRebotando = false;
+        //    pixelResultado.update(0.0, 0.0, 0.0);
+        }
+
+    }        
 
     pixelResultado.divideTotal(rebotes); 
     return pixelResultado;

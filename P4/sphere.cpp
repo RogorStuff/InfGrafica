@@ -38,6 +38,9 @@ bool Sphere::ray_intersect(Ray& r, Emission& emite, float& distancia, Material& 
     return false;
 };
 
+Emission Sphere::getColor() const{
+    return emision;
+}
 
 /*
 //Esferas test

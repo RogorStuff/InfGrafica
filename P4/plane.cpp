@@ -48,6 +48,10 @@ bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material
     return ret;
 };
 
+Emission Plane::getColor() const{
+    return emision;
+}
+
 //Planos test
 /*
 Vectores planoCentro(0.0, 0.0, 4.0, 1);
