@@ -1,5 +1,6 @@
 #include "plane.hpp"
 
+
 Plane::Plane(){
     material = Material();
 }
@@ -50,6 +51,14 @@ bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material
 
 Emission Plane::getColor() const{
     return emision;
+}
+
+string Plane::queSoy() const{
+    return "plano";
+}
+
+Vectores Plane::sacarVectorObjeto() const{
+    return normal;
 }
 
 //Planos test

@@ -42,6 +42,14 @@ Emission Sphere::getColor() const{
     return emision;
 }
 
+string Sphere::queSoy() const{
+    return "esfera";
+}
+
+Vectores Sphere::sacarVectorObjeto() const{
+    return center;
+}
+
 /*
 //Esferas test
 Vectores bolaAux1(1.0, 1.0, 4.0, 1);

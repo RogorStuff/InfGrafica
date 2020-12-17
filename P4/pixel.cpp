@@ -1,6 +1,4 @@
 #include "pixel.hpp"
-#include "vector.hpp"
-#include "material.hpp"
 #include "math.h"
 #include <vector>
 

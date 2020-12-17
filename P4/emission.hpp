@@ -13,4 +13,4 @@ struct Emission{
     void getEmision(float& Rred, float& Rgreen, float& Rblue);
 };
 
-#endif emission_HPP
+#endif

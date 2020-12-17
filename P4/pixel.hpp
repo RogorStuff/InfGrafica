@@ -26,4 +26,4 @@ class Pixel {
         Pixel GammaCurve(float gamma, float max, float m, float c);
 };
 
-#endif pixel_HPP
+#endif

@@ -1,4 +1,4 @@
-#include "pixel.hpp"
+#include "pixel.cpp"
 #include <vector>
 #include <string> 
 
@@ -22,4 +22,4 @@ class Image {
         void save(string newFileName);
 };
 
-#endif image_HPP
+#endif

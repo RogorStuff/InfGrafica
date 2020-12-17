@@ -1,11 +1,14 @@
-#include "obstacle.hpp"
 #include "emission.hpp"
 #include "image.hpp"
+#include "pixel.hpp"
+#include "plane.hpp"
 
 #ifndef sensor_HPP
 #define sensor_HPP
 
 using namespace std;
+
+static const float localNearZero = 1e-6;
 
 class Sensor{//Todos los planos deben mirar hacia la cámara
     public:
@@ -21,4 +24,4 @@ class Sensor{//Todos los planos deben mirar hacia la cámara
     
 };
 
-#endif sensor_HPP
+#endif

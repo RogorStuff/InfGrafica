@@ -1,5 +1,5 @@
 #include <vector>
-#include "vector.hpp"
+#include "vector.cpp"
 
 #ifndef ray_HPP
 #define ray_HPP
@@ -14,4 +14,4 @@ class Ray{
         Ray(Vectores Norigen, Vectores Ndireccion);
 };
 
-#endif ray_HPP
+#endif

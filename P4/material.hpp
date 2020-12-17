@@ -1,4 +1,5 @@
 #include "reflectance.hpp"
+#include "pixel.hpp"
 
 #ifndef material_HPP
 #define material_HPP

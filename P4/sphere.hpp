@@ -18,7 +18,9 @@ class Sphere: public Obstacle{
         Sphere(Vectores Ncentro, float Nradio, Emission Nemision, Material material, float NrefractiveIndex);
         bool ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material& material, float &refractive)const override;
         Emission getColor()const override;
+        string queSoy() const override;
+        Vectores sacarVectorObjeto() const override;
 };
 
-#endif sphere_HPP
+#endif
 

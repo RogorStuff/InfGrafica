@@ -1,5 +1,4 @@
 #include "material.hpp"
-#include "pixel.hpp"
 
 
 Material::Material() {

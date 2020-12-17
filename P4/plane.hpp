@@ -1,6 +1,4 @@
-#include "obstacle.hpp"
-#include "emission.hpp"
-#include "material.hpp"
+#include "sphere.hpp"
 
 #ifndef plane_HPP
 #define plane_HPP
@@ -18,7 +16,9 @@ class Plane: public Obstacle{//Todos los planos deben mirar hacia la cámara
         Plane(Vectores Ncentro, Vectores Nnormal, Emission Nemision, Material Nmaterial, float NrefractiveIndex);
         bool ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material& material, float &refractive) const override;
         Emission getColor() const override;
+        string queSoy() const override;
+        Vectores sacarVectorObjeto() const override;
 };
 
-#endif plane_HPP
+#endif
 

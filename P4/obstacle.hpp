@@ -12,6 +12,8 @@ class Obstacle{
     public:
         virtual bool ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material& material, float &refractive) const = 0;
         virtual Emission getColor() const=0;
+        virtual string queSoy() const=0;
+        virtual Vectores sacarVectorObjeto() const=0;
 };
 
-#endif obstacle_HPP
+#endif
