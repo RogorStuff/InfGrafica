@@ -80,7 +80,7 @@ Pixel Pixel::GammaCurve(float gamma, float max, float m, float c){
     return Pixel(newR,newG,newB);
 }
 
-<<<<<<< HEAD
+
 float getPixelValue(Pixel pixel){
     return (pixel.R+pixel.G+pixel.B)/3;
 }
@@ -89,8 +89,6 @@ bool Pixel::escero(){
     return (R+G+B) < 0.03;
 }
 
-=======
->>>>>>> 0ee624d49eac0a86a208f1f22c5d6bf0ed3058ac
 Pixel media(vector<Pixel> colores){
     float redValue=0.0;
     float greenValue=0.0;

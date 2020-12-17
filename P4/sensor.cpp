@@ -73,19 +73,8 @@ Image Sensor::ver(vector<Obstacle*> &entorno, string imagenNombre, int anchotota
 
         vector<Pixel> recibidos;
         for (auto ray : rayos){
-            float menorDistancia=1000000.0;
-            bool impactado =false;  //Hacia abajo, cambiar por colorRayo(...)
-            Material materialGolpeado;
-            float refractive=0.0;
-            for (auto obstacle : entorno){
-                if(obstacle->ray_intersect(ray,visto,aux, materialGolpeado, refractive)){ 
-                    impactado = true;
-                    if(aux<menorDistancia){
-                        pixel.update(visto);
-                        menorDistancia=aux;
-                    }
-                }
-            }                   // Hacia arriba
+            bool impactado = false;
+            Pixel colorRayoActual = colorRayo(ray, entorno, impactado);
             if(impactado){
                 recibidos.push_back(pixel);
             }

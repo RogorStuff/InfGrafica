@@ -13,6 +13,10 @@ Material Material::Reflector(float kd, float ks, float kdDiffuse, float ksDiffus
     emisor = false;
     reflectance = Reflectance(kd, ks, kdDiffuse, ksDiffuse);
 }
+
+bool Material::isEmissor(){
+    return emisor;
+}
 /*
 Material Material::Phong(Pixel kdDiffuse, Pixel ksDiffuse) {
     return Reflector(Pixel(0.0,0.0,0.0), Pixel(0.0,0.0,0.0), kdDiffuse, ksDiffuse);
