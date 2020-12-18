@@ -176,11 +176,8 @@ Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,strin
 Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
 
     Pixel pixelResultado(1.0, 1.0, 1.0);    //En cada rebote, pixel = pixel + NuevoColor*BRDF
-    Pixel BRDF (1.0, 1.0, 1.0);             //
     int rebotes = 0;
     bool sigueRebotando = true;
-    Vectores origen = ray.origen;
-//  float BRDF = 1.0;
     bool impactadoLocal = false;
 
     while (sigueRebotando){
@@ -193,9 +190,11 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
         Material* materialGolpeado;
         Material* materialFinal;
         float refractive;
-
+        
         for (auto obstacle : entorno){          //Calcula con que obstaculo golpea
+            cout << "Entro en bucle de entornos" << endl;
             if(obstacle->ray_intersect(ray,visto,distancia, *materialGolpeado, refractive)){ 
+                cout << "Ha golpeado a algo" << endl;
                 impactadoLocal = true;
                 if(distancia<menorDistancia){
                     materialFinal = materialGolpeado;
@@ -206,14 +205,15 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
                     sigueRebotando=false; //TODO eliminar
                 }
             }
+            cout << "salgo de bucle iteracion" << endl;
         }
-/*
+        
         if (!impactadoLocal){    //Si no impacta con nada, termina
             pixelResultado.update(0.0, 0.0, 0.0);
             impactadoLocal = false;
             sigueRebotando = false;
         }
-
+        /*
         else {  //Ha impactado con algun objeto:     p = o + rayo * distnacia
 
             if (materialFinal->isEmissor()){  //Es una luz, conseguir color y devolver todo
@@ -246,13 +246,16 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
                 }
             }
         }
-    */
-        if (BRDF.escero()){   //Si se ha quedado sin luz el rayo
+        
+        if (pixelResultado.escero()){   //Si se ha quedado sin luz el rayo
             impactadoLocal = true;
             sigueRebotando = false;
             pixelResultado.update(0.0, 0.0, 0.0);
         }
+        */
+       sigueRebotando = false;
     } 
+    
     if (rebotes != 0){
         pixelResultado.divideTotal(rebotes);
     }

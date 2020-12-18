@@ -69,6 +69,9 @@ int main () {
     scene.push_back(&plano4);
     scene.push_back(&plano5);
     scene.push_back(&bola1);
+
+    Obstacle* aux = scene.at(0);
+    cout << aux->sacarVectorObjeto().c[0] <<" "<< aux->sacarVectorObjeto().c[1] <<" "<< aux->sacarVectorObjeto().c[2] <<" " << endl;
     Image imagen("patata", true, 100, 100);
     imagen = sensor.ver(scene, "patata", 100, 100);
 
