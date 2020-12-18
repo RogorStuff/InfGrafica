@@ -34,6 +34,7 @@ bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material
         if (dist < t_max && dist > t_min) {
             distancia = dist;
             emite = this->emision;
+            material = this->material;
             ret = true;
         }
     } else if (denominator2 != 0) {
@@ -42,6 +43,7 @@ bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material
         if (dist < t_max && dist > t_min) {
             distancia = dist;
             emite = this->emision;
+            material = this->material;
             ret = true;
         }
     }

@@ -28,6 +28,7 @@ bool Sphere::ray_intersect(Ray& r, Emission& emite, float& distancia, Material& 
         float temp = fabs((-b - sqrt(discriminant)) / a);
         float temp2 = fabs((-b + sqrt(discriminant)) / a);
         emite = this->emision;
+        material = this->material;
         if (temp > temp2) {
             distancia = temp2;
             return true;

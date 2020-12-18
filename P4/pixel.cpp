@@ -4,6 +4,8 @@
 
 using namespace std;
 
+#pragma once
+
 Pixel::Pixel(){
 }
 
@@ -85,6 +87,14 @@ float getPixelValue(Pixel pixel){
 
 bool Pixel::escero(){
     return (R+G+B) < 0.03;
+}
+
+void Pixel::nuevoImpacto(bool impactoN){
+    this->impacto=impactoN;
+}
+
+bool Pixel::dameImpacto(){
+    return this-impacto;
 }
 
 Pixel media(vector<Pixel> colores){

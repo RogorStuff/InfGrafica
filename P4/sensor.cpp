@@ -173,18 +173,18 @@ Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,strin
     }
 }
 
-Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno, bool& impactado){
+Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
 
     Pixel pixelResultado(1.0, 1.0, 1.0);    //En cada rebote, pixel = pixel + NuevoColor*BRDF
     Pixel BRDF (1.0, 1.0, 1.0);             //
     int rebotes = 0;
     bool sigueRebotando = true;
     Vectores origen = ray.origen;
-//    float BRDF = 1.0;
+//  float BRDF = 1.0;
+    bool impactadoLocal = false;
 
     while (sigueRebotando){
 
-        bool impactado = false;
         Emission visto;
         float distancia;
         Pixel pixelaux;
@@ -196,19 +196,21 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno, bool& impactado){
 
         for (auto obstacle : entorno){          //Calcula con que obstaculo golpea
             if(obstacle->ray_intersect(ray,visto,distancia, *materialGolpeado, refractive)){ 
-                impactado = true;
+                impactadoLocal = true;
                 if(distancia<menorDistancia){
                     materialFinal = materialGolpeado;
                     obstaculoGolpeado = obstacle;
                     pixelaux.update(visto);
                     menorDistancia=distancia;
+                    //cout<<materialFinal->isEmissor()<<" y obstaculo golpeado "<<obstaculoGolpeado->queSoy()<<endl;
+                    sigueRebotando=false; //TODO eliminar
                 }
             }
         }
-
-        if (!impactado){    //Si no impacta con nada, termina
+/*
+        if (!impactadoLocal){    //Si no impacta con nada, termina
             pixelResultado.update(0.0, 0.0, 0.0);
-            impactado = false;
+            impactadoLocal = false;
             sigueRebotando = false;
         }
 
@@ -217,6 +219,7 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno, bool& impactado){
             if (materialFinal->isEmissor()){  //Es una luz, conseguir color y devolver todo
                 pixelResultado.multiplicaTotal(obstaculoGolpeado->getColor());
                 sigueRebotando = false;
+                impactadoLocal = true;
             }
             else {  //Era un objeto no luz, calcular color, preparar siguiente color, calcular dirección y seguir el loop
                 EVENT eventoActual = getRandomEvent(*materialFinal);
@@ -231,7 +234,6 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno, bool& impactado){
                 }else{
                     objetoV=obstaculoGolpeado->sacarVectorObjeto();
                 }
-                //(EVENT event, Vectores position, Vectores direction,string objeto, Vectores objetoV, float obstacleRefractiveIndex)//objeto será esfera o plano, y su vector o el centro (esfera) o la normal del plano
                 Vectores nuevaDir = nuevaDireccion(eventoActual, nuevoOrigen, ray.direccion, nombreImpactado ,objetoV, 0.0);    //TODO: poner refractiveindex
 
                 ray.origen = nuevoOrigen;
@@ -239,23 +241,29 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno, bool& impactado){
 
                 rebotes++;  //Contador de
                 if (eventoActual == DEAD){
-                    impactado = true;
+                    impactadoLocal = true;
                     sigueRebotando = false;
                 }
             }
         }
-
+    */
         if (BRDF.escero()){   //Si se ha quedado sin luz el rayo
-            impactado = false;
+            impactadoLocal = true;
             sigueRebotando = false;
-        //    pixelResultado.update(0.0, 0.0, 0.0);
+            pixelResultado.update(0.0, 0.0, 0.0);
         }
-
-    }        
-
-    pixelResultado.divideTotal(rebotes); 
+    } 
+    if (rebotes != 0){
+        pixelResultado.divideTotal(rebotes);
+    }
+     
+    cout << pixelResultado.R <<" " << pixelResultado.G << " " << pixelResultado.B << endl;
+    pixelResultado.nuevoImpacto(impactadoLocal);
     return pixelResultado;
 }
+
+
+
 
 Image Sensor::ver(vector<Obstacle*> &entorno, string imagenNombre, int anchototal, int altoTotal){
     Image imagen(imagenNombre, true, anchototal, altoTotal);        
@@ -271,6 +279,7 @@ Image Sensor::ver(vector<Obstacle*> &entorno, string imagenNombre, int anchotota
 
     for (int miraPixel=0; miraPixel < imagen.total; miraPixel++){
             
+        cout << "loop" << endl;
         int alto=miraPixel/imagen.height;
         int ancho=miraPixel%imagen.height;
 
@@ -304,17 +313,20 @@ Image Sensor::ver(vector<Obstacle*> &entorno, string imagenNombre, int anchotota
         rayoAux4.direccion.traspConMatriz(cameraToWorld);
         rayos.push_back(rayoAux4);
 
+
         vector<Pixel> recibidos;
+        bool impactado = false;
         for (auto ray : rayos){
-            bool impactado = false;
-            Pixel colorRayoActual = colorRayo(ray, entorno, impactado);
-            if(impactado){
-                recibidos.push_back(pixel);
+            Pixel colorRayoActual = colorRayo(ray, entorno);
+            if(colorRayoActual.dameImpacto()){
+                recibidos.push_back(colorRayoActual);
             }
         }
         if (recibidos.size()>0){
             imagen.imageMatrix[miraPixel]=media(recibidos);
-        } //Else de por si ya es negro
+        }
+        cout << "enlloop" << endl;
     }
+    cout << "TerminaLoop" << endl;
     return imagen;
 }
