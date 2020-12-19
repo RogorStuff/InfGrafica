@@ -14,6 +14,7 @@ Plane::Plane(Vectores Ncentro, Vectores Nnormal, Emission Nemision, Material Nma
 }
 
 bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material& material, float &refractive) const{
+    //cout << "Entra en inserseccion de plano" << endl;
     float t_min = 0;
     float t_max = 99999999;
 
@@ -28,14 +29,30 @@ bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material
 
     float denominator = l.punto(n);
     float denominator2 = l.punto(n.negado());
+
+    //cout << "Denomiadores creados: " << denominator << " y " << denominator2 << endl;
+
     if (denominator != 0) {
+       //cout << "Reconocido denominador1 con valor" << endl;
         Vectores aux = (po.VectorDosPuntos(lo));
         dist =  (aux.punto(n)) / denominator;
+        //cout << "dist calculada" << endl;
         if (dist < t_max && dist > t_min) {
+           // cout << "Entra en el if" << endl;
             distancia = dist;
+            //cout << "Dist asignada" << endl;
             emite = this->emision;
+           // cout << "emite asignada" << endl;
+            //cout << this->material.emisor << endl;
+            //cout << material.emisor << endl;
+            material.emisor = this->material.emisor;
+           // cout << "Esto rula ?" << endl;
+            material.reflectance = this->material.reflectance;
+            //cout << "Esto rula ?" << endl;
             material = this->material;
+            //cout << "material asignada" << endl;
             ret = true;
+           // cout << "Valores asignados" << endl;
         }
     } else if (denominator2 != 0) {
         Vectores aux = (po.VectorDosPuntos(lo));
@@ -47,7 +64,9 @@ bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material
             ret = true;
         }
     }
-    else ret = false;
+    else {ret = false;}
+    //cout << "Sale de inserseccion de plano" << endl;
+
     return ret;
 };
 

@@ -187,14 +187,15 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
         Pixel pixelaux;
         Obstacle* obstaculoGolpeado;
         float menorDistancia=1000000.0;
-        Material* materialGolpeado;
-        Material* materialFinal;
+        Material materialGolpeado;
+        Material materialFinal;
         float refractive;
         
         for (auto obstacle : entorno){          //Calcula con que obstaculo golpea
-            cout << "Entro en bucle de entornos" << endl;
-            if(obstacle->ray_intersect(ray,visto,distancia, *materialGolpeado, refractive)){ 
-                cout << "Ha golpeado a algo" << endl;
+            //cout << "Entro en bucle de entornos" << endl;
+            if(obstacle->ray_intersect(ray,visto,distancia, materialGolpeado, refractive)){ 
+           // if(true){ 
+                //cout << "Ha golpeado a algo" << endl;
                 impactadoLocal = true;
                 if(distancia<menorDistancia){
                     materialFinal = materialGolpeado;
@@ -205,7 +206,7 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
                     sigueRebotando=false; //TODO eliminar
                 }
             }
-            cout << "salgo de bucle iteracion" << endl;
+            //cout << "salgo de bucle iteracion" << endl;
         }
         
         if (!impactadoLocal){    //Si no impacta con nada, termina
@@ -213,16 +214,16 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
             impactadoLocal = false;
             sigueRebotando = false;
         }
-        /*
+        
         else {  //Ha impactado con algun objeto:     p = o + rayo * distnacia
 
-            if (materialFinal->isEmissor()){  //Es una luz, conseguir color y devolver todo
+            if (materialFinal.isEmissor()){  //Es una luz, conseguir color y devolver todo
                 pixelResultado.multiplicaTotal(obstaculoGolpeado->getColor());
                 sigueRebotando = false;
                 impactadoLocal = true;
             }
             else {  //Era un objeto no luz, calcular color, preparar siguiente color, calcular dirección y seguir el loop
-                EVENT eventoActual = getRandomEvent(*materialFinal);
+                EVENT eventoActual = getRandomEvent(materialFinal);
                 pixelResultado.multiplicaTotal(obstaculoGolpeado->getColor());
 
                 Vectores nuevoOrigen;
@@ -252,7 +253,7 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
             sigueRebotando = false;
             pixelResultado.update(0.0, 0.0, 0.0);
         }
-        */
+        
        sigueRebotando = false;
     } 
     
@@ -260,7 +261,7 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
         pixelResultado.divideTotal(rebotes);
     }
      
-    cout << pixelResultado.R <<" " << pixelResultado.G << " " << pixelResultado.B << endl;
+    //cout << pixelResultado.R <<" " << pixelResultado.G << " " << pixelResultado.B << endl;
     pixelResultado.nuevoImpacto(impactadoLocal);
     return pixelResultado;
 }
@@ -282,7 +283,7 @@ Image Sensor::ver(vector<Obstacle*> &entorno, string imagenNombre, int anchotota
 
     for (int miraPixel=0; miraPixel < imagen.total; miraPixel++){
             
-        cout << "loop" << endl;
+        //cout << "loop" << endl;
         int alto=miraPixel/imagen.height;
         int ancho=miraPixel%imagen.height;
 
@@ -328,8 +329,8 @@ Image Sensor::ver(vector<Obstacle*> &entorno, string imagenNombre, int anchotota
         if (recibidos.size()>0){
             imagen.imageMatrix[miraPixel]=media(recibidos);
         }
-        cout << "enlloop" << endl;
+        //cout << "enlloop" << endl;
     }
-    cout << "TerminaLoop" << endl;
+    //cout << "TerminaLoop" << endl;
     return imagen;
 }

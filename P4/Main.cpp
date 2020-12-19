@@ -34,28 +34,28 @@ int main () {
     Vectores planoCentro1(4.0, 0.0, 4.0, 1);
     Vectores planoNormal1(-1.0, 0.0, 0.0, 0);
     Emission color1(1, 0, 0);
-    Plane plano1(planoCentro1, planoNormal1, color1, materialIluminado, 0.0);
+    Plane plano1(planoCentro1, planoNormal1, color1, materialReflector, 0.0);
     
     Vectores planoCentro2(-4.0, 0.0, 4.0, 1);
     Vectores planoNormal2(1.0, 0.0, 0.0, 0);
     Emission color2(0, 1, 0);
-    Plane plano2(planoCentro2, planoNormal2, color2, materialIluminado, 0.0);
+    Plane plano2(planoCentro2, planoNormal2, color2, materialReflector, 0.0);
 
     Vectores planoCentro3(0.0, 0.0, 8.0, 1);
     Vectores planoNormal3(0.0, 0.0, -1.0, 0);
     Emission color3(1, 1, 1);
-    Plane plano3(planoCentro3, planoNormal3, color3, materialIluminado, 0.0);
+    Plane plano3(planoCentro3, planoNormal3, color3, materialReflector, 0.0);
 
     Vectores planoCentro4(0.0, -4.0, 4.0, 1);
     Vectores planoNormal4(0.0, 1.0, 0.0, 0);
     Emission color4(0, 0, 1);
-    Plane plano4(planoCentro4, planoNormal4, color4, materialIluminado, 0.0);
+    Plane plano4(planoCentro4, planoNormal4, color4, materialReflector, 0.0);
 
     //Techo
     Vectores planoCentro5(0.0, 4.0, 4.0, 1);
     Vectores planoNormal5(0.0, -1.0, 0.0, 0);
     Emission color5(0, 0, 1);
-    Plane plano5(planoCentro5, planoNormal5, color5, materialIluminado, 0.0);
+    Plane plano5(planoCentro5, planoNormal5, color5, materialReflector, 0.0);
     
     Vectores bolaAux1(0.0, 0.0, 5.0, 1);
     float radio = 2;
@@ -72,8 +72,8 @@ int main () {
 
     Obstacle* aux = scene.at(0);
     cout << aux->sacarVectorObjeto().c[0] <<" "<< aux->sacarVectorObjeto().c[1] <<" "<< aux->sacarVectorObjeto().c[2] <<" " << endl;
-    Image imagen("patata", true, 100, 100);
-    imagen = sensor.ver(scene, "patata", 100, 100);
+    Image imagen("patata", true, 500, 500);
+    imagen = sensor.ver(scene, "patata", 500, 500);
 
     imagen.save("patata");
     

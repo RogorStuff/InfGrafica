@@ -12,6 +12,7 @@ Sphere::Sphere(Vectores Ncentro, float Nradio, Emission Nemision, Material Nmate
 }
 
 bool Sphere::ray_intersect(Ray& r, Emission& emite, float& distancia, Material& material, float &refractive) const{
+    //cout << "Entra en inserseccion de esfera" << endl;
     Vectores d = r.direccion;
     Vectores o = r.origen;
 
@@ -35,7 +36,7 @@ bool Sphere::ray_intersect(Ray& r, Emission& emite, float& distancia, Material& 
         }
         distancia = temp;
         return true;
-    } 
+    }
     return false;
 };
 
