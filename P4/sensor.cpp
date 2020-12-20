@@ -76,7 +76,9 @@ EVENT getRandomEvent(const Material &material) {
 Vectores reflect(Vectores &in, Vectores &n) { //n is the normal of the surface (mirror), in is the received vector
     Vectores aux = n.multiplicarValor(in.punto(n));
     aux.multiplicarValor(2.0);
-    return (in.restarVector(aux)).normalizar();
+    Vectores resultado = (in.restarVector(aux));
+    resultado.normalizar();
+    return resultado;
 }
 
 Vectores refract(Vectores in, Vectores n, float obstacleRefractiveIndex) {
@@ -96,24 +98,30 @@ Vectores refract(Vectores in, Vectores n, float obstacleRefractiveIndex) {
         Vectores aux = in.multiplicarValor(refractionRatio);
         Vectores aux2 = n.multiplicarValor(refractionRatio * c - sqrt(radicand));
         aux.sumarVector(aux2);
-        return aux.normalizar();
+        aux.normalizar();
+        return aux;
     }
 }
 
 
-Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,string objeto, Vectores objetoV, float obstacleRefractiveIndex){ //objeto será esfera o plano, y su vector o el centro (esfera) o la normal del plano
-    Vectores n;
-    if (objeto == "esfera"){
-        n = position.restarVector(objetoV).normalizar();
-    }else{ //plano
-        n = objetoV.normalizar();
-    }
+Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,string objeto, Vectores objetoV, float obstacleRefractiveIndex){ //TODO: NO SE UTILIZA OBJETO
+    cout << "Entra en nueva direccion" << endl;
+    Vectores n= objetoV;
+    n.normalizar();
+    cout <<"confirmamos n "<< n.c[0] << " " << n.c[1] << " " << n.c[2] << " " <<endl;
+    
     switch (event) {
         case REFRACTION:
+        //cout<<"mal"<<endl;
             return refract(direction, n, obstacleRefractiveIndex);
         case REFLECTION:
+        //cout<<"mal"<<endl;
             return reflect(direction, n);
-        case DIFFUSE: {
+        case DIFFUSE: {        //Rebote aleatorio
+        cout<<"diffuso"<<endl;
+        cout <<"Llega con "<< direction.c[0] << " " << direction.c[1] << " " << direction.c[2] << " " <<endl;
+        cout <<"Choca contra "<< objetoV.c[0] << " " << objetoV.c[1] << " " << objetoV.c[2] << " " <<endl;
+        cout <<"Tenemos otro vector "<< n.c[0] << " " << n.c[1] << " " << n.c[2] << " " <<endl;
             Vectores Z;
             Vectores Y;
             Vectores X;
@@ -125,8 +133,13 @@ Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,strin
                 // opposite side
                 Z = n.negado();
             }
-            Y = (Z.cruce(direction)).normalizar();
-            X = (Y.cruce(Z)).normalizar();
+            cout <<"Z es "<< Z.c[0] << " " << Z.c[1] << " " << Z.c[2] << " " <<endl;
+            Y = (Z.cruce(direction));
+            Y.normalizar();
+            cout <<"Y es "<< Y.c[0] << " " << Y.c[1] << " " << Y.c[2] << " " <<endl;
+            X = (Y.cruce(Z));
+            X.normalizar();
+            cout <<"X es "<< X.c[0] << " " << X.c[1] << " " << X.c[2] << " " <<endl;
 
             float theta = acos(sqrt(random_cero_to_uno()));
             float phi = 2.0f * (float) M_PI * random_cero_to_uno();
@@ -138,9 +151,13 @@ Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,strin
 
             Vectores aux(cos(phi) * sin(theta), sin(phi) * sin(theta), cos(theta),0);
             aux.traspConMatriz(matrizTransformation);
-            return aux.normalizar();
+
+            cout << "antes de normalizar " << aux.c[0] << " "<< aux.c[1] << " " << aux.c[2]<<endl; 
+            aux.normalizar();
+            cout << "despues de normalizar " << aux.c[0] << " "<< aux.c[1] << " " << aux.c[2]<<endl; 
+            return aux;
         }
-        case SPECULAR: {
+        case SPECULAR: {        //Rebote perfecto
             Vectores ref = reflect(direction, n);
 
             Vectores Z;
@@ -152,7 +169,8 @@ Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,strin
                 Y = n;
                 X = Y.cruce(Z);
             } else {
-                X = direction.cruce(ref).normalizar();
+                X = direction.cruce(ref);
+                X.normalizar();
                 Y = ref;
                 Z = Y.cruce(X);
             }
@@ -166,7 +184,8 @@ Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,strin
 
             Vectores aux(cos(phi) * sin(theta), cos(theta), sin(phi) * sin(theta),0);
             aux.traspConMatriz(matrizTransformation);
-            return aux.normalizar();
+            aux.normalizar();
+            return aux;
         }
         case DEAD:
             return Vectores(0.0,0.0,0.0,2); //El 2 al final indica el final
@@ -232,11 +251,12 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
                 Vectores objetoV;
                 if(nombreImpactado=="esfera"){
                     objetoV=obstaculoGolpeado->sacarVectorObjeto();
+                    objetoV.VectorDosPuntos(nuevoOrigen); //Sacamos la normal para ese punto de la esfera
                 }else{
                     objetoV=obstaculoGolpeado->sacarVectorObjeto();
                 }
                 Vectores nuevaDir = nuevaDireccion(eventoActual, nuevoOrigen, ray.direccion, nombreImpactado ,objetoV, 0.0);    //TODO: poner refractiveindex
-
+                //cout << nuevaDir.c[0] << " " << nuevaDir.c[1] << " " << nuevaDir.c[2] << " " <<endl;
                 ray.origen = nuevoOrigen;
                 ray.direccion = nuevaDir;
 
@@ -261,7 +281,7 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
         pixelResultado.divideTotal(rebotes);
     }
      
-    //cout << pixelResultado.R <<" " << pixelResultado.G << " " << pixelResultado.B << endl;
+    cout << pixelResultado.R <<" " << pixelResultado.G << " " << pixelResultado.B << endl;
     pixelResultado.nuevoImpacto(impactadoLocal);
     return pixelResultado;
 }
@@ -289,10 +309,6 @@ Image Sensor::ver(vector<Obstacle*> &entorno, string imagenNombre, int anchotota
 
         float x = (2 * (alto + 0.5) / (float)anchototal - 1) * imageAspectRatio; 
         float y = (1 - 2 * (ancho + 0.5) / (float)altoTotal); 
-
-        //Vectores rayDirection(x, y, apunta.c[2], 0);
-        //Ray rayoAux(this->coordenadasO,rayDirection); //Generar rayo
-        //rayoAux.direccion.traspConMatriz(cameraToWorld);
 
         //TODO: cambiar a valor por entrada y generación de array
         float X1 = (float)((rand() % 20)+5)/100;

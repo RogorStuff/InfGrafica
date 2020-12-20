@@ -104,7 +104,7 @@ class Vectores {
         Vectores VectorDosPuntos(Vectores p2) const;
         Vectores ProductoVectorial(Vectores p2);
         Vectores calculaPunto(Vectores origen, Vectores direccion, float distancia);
-        Vectores normalizar();
+        void normalizar();
         void traspConMatriz(Matrix4x4 matriz);
         
 };
@@ -219,7 +219,7 @@ Vectores Vectores::calculaPunto(Vectores origen, Vectores direccion, float dista
     return aux;
 }
 
-Vectores Vectores::normalizar(){
+void Vectores::normalizar(){
     float modulo = this->distAbsoluta();
     this->c[0] = this->c[0]/modulo;
     this->c[1] = this->c[1]/modulo;
