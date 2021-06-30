@@ -2,7 +2,9 @@
 
 using namespace std;
 
-Ray::Ray(){}
+Ray::Ray(){
+
+}
 
 Ray::Ray(Vectores Norigen, Vectores Ndireccion){
     origen=Norigen;

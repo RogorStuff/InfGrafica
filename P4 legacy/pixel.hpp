@@ -1,5 +1,4 @@
 #include "emission.hpp"
-#include <vector>
 
 using namespace std;
 
@@ -13,6 +12,7 @@ class Pixel {
         float R;
         float G;
         float B;
+
         bool impacto;
 
         Pixel();

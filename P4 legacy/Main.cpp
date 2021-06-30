@@ -12,14 +12,11 @@
 #include <fstream>
 #include <string.h> 
 #include <stdio.h> 
-#include <stdlib.h>
 #include <vector>
 #include <time.h>
 
 using namespace std;
 
-
-//Copmilar: g++ -std=c++11 Main.cpp -o a
 int main () {
     srand (time(NULL));
     
@@ -32,7 +29,7 @@ int main () {
     Material materialIluminado;
     materialIluminado.Emitter();
     Material materialReflector;
-    materialReflector.Reflector();
+    materialReflector.Reflector(float(1.0), float(0.2), float(0.2), float(0.2));
 /*
     Vectores planoCentro1(4.0, 0.0, 4.0, 1);
     Vectores planoNormal1(-1.0, 0.0, 0.0, 0);
@@ -58,6 +55,18 @@ int main () {
     Vectores planoNormal3(0.0, 1.0, -1.0, 0);
     Emission color3(1, 1, 1);
     Plane plano3(planoCentro3, planoNormal3, color3, materialReflector, 0.0);
+
+    Vectores origenpl(0, 0, 0, 1);
+    Vectores direccionpl(0, 0, 1, 0);
+    Ray raypl(origenpl, direccionpl);
+    bool empty2 = plano3.ray_intersect(raypl,visto,distancia, materialGolpeado, refractive);
+    if (!empty2){
+        cout << "victor eres autista" << endl;
+    }
+    Vectores nuevoOrigen2;
+    nuevoOrigen2 = nuevoOrigen2.calculaPunto(raypl.origen, raypl.direccion, menorDistancia);
+    Vectores nuevaDir2 = nuevaDireccion(SPECULAR, nuevoOrigen2, raypl.direccion, plano3.queSoy() , plano3.sacarVectorObjeto(), 0.0); 
+    cout << "RESULTADO QUE TIENE QUE SER HACIA ESPAÑITA " << nuevaDir2.c[0] << " " << nuevaDir2.c[1] << " " << nuevaDir2.c[2] << " " <<endl;
 
 /*
     

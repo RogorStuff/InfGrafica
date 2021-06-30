@@ -1,5 +1,6 @@
 #include "pixel.hpp"
 #include "math.h"
+#include <vector>
 
 using namespace std;
 
@@ -101,7 +102,7 @@ Pixel media(vector<Pixel> colores){
     float greenValue=0.0;
     float blueValue=0.0;
     int pixeles=0;
-    for (Pixel pixel : colores){
+    for (auto pixel : colores){
         redValue = redValue + pixel.R;
         greenValue = greenValue + pixel.G;
         blueValue = blueValue + pixel.B;

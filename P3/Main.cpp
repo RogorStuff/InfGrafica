@@ -2,11 +2,14 @@
 #include "toneMaping.cpp"
 #include <iostream>
 #include <fstream>
-#include <string.h> 
-#include <stdio.h> 
+#include <string.h>
 #include <vector>
-#include <time.h>  
+#include "math.h"
 #include "vector.hpp"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>   
 
 using namespace std;
 
@@ -188,6 +191,7 @@ struct Sensor{
                                 0.0, 0.0, 0.0, 1.0);
 
         for (int miraPixel=0; miraPixel < imagen.total; miraPixel++){
+            
             float menorDistancia=1000000.0;
             bool impactado =false;
             int alto=miraPixel/imagen.height;

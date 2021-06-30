@@ -1,13 +1,13 @@
 #include "pixel.cpp"
-#include <string>
 #include <vector>
+#include <string> 
 
 using namespace std;
 
 #ifndef image_HPP
 #define image_HPP
 
-class image {
+class tspMatrix {
     public:
         string formatID;
         string name;
@@ -17,8 +17,8 @@ class image {
         int total;
         vector<Pixel> imageMatrix; //imageMatrix[height][width]
         
-        image();
-        image(string fileName, bool nueva, int Nwidth, int Nheight);
+        tspMatrix();
+        tspMatrix(string fileName, bool nueva, int Nwidth, int Nheight);
         void save(string newFileName);
 };
 

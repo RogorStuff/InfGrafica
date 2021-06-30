@@ -1,13 +1,13 @@
 #include "image.hpp"
 #include <iostream>
-#include <string>
 #include <fstream>
 
 using namespace std;
 
-image::image(){}
+Image::Image(){
+}
 
-image::image(string fileName, bool nueva, int Nwidth, int Nheight){ //P3 #MAX=48 # forest_path.ppm 2048 1536 10000000
+Image::Image(string fileName, bool nueva, int Nwidth, int Nheight){ //P3 #MAX=48 # forest_path.ppm 2048 1536 10000000
     if(!nueva){
         ifstream fileReader(fileName);
         if (fileReader.is_open()){
@@ -33,7 +33,7 @@ image::image(string fileName, bool nueva, int Nwidth, int Nheight){ //P3 #MAX=48
                 Pixel pixel(r,g,b);
                 imageMatrix[i]=pixel;
             }
-            cout << "imagen guardada" << endl;
+            cout << "Imagen guardada" << endl;
         }else{
             cout << "No se pudo abrir o encontrar la imagen" << endl;
         }
@@ -53,9 +53,8 @@ image::image(string fileName, bool nueva, int Nwidth, int Nheight){ //P3 #MAX=48
     }
 }
 
-void image::save(string newFileName){
-    string name = newFileName+".ppm";
-    ofstream fileTarget(name);
+void Image::save(string newFileName){
+    ofstream fileTarget(newFileName+".ppm");
     if (fileTarget.is_open()){
         cout << "Inicia guardado"<<endl;
         fileTarget << this->formatID << endl;
@@ -81,20 +80,20 @@ void image::save(string newFileName){
     }
 }
 
-image GammaCurve (image imagen, float gammaValue, int max){
-    image retimage=imagen;
+Image GammaCurve (Image imagen, float gammaValue, int max){
+    Image retImage=imagen;
     cout << "Inicia gamma"<<endl;
     if (max == 0){
         for (int i = 0; i < imagen.total; i++){
             Pixel decPixel = imagen.imageMatrix[i].GammaCurve(gammaValue, imagen.c+1, imagen.m, imagen.c);
-            retimage.imageMatrix[i]=decPixel;
+            retImage.imageMatrix[i]=decPixel;
         }
     }else{
         for (int i = 0; i < imagen.total; i++){
             Pixel decPixel = imagen.imageMatrix[i].GammaCurve(gammaValue, max, imagen.m, imagen.c);
-            retimage.imageMatrix[i]=decPixel;
+            retImage.imageMatrix[i]=decPixel;
 
         }
     }
-    return retimage;
+    return retImage;
 }

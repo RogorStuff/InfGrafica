@@ -1,6 +1,8 @@
 #include "sensor.hpp"
 
-Sensor::Sensor(){}
+Sensor::Sensor(){
+
+}
 
 Sensor::Sensor(Vectores CoordenadasO, Vectores CoordenadasU, Vectores CoordenadasI, Vectores NdistanciaPlano){
     coordenadasO=CoordenadasO;
@@ -29,7 +31,10 @@ enum EVENT {
     DEAD
 };
 
-/*
+float random_cero_to_uno(){
+    return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+}
+
 EVENT getRandomEvent(const Material &material) {
     // Russian roulette
 
@@ -66,7 +71,7 @@ EVENT getRandomEvent(const Material &material) {
         return DEAD;
     }
 }
-*/
+
 
 Vectores reflect(Vectores &in, Vectores &n) { //n is the normal of the surface (mirror), in is the received vector
     Vectores aux = n.multiplicarValor(in.punto(n));
@@ -76,7 +81,29 @@ Vectores reflect(Vectores &in, Vectores &n) { //n is the normal of the surface (
     return resultado;
 }
 
-/*
+Vectores refract(Vectores in, Vectores n, float obstacleRefractiveIndex) {
+    float c = -(n.punto(in));
+    float refractionRatio = 1.0f / obstacleRefractiveIndex;
+
+    if (c < 0) {
+        // the normal and the ray have the same direction
+        refractionRatio = 1.0f / refractionRatio;
+        c = -c;
+        n = n.negado();
+    }
+    float radicand = 1.0f - refractionRatio * refractionRatio * (1.0f - c * c);
+    if (radicand < 0.0f) {
+        return reflect(in, n);
+    } else {
+        Vectores aux = in.multiplicarValor(refractionRatio);
+        Vectores aux2 = n.multiplicarValor(refractionRatio * c - sqrt(radicand));
+        aux.sumarVector(aux2);
+        aux.normalizar();
+        return aux;
+    }
+}
+
+
 Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,string objeto, Vectores objetoV, float obstacleRefractiveIndex){ //TODO: NO SE UTILIZA OBJETO
     cout << "Entra en nueva direccion" << endl;
     Vectores n= objetoV;
@@ -163,9 +190,8 @@ Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,strin
         case DEAD:
             return Vectores(0.0,0.0,0.0,2); //El 2 al final indica el final
     }
-}*/
+}
 
-/*
 Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
 
     Pixel pixelResultado(1.0, 1.0, 1.0);    //En cada rebote, pixel = pixel + NuevoColor*BRDF
@@ -216,7 +242,7 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
                 impactadoLocal = true;
             }
             else {  //Era un objeto no luz, calcular color, preparar siguiente color, calcular dirección y seguir el loop
-                EVENT eventoActual = SPECULAR; //getRandomEvent(materialFinal);
+                EVENT eventoActual = getRandomEvent(materialFinal);
                 pixelResultado.multiplicaTotal(obstaculoGolpeado->getColor());
 
                 Vectores nuevoOrigen;
@@ -259,10 +285,12 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
     pixelResultado.nuevoImpacto(impactadoLocal);
     return pixelResultado;
 }
-*/
 
-image Sensor::ver(vector<Obstacle*> &entorno, string imagenNombre, int anchototal, int altoTotal){
-    image imagen(imagenNombre, true, anchototal, altoTotal);        
+
+
+
+Image Sensor::ver(vector<Obstacle*> &entorno, string imagenNombre, int anchototal, int altoTotal){
+    Image imagen(imagenNombre, true, anchototal, altoTotal);        
     Emission visto;
     Pixel pixel(visto);
     float aux;
@@ -287,7 +315,6 @@ image Sensor::ver(vector<Obstacle*> &entorno, string imagenNombre, int anchotota
         float X2 = (float)((rand() % 20)+5)/100;
         float Y1 = (float)((rand() % 20)+5)/100;
         float Y2 = (float)((rand() % 20)+5)/100;
-
         vector<Ray> rayos; //La array está aquí
         Vectores rayDirection1(x-X1/(float)anchototal, y-Y1/(float)altoTotal, apunta.c[2], 0);
         Ray rayoAux1(this->coordenadasO,rayDirection1); //Generar rayo
@@ -308,25 +335,15 @@ image Sensor::ver(vector<Obstacle*> &entorno, string imagenNombre, int anchotota
 
 
         vector<Pixel> recibidos;
-        float menorDistancia=INFINITY;
         bool impactado = false;
         for (auto ray : rayos){
-            for (auto obstacle : entorno){
-                if(obstacle->ray_intersect(ray,visto,aux)){ 
-                    impactado = true;
-                    if(aux<menorDistancia){
-                        pixel.update(visto);
-                        menorDistancia=aux;
-                    }
-                }
-            }
-            if(impactado){
-                recibidos.push_back(pixel);
+            Pixel colorRayoActual = colorRayo(ray, entorno);
+            if(colorRayoActual.dameImpacto()){
+                recibidos.push_back(colorRayoActual);
             }
         }
-        if (impactado){
+        if (recibidos.size()>0){
             imagen.imageMatrix[miraPixel]=media(recibidos);
-        //    cout << imagen.imageMatrix[miraPixel].R << " " <<imagen.imageMatrix[miraPixel].G << " " <<imagen.imageMatrix[miraPixel].B << " " << endl;
         }
         //cout << "enlloop" << endl;
     }
