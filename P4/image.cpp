@@ -1,3 +1,5 @@
+#pragma once
+
 #include "image.hpp"
 #include <iostream>
 #include <string>

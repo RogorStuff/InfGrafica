@@ -1,9 +1,9 @@
+#pragma once
+
 #include "pixel.hpp"
 #include "math.h"
 
 using namespace std;
-
-#pragma once
 
 Pixel::Pixel(){
 }

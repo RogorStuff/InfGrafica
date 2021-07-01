@@ -1,6 +1,7 @@
+#pragma once
+
 #include "obstacle.hpp"
 #include "emission.hpp"
-#include "material.hpp"
 
 #ifndef sphere_HPP
 #define sphere_HPP

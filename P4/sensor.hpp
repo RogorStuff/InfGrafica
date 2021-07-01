@@ -1,3 +1,5 @@
+#pragma once
+
 #include "emission.hpp"
 #include "image.hpp"
 #include "pixel.hpp"

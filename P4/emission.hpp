@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef emission_HPP
 #define emission_HPP
 

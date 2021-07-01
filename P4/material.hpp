@@ -1,4 +1,5 @@
-#include "reflectance.hpp"
+#pragma once
+
 #include "pixel.hpp"
 
 #ifndef material_HPP
@@ -7,7 +8,6 @@
 class Material{
     public:
         bool emisor;
-        Reflectance reflectance;
         Material();
         Material Emitter();
         Material Reflector();

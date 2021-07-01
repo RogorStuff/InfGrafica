@@ -1,3 +1,5 @@
+#pragma once
+
 #include "sphere.hpp"
 
 #ifndef plane_HPP

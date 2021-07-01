@@ -1,3 +1,5 @@
+#pragma once
+
 #include "sensor.hpp"
 
 Sensor::Sensor(){}
@@ -312,7 +314,9 @@ image Sensor::ver(vector<Obstacle*> &entorno, string imagenNombre, int anchotota
         bool impactado = false;
         for (auto ray : rayos){
             for (auto obstacle : entorno){
-                if(obstacle->ray_intersect(ray,visto,aux)){ 
+                Material materialAux;
+                float flotador = 1.0f;
+                if(obstacle->ray_intersect(ray,visto,aux, materialAux, flotador)){ 
                     impactado = true;
                     if(aux<menorDistancia){
                         pixel.update(visto);

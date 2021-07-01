@@ -1,3 +1,5 @@
+#pragma once
+
 #include "emission.hpp"
 
 using namespace std;

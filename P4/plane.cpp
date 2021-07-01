@@ -1,3 +1,5 @@
+#pragma once
+
 #include "plane.hpp"
 
 
@@ -47,7 +49,6 @@ bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material
             //cout << material.emisor << endl;
             material.emisor = this->material.emisor;
            // cout << "Esto rula ?" << endl;
-            material.reflectance = this->material.reflectance;
             //cout << "Esto rula ?" << endl;
             material = this->material;
             //cout << "material asignada" << endl;

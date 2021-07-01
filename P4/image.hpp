@@ -1,8 +1,11 @@
+#pragma once
+
 #include "pixel.cpp"
 #include <string>
 #include <vector>
 
 using namespace std;
+
 
 #ifndef image_HPP
 #define image_HPP

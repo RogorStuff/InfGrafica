@@ -1,3 +1,4 @@
+#pragma once
 
 #include "iostream"
 #include "math.h"
@@ -5,8 +6,6 @@
 using namespace std;
 
 # define M_PI           3.14159265358979323846  /* pi */
-
-#pragma once
 
 struct Matrix4x4 {
     

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "emission.hpp"
 #include <vector>
 
@@ -5,8 +7,6 @@ using namespace std;
 
 #ifndef pixel_HPP
 #define pixel_HPP
-
-#pragma once
 
 class Pixel {
     public:
