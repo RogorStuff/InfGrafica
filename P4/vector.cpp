@@ -102,7 +102,7 @@ class Vectores {
         Vectores desplazarPuntoVector(Vectores p2);
         Vectores VectorDosPuntos(Vectores p2) const;
         Vectores ProductoVectorial(Vectores p2);
-        Vectores calculaPunto(Vectores origen, Vectores direccion, float distancia);
+        void calculaPunto(Vectores origen, Vectores direccion, float distancia);
         void normalizar();
         void traspConMatriz(Matrix4x4 matriz);
         
@@ -209,13 +209,11 @@ Vectores Vectores::ProductoVectorial(Vectores p2){
     return aux;
 }
 
-Vectores Vectores::calculaPunto(Vectores origen, Vectores direccion, float distancia){
-    Vectores aux;
-    aux.c[0] =origen.c[0]+direccion.c[0]*distancia;
-    aux.c[1] =origen.c[1]+direccion.c[1]*distancia;
-    aux.c[2] =origen.c[2]+direccion.c[2]*distancia;
-    aux.c[3] =0;
-    return aux;
+void Vectores::calculaPunto(Vectores origen, Vectores direccion, float distancia){
+    c[0] =origen.c[0]+direccion.c[0]*distancia;
+    c[1] =origen.c[1]+direccion.c[1]*distancia;
+    c[2] =origen.c[2]+direccion.c[2]*distancia;
+    c[3] =0;
 }
 
 void Vectores::normalizar(){

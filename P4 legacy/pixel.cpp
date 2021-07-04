@@ -7,6 +7,9 @@ using namespace std;
 #pragma once
 
 Pixel::Pixel(){
+    this->R=0;
+    this->G=0;
+    this->B=0;
 }
 
 Pixel::Pixel(Emission emission){

@@ -4,6 +4,7 @@
 #include "image.hpp"
 #include "pixel.hpp"
 #include "plane.hpp"
+#include "luzPuntual.hpp"
 
 #ifndef sensor_HPP
 #define sensor_HPP
@@ -22,7 +23,8 @@ class Sensor{//Todos los planos deben mirar hacia la cámara
         Sensor();
         Sensor(Vectores CoordenadasO, Vectores CoordenadasU, Vectores CoordenadasI, Vectores NdistanciaPlano);
         void rotarSensor(float anguloX, float anguloY, float anguloZ);
-        image ver(vector<Obstacle*> &entorno, string imagenNombre, int anchototal, int altoTotal);
+        Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*> &luces, bool &impactado);
+        image ver(vector<Obstacle*> &entorno, vector<LuzPuntual*> &luces, string imagenNombre, int anchototal, int altoTotal);
     
 };
 

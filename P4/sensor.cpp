@@ -1,6 +1,10 @@
 #pragma once
 
 #include "sensor.hpp"
+#include "vector.cpp"
+#include "ray.cpp"
+
+#include <cmath>
 
 Sensor::Sensor(){}
 
@@ -263,7 +267,77 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
 }
 */
 
-image Sensor::ver(vector<Obstacle*> &entorno, string imagenNombre, int anchototal, int altoTotal){
+
+Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*> &luces, bool &impactado){
+    Vectores impacto;
+    Obstacle* objetoImpactado;
+
+    Emission visto;
+    Pixel pixelaux;
+    float distancia;
+    float menorDistancia = INFINITY;
+    for (auto obstacle : entorno){
+        Material materialAux;
+        float flotador = 1.0f;
+        if(obstacle->ray_intersect(ray, visto, distancia, materialAux, flotador)){ 
+            impactado = true;
+            if(distancia<menorDistancia){
+                objetoImpactado = obstacle;
+                pixelaux.update(visto);
+                menorDistancia=distancia;
+            }
+        }
+    }
+    //Tenemos la distancia y el vector de golpe.
+    if (impactado){
+        //Si lo ve una luz puntual, dejar color. Sino negro como nuestro futuro
+        Vectores nuevoOrigen;
+        nuevoOrigen.calculaPunto(ray.origen, ray.direccion, menorDistancia);
+
+        //Tenemos el punto donde impacta y el vector de luces. Para cada una, mirar si tiene luz
+
+        bool recibeLuz;
+        for (auto luz : luces){
+            
+            recibeLuz = true;
+
+            //Sacamos la línea (rayo) entre el impacto y la luz "luz"
+            Vectores vectorEntreImpactoYLuz=luz->coordenada;
+            vectorEntreImpactoYLuz.VectorDosPuntos(nuevoOrigen);
+
+            //Cogemos la distancia entre ambos puntos, para compararla con la distancia a obstáculos
+            float distanciaHastaLuz = luz->coordenada.distDosPuntos(nuevoOrigen);
+            
+            Ray rayoActual(nuevoOrigen,vectorEntreImpactoYLuz);
+            for (auto obstacle : entorno){
+                if(obstacle != objetoImpactado){
+                    Material materialAux;
+                    float flotador = 1.0f;
+                    if(obstacle->ray_intersect(rayoActual, visto, distancia, materialAux, flotador)){ 
+                        Vectores nuevoOrigen2;
+                        //Hemos chocado en la dirección donde esta la luz con un obstaculo, vamos a comprobar si está más cerca o lejos que la luz
+                        nuevoOrigen2.calculaPunto(rayoActual.origen, rayoActual.direccion, distancia);
+                        float distanciaHastaLuz2 = nuevoOrigen.distDosPuntos(nuevoOrigen2);
+                        if(distanciaHastaLuz2 < distanciaHastaLuz){
+                            //std::cout << "Es false porque distancia " << distancia << " y a la luz hay " << distanciaHastaLuz << std::endl;
+                            recibeLuz = false;
+                        }
+                    }
+                }
+            }
+            
+        }
+        if (!recibeLuz){
+            pixelaux.update(0.0, 0.0, 0.0);
+        }
+    }
+
+    return pixelaux; 
+}
+
+
+
+image Sensor::ver(vector<Obstacle*> &entorno, vector<LuzPuntual*> &luces, string imagenNombre, int anchototal, int altoTotal){
     image imagen(imagenNombre, true, anchototal, altoTotal);        
     Emission visto;
     Pixel pixel(visto);
@@ -310,29 +384,20 @@ image Sensor::ver(vector<Obstacle*> &entorno, string imagenNombre, int anchotota
 
 
         vector<Pixel> recibidos;
-        float menorDistancia=INFINITY;
-        bool impactado = false;
+        bool impactado;
         for (auto ray : rayos){
-            for (auto obstacle : entorno){
-                Material materialAux;
-                float flotador = 1.0f;
-                if(obstacle->ray_intersect(ray,visto,aux, materialAux, flotador)){ 
-                    impactado = true;
-                    if(aux<menorDistancia){
-                        pixel.update(visto);
-                        menorDistancia=aux;
-                    }
-                }
-            }
+            impactado = false;
+
+            Pixel pixel = colorRayo(ray, entorno, luces, impactado);
+
             if(impactado){
                 recibidos.push_back(pixel);
             }
         }
-        if (impactado){
-            imagen.imageMatrix[miraPixel]=media(recibidos);
-        //    cout << imagen.imageMatrix[miraPixel].R << " " <<imagen.imageMatrix[miraPixel].G << " " <<imagen.imageMatrix[miraPixel].B << " " << endl;
-        }
-        //cout << "enlloop" << endl;
+        
+        imagen.imageMatrix[miraPixel]=media(recibidos);
+        //cout << imagen.imageMatrix[miraPixel].R << " " <<imagen.imageMatrix[miraPixel].G << " " <<imagen.imageMatrix[miraPixel].B << " " << endl;
+        //cout << "endloop" << endl;
     }
     //cout << "TerminaLoop" << endl;
     return imagen;
