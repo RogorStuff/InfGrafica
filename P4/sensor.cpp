@@ -270,7 +270,6 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
 
 Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*> &luces, bool &impactado){
     Vectores impacto;
-    Obstacle* objetoImpactado;
 
     Emission visto;
     Pixel pixelaux;
@@ -282,7 +281,6 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
         if(obstacle->ray_intersect(ray, visto, distancia, materialAux, flotador)){ 
             impactado = true;
             if(distancia<menorDistancia){
-                objetoImpactado = obstacle;
                 pixelaux.update(visto);
                 menorDistancia=distancia;
             }
@@ -304,28 +302,25 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
             //Sacamos la línea (rayo) entre el impacto y la luz "luz"
             Vectores vectorEntreImpactoYLuz=luz->coordenada;
             vectorEntreImpactoYLuz.VectorDosPuntos(nuevoOrigen);
+            vectorEntreImpactoYLuz.normalizar();
 
             //Cogemos la distancia entre ambos puntos, para compararla con la distancia a obstáculos
             float distanciaHastaLuz = luz->coordenada.distDosPuntos(nuevoOrigen);
             
             Ray rayoActual(nuevoOrigen,vectorEntreImpactoYLuz);
             for (auto obstacle : entorno){
-                if(obstacle != objetoImpactado){
-                    Material materialAux;
-                    float flotador = 1.0f;
-                    if(obstacle->ray_intersect(rayoActual, visto, distancia, materialAux, flotador)){ 
-                        Vectores nuevoOrigen2;
-                        //Hemos chocado en la dirección donde esta la luz con un obstaculo, vamos a comprobar si está más cerca o lejos que la luz
-                        nuevoOrigen2.calculaPunto(rayoActual.origen, rayoActual.direccion, distancia);
-                        float distanciaHastaLuz2 = nuevoOrigen.distDosPuntos(nuevoOrigen2);
-                        if(distanciaHastaLuz2 < distanciaHastaLuz){
+                Material materialAux;
+                float flotador = 1.0f;
+                float dist2;
+                if(obstacle->ray_intersect(rayoActual, visto, dist2, materialAux, flotador)){ 
+                    if (dist2 > 1e-1){
+                        if(dist2 < distanciaHastaLuz){
                             //std::cout << "Es false porque distancia " << distancia << " y a la luz hay " << distanciaHastaLuz << std::endl;
                             recibeLuz = false;
                         }
                     }
                 }
             }
-            
         }
         if (!recibeLuz){
             pixelaux.update(0.0, 0.0, 0.0);

@@ -70,15 +70,10 @@ int main () {
     Sphere bola1(bolaAux1,radio,colorSphere, materialReflector, 0.0);
 
 
-    Vectores origenLuzPuntual(0.0, 0.0, 7, 1);
+    Vectores origenLuzPuntual(0.0, 0.0, 2.9, 1);
     LuzPuntual luzpuntual(origenLuzPuntual);
 
     
-    Vectores bolaAux2(0.0, 0.0, 7, 1);
-    float radio2 = 0.2;
-    Emission colorSphere2(0.8, 0, 0.2);
-    Sphere bola2(bolaAux2,radio2,colorSphere2, materialReflector, 0.0);
-
     vector<LuzPuntual*> lucesPuntuales;
     lucesPuntuales.push_back(&luzpuntual);
 
@@ -89,7 +84,6 @@ int main () {
     scene.push_back(&plano4);
     scene.push_back(&plano5);
     scene.push_back(&bola1);
-    scene.push_back(&bola2);
 
     //image imagen("patata", true, 100, 100);
     image imagen = sensor.ver(scene, lucesPuntuales, "patata", 100, 100);
