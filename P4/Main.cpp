@@ -70,7 +70,7 @@ int main () {
     Sphere bola1(bolaAux1,radio,colorSphere, materialReflector, 0.0);
 
 
-    Vectores origenLuzPuntual(0.0, 0.0, 2.9, 1);
+    Vectores origenLuzPuntual(0.0, 0.0, 7.9, 1);
     LuzPuntual luzpuntual(origenLuzPuntual);
 
     

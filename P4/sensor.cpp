@@ -314,7 +314,7 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
                 float dist2;
                 if(obstacle->ray_intersect(rayoActual, visto, dist2, materialAux, flotador)){ 
                     if (dist2 > 1e-1){
-                        if(dist2 < distanciaHastaLuz){
+                        if(abs(dist2) < abs(distanciaHastaLuz)){
                             //std::cout << "Es false porque distancia " << distancia << " y a la luz hay " << distanciaHastaLuz << std::endl;
                             recibeLuz = false;
                         }
