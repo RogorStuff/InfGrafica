@@ -54,6 +54,9 @@ Vectores Sphere::sacarVectorObjeto() const{
     return center;
 }
 
+float Sphere::getRefractiveIndex() const {
+    return refractiveIndex;
+}
 /*
 //Esferas test
 Vectores bolaAux1(1.0, 1.0, 4.0, 1);

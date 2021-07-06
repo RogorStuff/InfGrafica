@@ -29,9 +29,9 @@ int main () {
     Vectores sensorApuntaU(0.0, -1.0, 0.0, 0);
     Sensor sensor(sensorCentro,sensorApuntaU,sensorApuntaI,sensorApuntaF);
 
-    Material materialIluminado;
+    Material materialIluminado(0.0,0.0,0.0);
     materialIluminado.Emitter();
-    Material materialReflector;
+    Material materialReflector(0.9,0.05,0.05);
     materialReflector.Reflector();
 
     //Pared derecha
@@ -85,9 +85,15 @@ int main () {
     scene.push_back(&plano5);
     scene.push_back(&bola1);
 
+/*
     //image imagen("patata", true, 100, 100);
     image imagen = sensor.ver(scene, lucesPuntuales, "patata", 100, 100);
 
     imagen.save("patata");
+    */
+
+    Vectores planoB1(0.0, -1.0, -1.0, 0);
+    Vectores reflejo = diffuse(Vectores(0.0, 0.0, 1.0,0),planoB1,Vectores(0.0, 0.0, 1.0,1));
+    cout<<reflejo.c[0]<<" "<<reflejo.c[1]<<" "<<reflejo.c[2]<<endl;
     
 }

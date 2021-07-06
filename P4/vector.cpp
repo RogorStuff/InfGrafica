@@ -7,6 +7,7 @@ using namespace std;
 
 # define M_PI           3.14159265358979323846  /* pi */
 
+
 struct Matrix4x4 {
     
     float m[4][4];
@@ -27,7 +28,13 @@ struct Matrix4x4 {
                }
            }
        }
-
+       
+       /*Matrix4x4(Vectores X, Vectores Y, Vectores Z, Vectores K){
+                     m[0][0] = X.c[0]; m[0][1] = X.c[1]; m[0][2] = X.c[2]; m[0][3] = X.tipoPunto;
+                     m[1][0] = Y.c[0]; m[1][1] = Y.c[1]; m[1][2] = Y.c[2]; m[1][3] = Y.tipoPunto;
+                     m[2][0] = Z.c[0]; m[2][1] = Z.c[1]; m[2][2] = Z.c[2]; m[2][3] = Z.tipoPunto;
+                     m[3][0] = K.c[0]; m[3][1] = K.c[1]; m[3][2] = K.c[2]; m[3][3] = K.tipoPunto;
+       }*/
 
        Matrix4x4(float t00, float t01, float t02, float t03,
                  float t10, float t11, float t12, float t13,
@@ -76,8 +83,6 @@ struct Matrix4x4 {
 
 };
 
-
-
 class Vectores {
     public:    
         float c [ 3 ] ; //or std::array<float,3> c;
@@ -107,6 +112,7 @@ class Vectores {
         void traspConMatriz(Matrix4x4 matriz);
         
 };
+
 Vectores::Vectores(float x , float y , float z , int tipoDePunto){
     c[ 0 ] =x ; c[ 1 ] =y ; c[ 2 ] =z ; tipoPunto = tipoDePunto;
 }
@@ -170,7 +176,7 @@ float Vectores::punto(Vectores vector){
 }
 
 Vectores Vectores::cruce(Vectores p2) {
-    return Vectores(c[1] * p2.c[2] - c[2] * p2.c[1],c[2] * p2.c[0] - c[0] * p2.c[2],c[0] * p2.c[1] - c[1] * p2.c[0],0);
+    return Vectores(c[1]*p2.c[2] - c[2]*p2.c[1],c[2]*p2.c[0] - c[0]*p2.c[2],c[0]*p2.c[1] - c[1]*p2.c[0],0);
 }
 
 Vectores Vectores::sumarVector(Vectores p2){

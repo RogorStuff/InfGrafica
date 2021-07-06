@@ -16,6 +16,7 @@ class Obstacle{
         virtual Emission getColor() const=0;
         virtual string queSoy() const=0;
         virtual Vectores sacarVectorObjeto() const=0;
+        virtual float getRefractiveIndex() const=0;
 };
 
 #endif

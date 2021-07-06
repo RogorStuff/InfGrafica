@@ -28,56 +28,121 @@ void Sensor::rotarSensor(float anguloX, float anguloY, float anguloZ){
 }
 
 enum EVENT {
-    REFRACTION,
-    REFLECTION,
-    DIFFUSE,
-    SPECULAR,
-    DEAD
+    REFRACTION,     // Translucido
+    DIFFUSE,        // Turbio, plasticoso
+    SPECULAR,       // Espejito espejito
+    DEAD            
 };
 
-/*
+
 EVENT getRandomEvent(const Material &material) {
     // Russian roulette
 
-    float Kd = material.reflectance.kd;
-    float Ks = material.reflectance.ks;
-    float kdDiffuse = material.reflectance.kdDiffuse;
-    float ksDiffuse = material.reflectance.ksDiffuse;
+    float Kd = material.kd;
+    float Ks = material.ks;
+    float Krefraction = material.krefraction;
 
-    // cap to max value
-    const float MAX = 0.99f;
-    float sum = Kd + Ks + kdDiffuse + ksDiffuse;
+    // Max value limit
+    const float MAX = 0.95f;
+    float sum = Kd + Ks + Krefraction;
     if (sum > MAX) {
         Kd *= MAX / sum;
         Ks *= MAX / sum;
-        kdDiffuse *= MAX / sum;
-        ksDiffuse *= MAX / sum;
+        Krefraction *= MAX / sum;
     }
 
-    float randomZeroToOne = random_cero_to_uno();
-    if ((randomZeroToOne -= Kd) < 0) {
-        // Perfect refraction case (delta BTDF)
-        return REFRACTION;
-    } else if ((randomZeroToOne -= Ks) < 0) {
-        // Perfect specular reflectance case (delta BRDF)
-        return REFLECTION;
-    } else if ((randomZeroToOne -= kdDiffuse) < 0) {
-        // Diffuse case 
+    float randomZTO = ((double) rand() / (RAND_MAX));
+
+    if ((randomZTO -= Kd) < 0) {
+        // DIFFUSE case
         return DIFFUSE;
-    } else if ((randomZeroToOne -= ksDiffuse) < 0) {
-        // Specular case
+    } else if ((randomZTO -= Ks) < 0) {
+        // SPECULAR case 
         return SPECULAR;
+    } else if ((randomZTO -= Krefraction) < 0) {
+        // REFRACTION case
+        return REFRACTION;
     } else {
-        // Path deaths
+        // DEAD case
         return DEAD;
     }
 }
-*/
 
-Vectores reflect(Vectores &in, Vectores &n) { //n is the normal of the surface (mirror), in is the received vector
+
+Vectores reflect(Vectores in, Vectores n) { //n is the normal of the surface (mirror), in is the received vector
     Vectores aux = n.multiplicarValor(in.punto(n));
     aux.multiplicarValor(2.0);
     Vectores resultado = (in.restarVector(aux));
+    resultado.normalizar();
+    return resultado;
+}
+
+//TODO HACER REFRACTION
+
+Vectores refraction(Vectores in, Vectores n, Vectores choque, Obstacle* obstaculo){
+
+    float refraccionExterior = 1.0003F;
+    float refraccionObject = obstaculo->getRefractiveIndex();
+
+    float mu = refraccionExterior/refraccionObject;
+
+    Vectores normal = n;
+    Vectores externa = in;
+    float cosExterior = externa.punto(normal); //help
+    float k = 1.0 - mu*mu * (1- cosExterior*cosExterior);
+
+    Vectores interior;
+    if(k<0){
+        interior = externa;
+    }else{
+        interior = (externa.multiplicarValor(mu)).sumarVector(normal.multiplicarValor(mu*cosExterior-sqrt(k))); //help
+    }
+
+    //SegundaInteraccion
+
+    Ray rayoInterno = Ray (choque, interior);
+    Emission emisorAux;
+    float distanciaAux, BASURA;
+    Material materialAux;
+    obstaculo->ray_intersect(rayoInterno, emisorAux, distanciaAux, materialAux, BASURA); //TODO sacar la basura
+
+    /*      TODO SACAR ESTA BASURA
+    normal_direction = ii._normal;
+    ii.p = ii._p;
+    external_direction = internal_ray.dir;
+    external_cos = - external_direction.Dot(external_direction,normal_direction);
+    k = 1.0 - mu * mu * (1 - external_cos * external_cos); // k = 1 * mu² * sin² 
+    */
+
+    Vectores resultado;
+    if(k<0){
+        resultado = normal.cruce(externa);
+    }
+    else{
+        resultado = (externa.multiplicarValor(mu)).sumarVector(normal.multiplicarValor(mu*cosExterior-sqrt(k)));
+    }
+
+    return resultado;
+} 
+
+
+Vectores diffuse(Vectores in, Vectores n, Vectores choque){
+    float theta = acos(sqrt(((double) rand() / (RAND_MAX))));   //Inclinacion
+    float p = 2.0 * M_PI * ((double) rand() / (RAND_MAX));      //Azimuth
+
+    Vectores resultado = Vectores((sin(theta)*cos(p)), (sin(theta)*sin(p)), cos(theta), 0); 
+
+    Vectores z = n;
+
+    Vectores y = z.ProductoVectorial(in);
+    y.normalizar();
+
+    Vectores x = z.ProductoVectorial(y);
+    x.normalizar();
+
+    Matrix4x4 matrizCambioBase = Matrix4x4(x.c[0],x.c[1],x.c[2],x.tipoPunto,y.c[0],y.c[1],y.c[2], y.tipoPunto,z.c[0],z.c[1],z.c[2], z.tipoPunto,choque.c[0],choque.c[1],choque.c[2], choque.tipoPunto);
+    resultado.traspConMatriz(matrizCambioBase);
+
     resultado.normalizar();
     return resultado;
 }
@@ -270,7 +335,7 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
 
 Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*> &luces, bool &impactado){
     Vectores impacto;
-
+    Material material;
     Emission visto;
     Pixel pixelaux;
     float distancia;
@@ -281,6 +346,7 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
         if(obstacle->ray_intersect(ray, visto, distancia, materialAux, flotador)){ 
             impactado = true;
             if(distancia<menorDistancia){
+                material = materialAux;
                 pixelaux.update(visto);
                 menorDistancia=distancia;
             }
@@ -288,6 +354,9 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
     }
     //Tenemos la distancia y el vector de golpe.
     if (impactado){
+
+
+        /*
         //Si lo ve una luz puntual, dejar color. Sino negro como nuestro futuro
         Vectores nuevoOrigen;
         nuevoOrigen.calculaPunto(ray.origen, ray.direccion, menorDistancia);
@@ -295,6 +364,7 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
         //Tenemos el punto donde impacta y el vector de luces. Para cada una, mirar si tiene luz
 
         bool recibeLuz;
+        // TODO: Tener en cuenta que obstáculo sea transparente
         for (auto luz : luces){
             
             recibeLuz = true;
@@ -324,7 +394,8 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
         }
         if (!recibeLuz){
             pixelaux.update(0.0, 0.0, 0.0);
-        }
+        }*/
+        
     }
 
     return pixelaux; 

@@ -72,6 +72,10 @@ Vectores Plane::sacarVectorObjeto() const{
     return normal;
 }
 
+float Plane::getRefractiveIndex() const {
+    return refractiveIndex;
+}
+
 //Planos test
 /*
 Vectores planoCentro(0.0, 0.0, 4.0, 1);

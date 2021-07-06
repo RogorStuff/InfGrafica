@@ -21,6 +21,7 @@ class Sphere: public Obstacle{
         Emission getColor()const override;
         string queSoy() const override;
         Vectores sacarVectorObjeto() const override;
+        float getRefractiveIndex() const override;
 };
 
 #endif

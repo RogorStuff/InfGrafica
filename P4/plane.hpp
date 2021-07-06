@@ -20,6 +20,7 @@ class Plane: public Obstacle{//Todos los planos deben mirar hacia la cámara
         Emission getColor() const override;
         string queSoy() const override;
         Vectores sacarVectorObjeto() const override;
+        float getRefractiveIndex() const override;
 };
 
 #endif
