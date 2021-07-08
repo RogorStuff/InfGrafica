@@ -68,7 +68,6 @@ EVENT getRandomEvent(const Material &material) {
     }
 }
 
-
 Vectores reflect(Vectores in, Vectores n) { //n is the normal of the surface (mirror), in is the received vector
     Vectores aux = n.multiplicarValor(in.punto(n));
     aux.multiplicarValor(2.0);
@@ -76,8 +75,6 @@ Vectores reflect(Vectores in, Vectores n) { //n is the normal of the surface (mi
     resultado.normalizar();
     return resultado;
 }
-
-//TODO HACER REFRACTION
 
 Vectores refraction(Vectores in, Vectores n, Vectores choque, Obstacle* obstaculo){
 
@@ -88,7 +85,7 @@ Vectores refraction(Vectores in, Vectores n, Vectores choque, Obstacle* obstacul
 
     Vectores normal = n;
     Vectores externa = in;
-    float cosExterior = externa.punto(normal); //help
+    float cosExterior = - externa.punto(normal); //help
     float k = 1.0 - mu*mu * (1- cosExterior*cosExterior);
 
     Vectores interior;
@@ -102,17 +99,16 @@ Vectores refraction(Vectores in, Vectores n, Vectores choque, Obstacle* obstacul
 
     Ray rayoInterno = Ray (choque, interior);
     Emission emisorAux;
-    float distanciaAux, BASURA;
+    float distanciaAux;
+    Vectores normalGolpe;
     Material materialAux;
-    obstaculo->ray_intersect(rayoInterno, emisorAux, distanciaAux, materialAux, BASURA); //TODO sacar la basura
+    obstaculo->ray_intersect(rayoInterno, emisorAux, distanciaAux, materialAux, normalGolpe); 
 
-    /*      TODO SACAR ESTA BASURA
-    normal_direction = ii._normal;
-    ii.p = ii._p;
-    external_direction = internal_ray.dir;
-    external_cos = - external_direction.Dot(external_direction,normal_direction);
-    k = 1.0 - mu * mu * (1 - external_cos * external_cos); // k = 1 * mu² * sin² 
-    */
+    normal = normalGolpe;
+    externa = rayoInterno.direccion;
+    cosExterior = - externa.punto(normal);
+    k = 1.0 - mu * mu * (1- cosExterior*cosExterior);
+    
 
     Vectores resultado;
     if(k<0){
@@ -124,7 +120,6 @@ Vectores refraction(Vectores in, Vectores n, Vectores choque, Obstacle* obstacul
 
     return resultado;
 } 
-
 
 Vectores diffuse(Vectores in, Vectores n, Vectores choque){
     float theta = acos(sqrt(((double) rand() / (RAND_MAX))));   //Inclinacion
@@ -147,94 +142,31 @@ Vectores diffuse(Vectores in, Vectores n, Vectores choque){
     return resultado;
 }
 
-/*
-Vectores nuevaDireccion(EVENT event, Vectores position, Vectores direction,string objeto, Vectores objetoV, float obstacleRefractiveIndex){ //TODO: NO SE UTILIZA OBJETO
-    cout << "Entra en nueva direccion" << endl;
-    Vectores n= objetoV;
-    n.normalizar();
-    cout <<"confirmamos n "<< n.c[0] << " " << n.c[1] << " " << n.c[2] << " " <<endl;
-    
-    switch (event) {
-        case REFRACTION:
-        //cout<<"mal"<<endl;
-            return refract(direction, n, obstacleRefractiveIndex);
-        case REFLECTION:
-        //cout<<"mal"<<endl;
-            return reflect(direction, n);
-        case DIFFUSE: {        //Rebote aleatorio
-        cout<<"diffuso"<<endl;
-        cout <<"Llega con "<< direction.c[0] << " " << direction.c[1] << " " << direction.c[2] << " " <<endl;
-        cout <<"Choca contra "<< objetoV.c[0] << " " << objetoV.c[1] << " " << objetoV.c[2] << " " <<endl;
-        cout <<"Tenemos otro vector "<< n.c[0] << " " << n.c[1] << " " << n.c[2] << " " <<endl;
-            Vectores Z;
-            Vectores Y;
-            Vectores X;
+Vectores generarDireccion(EVENT e, Vectores in, Vectores n, Vectores choque, Obstacle *obstaculo){
+    switch (e)
+    {
+    case REFRACTION:
+        return refraction(in, n, choque, obstaculo);
+        break;
 
-            if (direction.punto(n) < 0) {
-                // good side
-                Z = n;
-            } else {
-                // opposite side
-                Z = n.negado();
-            }
-            cout <<"Z es "<< Z.c[0] << " " << Z.c[1] << " " << Z.c[2] << " " <<endl;
-            Y = (Z.cruce(direction));
-            Y.normalizar();
-            cout <<"Y es "<< Y.c[0] << " " << Y.c[1] << " " << Y.c[2] << " " <<endl;
-            X = (Y.cruce(Z));
-            X.normalizar();
-            cout <<"X es "<< X.c[0] << " " << X.c[1] << " " << X.c[2] << " " <<endl;
+    case DIFFUSE:
+        return diffuse(in, n, choque);
+        break;
 
-            float theta = acos(sqrt(random_cero_to_uno()));
-            float phi = 2.0f * (float) M_PI * random_cero_to_uno();
+    case SPECULAR:
+        return reflect(in, n);
+        break;
 
-            Matrix4x4 matrizTransformation(X.c[0], Y.c[0], Z.c[0], position.c[0], 
-                                           X.c[1], Y.c[1], Z.c[1], position.c[1],
-                                           X.c[2], Y.c[2], Z.c[2], position.c[2],
-                                           0.0, 0.0, 0.0, 1.0);
-
-            Vectores aux(cos(phi) * sin(theta), sin(phi) * sin(theta), cos(theta),0);
-            aux.traspConMatriz(matrizTransformation);
-
-            cout << "antes de normalizar " << aux.c[0] << " "<< aux.c[1] << " " << aux.c[2]<<endl; 
-            aux.normalizar();
-            cout << "despues de normalizar " << aux.c[0] << " "<< aux.c[1] << " " << aux.c[2]<<endl; 
-            return aux;
-        }
-        case SPECULAR: {        //Rebote perfecto
-            Vectores ref = reflect(direction, n);
-
-            Vectores Z;
-            Vectores Y;
-            Vectores X;
-
-            if (direction.punto(n) < localNearZero) {
-                Z = direction;
-                Y = n;
-                X = Y.cruce(Z);
-            } else {
-                X = direction.cruce(ref);
-                X.normalizar();
-                Y = ref;
-                Z = Y.cruce(X);
-            }
-            Matrix4x4 matrizTransformation(X.c[0], Y.c[0], Z.c[0], position.c[0], 
-                                           X.c[1], Y.c[1], Z.c[1], position.c[1],
-                                           X.c[2], Y.c[2], Z.c[2], position.c[2],
-                                           0.0, 0.0, 0.0, 1.0);
-             
-            float theta = acos(random_cero_to_uno());
-            float phi = 2.0f * (float) M_PI * random_cero_to_uno();
-
-            Vectores aux(cos(phi) * sin(theta), cos(theta), sin(phi) * sin(theta),0);
-            aux.traspConMatriz(matrizTransformation);
-            aux.normalizar();
-            return aux;
-        }
-        case DEAD:
-            return Vectores(0.0,0.0,0.0,2); //El 2 al final indica el final
+    case DEAD:
+        return Vectores(0.0, 0.0, 0.0, 0);      //Vector nulo
+        break;
+        
+    default:
+        return Vectores(0.0, 0.0, 0.0, 0);      //Vector nulo
+        break;
     }
-}*/
+}
+
 
 /*
 Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
@@ -334,70 +266,103 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
 
 
 Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*> &luces, bool &impactado){
-    Vectores impacto;
+    Vectores menorImpacto;
     Material material;
     Emission visto;
     Pixel pixelaux;
     float distancia;
     float menorDistancia = INFINITY;
-    for (auto obstacle : entorno){
-        Material materialAux;
-        float flotador = 1.0f;
-        if(obstacle->ray_intersect(ray, visto, distancia, materialAux, flotador)){ 
-            impactado = true;
-            if(distancia<menorDistancia){
-                material = materialAux;
-                pixelaux.update(visto);
-                menorDistancia=distancia;
+    Obstacle* obstaculoGolpeado;
+
+    bool noTerminado = true;
+
+    while (noTerminado){
+        impactado = false;
+        
+        for (auto obstacle : entorno){
+            Material materialAux;
+            Vectores impacto;
+            if(obstacle->ray_intersect(ray, visto, distancia, materialAux, impacto)){ 
+                impactado = true;
+                if(distancia<menorDistancia){
+                    menorImpacto = impacto;
+                    material = materialAux;
+                    pixelaux.update(visto);
+                    menorDistancia=distancia;
+                    obstaculoGolpeado = obstacle;
+                }
             }
         }
-    }
-    //Tenemos la distancia y el vector de golpe.
-    if (impactado){
+        //Tenemos la distancia y el vector de golpe.
+        if (impactado){
+
+            if(obstaculoGolpeado->isEmitter()){
+                //Fin de rebotes, hemos encontrado fuente de luz
+            }else{
+                //No es un emisor de luz, por lo que el rayo intentará rebotar
+
+                //Calcular iluminación del punto -> color pixel en rebote actual
+
+                //Obtener evento de rebote (si hay) y calcular nueva direccion
+
+                //Con nueva direccion, realizamos colorRayo(nuevaDirection) para saber el color del resto de pasos
+
+                //Operar con ambos colores para devolver resultado final
+            }
 
 
-        /*
-        //Si lo ve una luz puntual, dejar color. Sino negro como nuestro futuro
-        Vectores nuevoOrigen;
-        nuevoOrigen.calculaPunto(ray.origen, ray.direccion, menorDistancia);
 
-        //Tenemos el punto donde impacta y el vector de luces. Para cada una, mirar si tiene luz
 
-        bool recibeLuz;
-        // TODO: Tener en cuenta que obstáculo sea transparente
-        for (auto luz : luces){
-            
-            recibeLuz = true;
 
-            //Sacamos la línea (rayo) entre el impacto y la luz "luz"
-            Vectores vectorEntreImpactoYLuz=luz->coordenada;
-            vectorEntreImpactoYLuz.VectorDosPuntos(nuevoOrigen);
-            vectorEntreImpactoYLuz.normalizar();
 
-            //Cogemos la distancia entre ambos puntos, para compararla con la distancia a obstáculos
-            float distanciaHastaLuz = luz->coordenada.distDosPuntos(nuevoOrigen);
-            
-            Ray rayoActual(nuevoOrigen,vectorEntreImpactoYLuz);
-            for (auto obstacle : entorno){
-                Material materialAux;
-                float flotador = 1.0f;
-                float dist2;
-                if(obstacle->ray_intersect(rayoActual, visto, dist2, materialAux, flotador)){ 
-                    if (dist2 > 1e-1){
-                        if(abs(dist2) < abs(distanciaHastaLuz)){
-                            //std::cout << "Es false porque distancia " << distancia << " y a la luz hay " << distanciaHastaLuz << std::endl;
-                            recibeLuz = false;
+
+
+
+            /*
+            //Si lo ve una luz puntual, dejar color. Sino negro como nuestro futuro
+            Vectores nuevoOrigen;
+            nuevoOrigen.calculaPunto(ray.origen, ray.direccion, menorDistancia);
+
+            //Tenemos el punto donde impacta y el vector de luces. Para cada una, mirar si tiene luz
+
+            bool recibeLuz;
+            // TODO: Tener en cuenta que obstáculo sea transparente
+            for (auto luz : luces){
+                
+                recibeLuz = true;
+
+                //Sacamos la línea (rayo) entre el impacto y la luz "luz"
+                Vectores vectorEntreImpactoYLuz=luz->coordenada;
+                vectorEntreImpactoYLuz.VectorDosPuntos(nuevoOrigen);
+                vectorEntreImpactoYLuz.normalizar();
+
+                //Cogemos la distancia entre ambos puntos, para compararla con la distancia a obstáculos
+                float distanciaHastaLuz = luz->coordenada.distDosPuntos(nuevoOrigen);
+                
+                Ray rayoActual(nuevoOrigen,vectorEntreImpactoYLuz);
+                for (auto obstacle : entorno){
+                    Material materialAux;
+                    float flotador = 1.0f;
+                    float dist2;
+                    if(obstacle->ray_intersect(rayoActual, visto, dist2, materialAux, flotador)){ 
+                        if (dist2 > 1e-1){
+                            if(abs(dist2) < abs(distanciaHastaLuz)){
+                                //std::cout << "Es false porque distancia " << distancia << " y a la luz hay " << distanciaHastaLuz << std::endl;
+                                recibeLuz = false;
+                            }
                         }
                     }
                 }
             }
+            if (!recibeLuz){
+                pixelaux.update(0.0, 0.0, 0.0);
+            }*/
+            
         }
-        if (!recibeLuz){
-            pixelaux.update(0.0, 0.0, 0.0);
-        }*/
-        
+        else {
+            noTerminado = false;
+        }
     }
-
     return pixelaux; 
 }
 

@@ -13,7 +13,7 @@ Sphere::Sphere(Vectores Ncentro, float Nradio, Emission Nemision, Material Nmate
     refractiveIndex = NrefractiveIndex;
 }
 
-bool Sphere::ray_intersect(Ray& r, Emission& emite, float& distancia, Material& material, float &refractive) const{
+bool Sphere::ray_intersect(Ray& r, Emission& emite, float& distancia, Material& material, Vectores &normalGolpe) const{
     //cout << "Entra en inserseccion de esfera" << endl;
     Vectores d = r.direccion;
     Vectores o = r.origen;
@@ -37,6 +37,10 @@ bool Sphere::ray_intersect(Ray& r, Emission& emite, float& distancia, Material& 
             return true;
         }
         distancia = temp;
+
+        Vectores dondeGolpea = o.sumarVector(d.multiplicarValor(distancia));
+        normalGolpe = dondeGolpea.restarVector(oc);     //Vector resultante de origen - golpe
+        normalGolpe.normalizar();
         return true;
     }
     return false;

@@ -15,7 +15,7 @@ Plane::Plane(Vectores Ncentro, Vectores Nnormal, Emission Nemision, Material Nma
     refractiveIndex = NrefractiveIndex;
 }
 
-bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material& material, float &refractive) const{
+bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material& material, Vectores &normalGolpe) const{
     //cout << "Entra en inserseccion de plano" << endl;
     float t_min = 0;
     float t_max = 99999999;
@@ -41,6 +41,8 @@ bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material
             emite = this->emision;
             material.emisor = this->material.emisor;
             material = this->material;
+            normalGolpe = this->normal;
+            normalGolpe.normalizar();
             ret = true;
         }
     } else if (denominator2 != 0) {
@@ -50,6 +52,8 @@ bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material
             distancia = dist;
             emite = this->emision;
             material = this->material;
+            normalGolpe = this->normal;
+            normalGolpe.normalizar();
             ret = true;
         }
     }
