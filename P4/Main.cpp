@@ -40,19 +40,19 @@ int main () {
     materialReflector.Reflector();
 
     //Pared derecha
-    Vectores planoCentro1(4.0, 0.0, 4.0, 1);
+    Vectores planoCentro1(40.0, 0.0, 40.0, 1);
     Vectores planoNormal1(1.0, 0.0, 0.0, 0);
     Emission color1(1.0, 0.01, 0.01);
     Plane plano1(planoCentro1, planoNormal1, color1, materialReflector, 0.0);
     
     //Pared izquierda
-    Vectores planoCentro2(-4.0, 0.0, 4.0, 1);
+    Vectores planoCentro2(-40.0, 0.0, 40.0, 1);
     Vectores planoNormal2(1.0, 0.0, 0.0, 0);
     Emission color2(0.01, 1.0, 0.01);
     Plane plano2(planoCentro2, planoNormal2, color2, materialReflector, 0.0);
 
     //Pared fondo
-    Vectores planoCentro3(0.0, 0.0, 8.0, 1);
+    Vectores planoCentro3(0.0, 0.0, 80.0, 1);
     Vectores planoNormal3(0.0, 0.0, 1.0, 0);
     Emission color3(0.7, 0.4, 0.01);
     Plane plano3(planoCentro3, planoNormal3, color3, materialReflector, 0.0);
@@ -65,25 +65,25 @@ int main () {
     */
 
     //Suelo
-    Vectores planoCentro4(0.0, -4.0, 4.0, 1);
+    Vectores planoCentro4(0.0, -40.0, 40.0, 1);
     Vectores planoNormal4(0.0, 1.0, 0.0, 0);
     Emission color4(1.0, 1.0, 1.0);
     Plane plano4(planoCentro4, planoNormal4, color4, materialReflector, 0.0);
 
     //Techo
-    Vectores planoCentro5(0.0, 4.0, 4.0, 1);
+    Vectores planoCentro5(0.0, 40.0, 40.0, 1);
     Vectores planoNormal5(0.0, 1.0, 0.0, 0);
     Emission color5(1.0, 1.0, 1.0);
     Plane plano5(planoCentro5, planoNormal5, color5, materialIluminado, 0.0);
     
     //Pelota
-    Vectores bolaAux1(0.0, 0.0, 5.0, 1);
-    float radio = 1;
-    Emission colorSphere(0.2, 0.7, 0.8);
+    Vectores bolaAux1(0.0, 0.0, 50.0, 1);
+    float radio = 5;
+    Emission colorSphere(0.01, 0.01, 1.0);
     Sphere bola1(bolaAux1,radio,colorSphere, materialReflector, 0.0);
 
 
-    Vectores origenLuzPuntual(0.0, 0.0, 7.9, 1);
+    Vectores origenLuzPuntual(0.0, 5.1, 50.0, 1);
     LuzPuntual luzpuntual(origenLuzPuntual);
 
     

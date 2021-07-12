@@ -197,8 +197,10 @@ Vectores Vectores::multiplicarValor(float p2){
 }
 
 float Vectores::distDosPuntos(Vectores p2) const{
-    Vectores aux (this->c[0]-p2.c[0], this->c[1]-p2.c[1], this->c[2]-p2.c[2], 0); //Todo vector debe tener un 0 en el cuarto parámetro
-    return aux.distAbsoluta();
+    float Xn = pow(this->c[0] - p2.c[0], 2);
+    float Yn = pow(this->c[1] - p2.c[1], 2);
+    float Zn = pow(this->c[2] - p2.c[2], 2);
+    return sqrt(Xn+Yn+Zn);
 }
 
 Vectores Vectores::desplazarPuntoVector(Vectores p2){
