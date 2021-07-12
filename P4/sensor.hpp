@@ -24,7 +24,7 @@ class Sensor{//Todos los planos deben mirar hacia la cámara
         Sensor(Vectores CoordenadasO, Vectores CoordenadasU, Vectores CoordenadasI, Vectores NdistanciaPlano);
         void rotarSensor(float anguloX, float anguloY, float anguloZ);
         Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*> &luces, bool &impactado);
-        image ver(vector<Obstacle*> &entorno, vector<LuzPuntual*> &luces, string imagenNombre, int anchototal, int altoTotal);
+        image ver(vector<Obstacle*> &entorno, vector<LuzPuntual*> &luces, string imagenNombre, int anchototal, int altoTotal, int ppp);
     
 };
 

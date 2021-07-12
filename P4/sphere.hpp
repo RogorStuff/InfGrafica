@@ -22,6 +22,7 @@ class Sphere: public Obstacle{
         string queSoy() const override;
         Vectores sacarVectorObjeto() const override;
         float getRefractiveIndex() const override;
+        Material getMaterial() const override;
 };
 
 #endif

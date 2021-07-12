@@ -61,6 +61,10 @@ Vectores Sphere::sacarVectorObjeto() const{
 float Sphere::getRefractiveIndex() const {
     return refractiveIndex;
 }
+
+Material Sphere::getMaterial() const {
+    return material;
+}
 /*
 //Esferas test
 Vectores bolaAux1(1.0, 1.0, 4.0, 1);

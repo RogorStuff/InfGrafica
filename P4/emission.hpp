@@ -13,6 +13,9 @@ struct Emission{
     Emission();
     Emission(float Ered, float Egreen, float Eblue);
     void getEmision(float& Rred, float& Rgreen, float& Rblue);
+
+    Emission operator*(Emission e2) const;
+    Emission operator/(float e) const;
 };
 
 #endif

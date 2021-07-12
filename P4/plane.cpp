@@ -80,6 +80,10 @@ float Plane::getRefractiveIndex() const {
     return refractiveIndex;
 }
 
+Material Plane::getMaterial() const{
+    return material;
+}
+
 //Planos test
 /*
 Vectores planoCentro(0.0, 0.0, 4.0, 1);

@@ -21,6 +21,7 @@ class Plane: public Obstacle{//Todos los planos deben mirar hacia la cámara
         string queSoy() const override;
         Vectores sacarVectorObjeto() const override;
         float getRefractiveIndex() const override;
+        Material getMaterial() const override;
 };
 
 #endif

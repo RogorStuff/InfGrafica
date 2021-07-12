@@ -107,6 +107,7 @@ class Vectores {
         Vectores desplazarPuntoVector(Vectores p2);
         Vectores VectorDosPuntos(Vectores p2) const;
         Vectores ProductoVectorial(Vectores p2);
+        Vectores ProductoVectorial2(Vectores p2);
         void calculaPunto(Vectores origen, Vectores direccion, float distancia);
         void normalizar();
         void traspConMatriz(Matrix4x4 matriz);
@@ -210,8 +211,13 @@ Vectores Vectores::VectorDosPuntos(Vectores p2) const{
     return Vectores(this->c[0]-p2.c[0], this->c[1]-p2.c[1], this->c[2]-p2.c[2], 0);
 }
 
-Vectores Vectores::ProductoVectorial(Vectores p2){
+Vectores Vectores::ProductoVectorial2(Vectores p2){
     Vectores aux (this->c[1]*p2.c[2] - this->c[2]*p2.c[1], this->c[0]*p2.c[2] - this->c[2]*p2.c[0], this->c[0]*p2.c[1] - this->c[1]*p2.c[0], 0); //Todo vector debe tener un 0 en el cuarto parámetro
+    return aux;
+}
+
+Vectores Vectores::ProductoVectorial(Vectores p2){
+    Vectores aux (this->c[1]*p2.c[2] - this->c[2]*p2.c[1], this->c[2]*p2.c[0] - this->c[0]*p2.c[2], this->c[0]*p2.c[1] - this->c[1]*p2.c[0], 0); //Todo vector debe tener un 0 en el cuarto parámetro
     return aux;
 }
 
@@ -234,5 +240,5 @@ void Vectores::traspConMatriz(Matrix4x4 matriz){
     float dos = this->c[0]*matriz.m[1][0] + this->c[1]*matriz.m[1][1] + this->c[2]*matriz.m[1][2] + this->tipoPunto*matriz.m[1][3];
     float tres = this->c[0]*matriz.m[2][0] + this->c[1]*matriz.m[2][1] + this->c[2]*matriz.m[2][2] + this->tipoPunto*matriz.m[2][3];
     float cuatro = this->c[0]*matriz.m[3][0] + this->c[1]*matriz.m[3][1] + this->c[2]*matriz.m[3][2] + this->tipoPunto*matriz.m[3][3];
-    this->c[0] = uno; this->c[1] = dos; this->c[2] = tres; this->tipoPunto = cuatro; 
+    this->c[0] = uno; this->c[1] = dos; this->c[2] = tres; this->tipoPunto = 0; 
 }

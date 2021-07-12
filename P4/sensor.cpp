@@ -128,6 +128,7 @@ Vectores diffuse(Vectores in, Vectores n, Vectores choque){
     Vectores resultado = Vectores((sin(theta)*cos(p)), (sin(theta)*sin(p)), cos(theta), 0); 
 
     Vectores z = n;
+    z.normalizar();
 
     Vectores y = z.ProductoVectorial(in);
     y.normalizar();
@@ -135,7 +136,10 @@ Vectores diffuse(Vectores in, Vectores n, Vectores choque){
     Vectores x = z.ProductoVectorial(y);
     x.normalizar();
 
-    Matrix4x4 matrizCambioBase = Matrix4x4(x.c[0],x.c[1],x.c[2],x.tipoPunto,y.c[0],y.c[1],y.c[2], y.tipoPunto,z.c[0],z.c[1],z.c[2], z.tipoPunto,choque.c[0],choque.c[1],choque.c[2], choque.tipoPunto);
+    Vectores choque_ = choque;
+    choque_.normalizar();
+
+    Matrix4x4 matrizCambioBase = Matrix4x4(x.c[0],x.c[1],x.c[2],x.tipoPunto,y.c[0],y.c[1],y.c[2], y.tipoPunto,z.c[0],z.c[1],z.c[2], z.tipoPunto,choque_.c[0],choque_.c[1],choque_.c[2], choque_.tipoPunto);
     resultado.traspConMatriz(matrizCambioBase);
 
     resultado.normalizar();
@@ -266,18 +270,26 @@ Pixel colorRayo(Ray ray, vector<Obstacle*> &entorno){
 
 
 Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*> &luces, bool &impactado){
-    Vectores menorImpacto;
+    Vectores normalGolpe;
     Material material;
     Emission visto;
     Pixel pixelaux;
     float distancia;
+    impactado = false;
     float menorDistancia = INFINITY;
     Obstacle* obstaculoGolpeado;
+    int numRebotes = 0;
 
-    bool noTerminado = true;
+    Emission luzActual = Emission(1, 1, 1);
+    Emission vistoCercano;
 
-    while (noTerminado){
-        impactado = false;
+    bool continuarCamino = true;
+    bool impactadoInterno = false;
+
+    while (continuarCamino){
+        
+        impactadoInterno = false;
+        float menorDistancia = INFINITY;
         
         for (auto obstacle : entorno){
             Material materialAux;
@@ -285,29 +297,49 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
             if(obstacle->ray_intersect(ray, visto, distancia, materialAux, impacto)){ 
                 impactado = true;
                 if(distancia<menorDistancia){
-                    menorImpacto = impacto;
+                    normalGolpe = impacto;
                     material = materialAux;
                     pixelaux.update(visto);
+                    vistoCercano = visto;
                     menorDistancia=distancia;
                     obstaculoGolpeado = obstacle;
+                    impactadoInterno = true;
                 }
             }
         }
         //Tenemos la distancia y el vector de golpe.
-        if (impactado){
+        if (impactadoInterno){
 
-            if(obstaculoGolpeado->isEmitter()){
-                //Fin de rebotes, hemos encontrado fuente de luz
+            if(obstaculoGolpeado->getMaterial().isEmissor()){
+                luzActual = luzActual * vistoCercano;
+                continuarCamino = false;
             }else{
-                //No es un emisor de luz, por lo que el rayo intentará rebotar
 
-                //Calcular iluminación del punto -> color pixel en rebote actual
+                EVENT e = getRandomEvent(material);
+                if (e == DEAD){
+                    continuarCamino = false;
+                    luzActual = Emission(0,0,0);
+                }
+                else {      //Cosas que hacer con el evento...
+                    //No es un emisor de luz, por lo que el rayo intentará rebotar
 
-                //Obtener evento de rebote (si hay) y calcular nueva direccion
+                    //Calcular iluminación del punto -> color pixel en rebote actual
+                    luzActual = luzActual * vistoCercano;
 
-                //Con nueva direccion, realizamos colorRayo(nuevaDirection) para saber el color del resto de pasos
+                    //Obtener evento de rebote (si hay) y calcular nueva direccion
+                    // Vectores puntoDeGolpe = calculaPunto(ray.origen,ray.direccion,menorDistancia);
+                    Vectores puntoDeGolpe = ray.origen.sumarVector(ray.direccion.multiplicarValor(menorDistancia));
 
-                //Operar con ambos colores para devolver resultado final
+                    Vectores nuevaDireccion = generarDireccion(e, ray.direccion, normalGolpe, puntoDeGolpe, obstaculoGolpeado);
+                    Vectores nuevoLugar = puntoDeGolpe;
+
+                    //Con nueva direccion, realizamos colorRayo(nuevaDirection) para saber el color del resto de pasos
+                    ray = Ray(nuevoLugar, nuevaDireccion);
+
+                    numRebotes++;
+                }
+
+
             }
 
 
@@ -320,8 +352,7 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
 
             /*
             //Si lo ve una luz puntual, dejar color. Sino negro como nuestro futuro
-            Vectores nuevoOrigen;
-            nuevoOrigen.calculaPunto(ray.origen, ray.direccion, menorDistancia);
+            Vectores nuevoOrigen = calculaPunto(ray.origen, ray.direccion, menorDistancia);
 
             //Tenemos el punto donde impacta y el vector de luces. Para cada una, mirar si tiene luz
 
@@ -332,6 +363,8 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
                 recibeLuz = true;
 
                 //Sacamos la línea (rayo) entre el impacto y la luz "luz"
+
+                //Sumar el origen
                 Vectores vectorEntreImpactoYLuz=luz->coordenada;
                 vectorEntreImpactoYLuz.VectorDosPuntos(nuevoOrigen);
                 vectorEntreImpactoYLuz.normalizar();
@@ -360,15 +393,18 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
             
         }
         else {
-            noTerminado = false;
+            continuarCamino = false;
         }
     }
+
+    luzActual = luzActual;
+    pixelaux.update(luzActual);
     return pixelaux; 
 }
 
 
 
-image Sensor::ver(vector<Obstacle*> &entorno, vector<LuzPuntual*> &luces, string imagenNombre, int anchototal, int altoTotal){
+image Sensor::ver(vector<Obstacle*> &entorno, vector<LuzPuntual*> &luces, string imagenNombre, int anchototal, int altoTotal, int ppp){
     image imagen(imagenNombre, true, anchototal, altoTotal);        
     Emission visto;
     Pixel pixel(visto);
@@ -386,33 +422,20 @@ image Sensor::ver(vector<Obstacle*> &entorno, vector<LuzPuntual*> &luces, string
         int alto=miraPixel/imagen.height;
         int ancho=miraPixel%imagen.height;
 
-        float x = (2 * (alto + 0.5) / (float)anchototal - 1) * imageAspectRatio; 
-        float y = (1 - 2 * (ancho + 0.5) / (float)altoTotal); 
-
-        //TODO: cambiar a valor por entrada y generación de array
-        float X1 = (float)((rand() % 20)+5)/100;
-        float X2 = (float)((rand() % 20)+5)/100;
-        float Y1 = (float)((rand() % 20)+5)/100;
-        float Y2 = (float)((rand() % 20)+5)/100;
+        float x = (2 * (alto) / (float)anchototal - 1) * imageAspectRatio; 
+        float y = (1 - 2 * (ancho) / (float)altoTotal);
 
         vector<Ray> rayos; //La array está aquí
-        Vectores rayDirection1(x-X1/(float)anchototal, y-Y1/(float)altoTotal, apunta.c[2], 0);
-        Ray rayoAux1(this->coordenadasO,rayDirection1); //Generar rayo
-        rayoAux1.direccion.traspConMatriz(cameraToWorld);
-        rayos.push_back(rayoAux1);
-        Vectores rayDirection2(x-X2/(float)anchototal, y+Y1/(float)altoTotal, apunta.c[2], 0);
-        Ray rayoAux2(this->coordenadasO,rayDirection2); //Generar rayo
-        rayoAux2.direccion.traspConMatriz(cameraToWorld);
-        rayos.push_back(rayoAux2);
-        Vectores rayDirection3(x+X1/(float)anchototal, y-Y2/(float)altoTotal, apunta.c[2], 0);
-        Ray rayoAux3(this->coordenadasO,rayDirection3); //Generar rayo
-        rayoAux3.direccion.traspConMatriz(cameraToWorld);
-        rayos.push_back(rayoAux3);
-        Vectores rayDirection4(x+X2/(float)anchototal, y+Y2/(float)altoTotal, apunta.c[2], 0);
-        Ray rayoAux4(this->coordenadasO,rayDirection4); //Generar rayo
-        rayoAux4.direccion.traspConMatriz(cameraToWorld);
-        rayos.push_back(rayoAux4);
 
+        Emission totalEmission = Emission(0.0, 0.0, 0.0);
+        for (int i=0;i<ppp;i++){
+            float X = (float)((rand() % 90)+5)/100;
+            float Y = (float)((rand() % 90)+5)/100;
+            Vectores rayDirection(x+X/(float)anchototal, y+Y/(float)altoTotal, apunta.c[2], 0);
+            Ray rayoAux(this->coordenadasO,rayDirection); //Generar rayo
+            rayoAux.direccion.traspConMatriz(cameraToWorld);
+            rayos.push_back(rayoAux);
+        }
 
         vector<Pixel> recibidos;
         bool impactado;
@@ -421,12 +444,17 @@ image Sensor::ver(vector<Obstacle*> &entorno, vector<LuzPuntual*> &luces, string
 
             Pixel pixel = colorRayo(ray, entorno, luces, impactado);
 
-            if(impactado){
-                recibidos.push_back(pixel);
-            }
+            //if(impactado){
+            //    recibidos.push_back(pixel);
+            //}
+            totalEmission = Emission(totalEmission.red + pixel.R, totalEmission.green + pixel.G, totalEmission.blue + pixel.B);
         }
-        
-        imagen.imageMatrix[miraPixel]=media(recibidos);
+
+        totalEmission = Emission(min(totalEmission.red/ppp, 1.0f), min(totalEmission.green/ppp, 1.0f), min(totalEmission.blue/ppp, 1.0f));
+
+        imagen.imageMatrix[miraPixel] = Pixel(totalEmission);
+        //imagen.imageMatrix[miraPixel]=media(recibidos);
+
         //cout << imagen.imageMatrix[miraPixel].R << " " <<imagen.imageMatrix[miraPixel].G << " " <<imagen.imageMatrix[miraPixel].B << " " << endl;
         //cout << "endloop" << endl;
     }
