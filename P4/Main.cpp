@@ -36,54 +36,58 @@ int main () {
 
     Material materialIluminado(0.0,0.0,0.0);
     materialIluminado.Emitter();
-    Material materialReflector(1.0, 0.0, 0.0);
+    Material materialReflector(0.0, 1.0, 0.0);
     materialReflector.Reflector();
+    Material materialDifuso(0.8, 0.0, 0.0);
+    materialDifuso.Reflector();
+    Material materialRefractor(0.0, 0.0, 0.8);
+    materialRefractor.Reflector();
 
     //Pared derecha
-    Vectores planoCentro1(40.0, 0.0, 40.0, 1);
+    Vectores planoCentro1(100.0, 0.0, 100.0, 1);
     Vectores planoNormal1(1.0, 0.0, 0.0, 0);
-    Emission color1(1.0, 0.01, 0.01);
-    Plane plano1(planoCentro1, planoNormal1, color1, materialReflector, 0.0);
+    Emission color1(0.1, 0.1, 0.8);
+    Plane plano1(planoCentro1, planoNormal1, color1, materialDifuso, 0.0);
     
     //Pared izquierda
-    Vectores planoCentro2(-40.0, 0.0, 40.0, 1);
+    Vectores planoCentro2(-100.0, 0.0, 100.0, 1);
     Vectores planoNormal2(1.0, 0.0, 0.0, 0);
-    Emission color2(0.01, 1.0, 0.01);
-    Plane plano2(planoCentro2, planoNormal2, color2, materialReflector, 0.0);
+    Emission color2(0.8, 0.1, 0.1);
+    Plane plano2(planoCentro2, planoNormal2, color2, materialDifuso, 0.0);
 
     //Pared fondo
-    Vectores planoCentro3(0.0, 0.0, 80.0, 1);
+    Vectores planoCentro3(0.0, 0.0, 200.0, 1);
     Vectores planoNormal3(0.0, 0.0, 1.0, 0);
-    Emission color3(0.7, 0.4, 0.01);
-    Plane plano3(planoCentro3, planoNormal3, color3, materialReflector, 0.0);
+    Emission color3(0.0, 1.0, 1.0);
+    Plane plano3(planoCentro3, planoNormal3, color3, materialDifuso, 0.0);
 
     /*
-    Vectores planoCentro6(0.0, 0.0, -2.0, 1);
-    Vectores planoNormal6(0.0, 0.0, 1.0, 0);
+    Vectores planoCentro6(0.1, 0.0, 0.0, 1);
+    Vectores planoNormal6(1.0, 0.0, 0.0, 0);
     Emission color6(1.0, 1.0, 1.0);
     Plane plano6(planoCentro6, planoNormal6, color6, materialIluminado, 0.0);
     */
 
     //Suelo
-    Vectores planoCentro4(0.0, -40.0, 40.0, 1);
+    Vectores planoCentro4(0.0, -100.0, 100.0, 1);
     Vectores planoNormal4(0.0, 1.0, 0.0, 0);
-    Emission color4(1.0, 1.0, 1.0);
+    Emission color4(1.0, 1.0, 0.0);
     Plane plano4(planoCentro4, planoNormal4, color4, materialReflector, 0.0);
 
     //Techo
-    Vectores planoCentro5(0.0, 40.0, 40.0, 1);
+    Vectores planoCentro5(0.0, 100.0, 100.0, 1);
     Vectores planoNormal5(0.0, 1.0, 0.0, 0);
     Emission color5(1.0, 1.0, 1.0);
     Plane plano5(planoCentro5, planoNormal5, color5, materialIluminado, 0.0);
     
     //Pelota
-    Vectores bolaAux1(0.0, 0.0, 50.0, 1);
-    float radio = 5;
-    Emission colorSphere(0.01, 0.01, 1.0);
-    Sphere bola1(bolaAux1,radio,colorSphere, materialReflector, 0.0);
+    Vectores bolaAux1(-5.0, -40.0, 90.0, 1);
+    float radio = 10.0;
+    Emission colorSphere(0.1, 0.7, 0.8);
+    Sphere bola1(bolaAux1,radio,colorSphere, materialRefractor, 0.0);
 
 
-    Vectores origenLuzPuntual(0.0, 5.1, 50.0, 1);
+    Vectores origenLuzPuntual(10.0, 0.0, 30.0, 1);
     LuzPuntual luzpuntual(origenLuzPuntual);
 
     
@@ -91,13 +95,13 @@ int main () {
     lucesPuntuales.push_back(&luzpuntual);
 
     vector<Obstacle*> scene;
+    //scene.push_back(&plano6);
+    scene.push_back(&bola1);
     scene.push_back(&plano1);
     scene.push_back(&plano2);
     scene.push_back(&plano3);
     scene.push_back(&plano4);
     scene.push_back(&plano5);
-    //scene.push_back(&plano6);
-    scene.push_back(&bola1);
 
     //image imagen("patata", true, 100, 100);
     image imagen = sensor.ver(scene, lucesPuntuales, "patata", ancho, largo, ppp);

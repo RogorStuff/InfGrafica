@@ -24,18 +24,19 @@ bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material
     Vectores po = this->center;
     Vectores lo = rayo.origen;
     Vectores n = normal;
+    Vectores nNegado = n.negado();
 
     bool ret = false;
 
-    float dist = 0;
+    float dist = 0.0;
 
     float denominator = l.punto(n);
-    float denominator2 = l.punto(n.negado());
+    float denominator2 = l.punto(nNegado);
 
 
     if (denominator != 0) {
-        Vectores aux = (po.VectorDosPuntos(lo));
-        dist =  (aux.punto(n)) / denominator;
+        Vectores aux = po.VectorDosPuntos(lo);
+        dist =  ( aux.punto(n) ) / denominator;
         if (dist < t_max && dist > t_min) {
             distancia = dist;
             emite = this->emision;
@@ -46,8 +47,8 @@ bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material
             ret = true;
         }
     } else if (denominator2 != 0) {
-        Vectores aux = (po.VectorDosPuntos(lo));
-        dist = ( aux.punto(n.negado()) ) / denominator2;
+        Vectores aux = po.VectorDosPuntos(lo);
+        dist = ( aux.punto(nNegado) ) / denominator2;
         if (dist < t_max && dist > t_min) {
             distancia = dist;
             emite = this->emision;
@@ -56,9 +57,6 @@ bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material
             normalGolpe.normalizar();
             ret = true;
         }
-    }
-    else {
-        ret = false;
     }
 
     return ret;

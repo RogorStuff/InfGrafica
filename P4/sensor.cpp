@@ -5,6 +5,7 @@
 #include "ray.cpp"
 
 #include <cmath>
+#include <chrono>
 
 Sensor::Sensor(){}
 
@@ -71,8 +72,8 @@ EVENT getRandomEvent(const Material &material) {
 Vectores reflect(Vectores in, Vectores n) { //n is the normal of the surface (mirror), in is the received vector
     Vectores aux = n.multiplicarValor(in.punto(n));
     aux.multiplicarValor(2.0);
-    Vectores resultado = (in.restarVector(aux));
-    resultado.normalizar();
+    Vectores resultado = (aux.restarVector(in));
+    //resultado.normalizar();
     return resultado;
 }
 
@@ -109,7 +110,6 @@ Vectores refraction(Vectores in, Vectores n, Vectores choque, Obstacle* obstacul
     cosExterior = - externa.punto(normal);
     k = 1.0 - mu * mu * (1- cosExterior*cosExterior);
     
-
     Vectores resultado;
     if(k<0){
         resultado = normal.cruce(externa);
@@ -121,7 +121,16 @@ Vectores refraction(Vectores in, Vectores n, Vectores choque, Obstacle* obstacul
     return resultado;
 } 
 
+//    static unsigned seed = chrono::system_clock::now().time_since_epoch().count();;
+//    default_random_engine generator (seed);
+//    uniform_real_distribution<float> rd (0.0,1.0);
+
+//float rand_f(float min, float max) {
+//    return rd(generator);;
+//}
+
 Vectores diffuse(Vectores in, Vectores n, Vectores choque){
+    //eo = rand_f(0,1);
     float theta = acos(sqrt(((double) rand() / (RAND_MAX))));   //Inclinacion
     float p = 2.0 * M_PI * ((double) rand() / (RAND_MAX));      //Azimuth
 
@@ -130,16 +139,18 @@ Vectores diffuse(Vectores in, Vectores n, Vectores choque){
     Vectores z = n;
     z.normalizar();
 
-    Vectores y = z.ProductoVectorial(in);
+    Vectores aux = Vectores(n.c[0] + 0.1, n.c[1] + 0.2, n.c[2], 0);
+    aux.normalizar();
+    Vectores y = z.ProductoVectorial(aux);
     y.normalizar();
 
     Vectores x = z.ProductoVectorial(y);
     x.normalizar();
 
     Vectores choque_ = choque;
-    choque_.normalizar();
 
     Matrix4x4 matrizCambioBase = Matrix4x4(x.c[0],x.c[1],x.c[2],x.tipoPunto,y.c[0],y.c[1],y.c[2], y.tipoPunto,z.c[0],z.c[1],z.c[2], z.tipoPunto,choque_.c[0],choque_.c[1],choque_.c[2], choque_.tipoPunto);
+    //Matrix4x4 matrizCambioBase = Matrix4x4( x.c[0], y.c[0], z.c[0], choque_.c[0], x.c[1], y.c[1], z.c[1], choque_.c[1], x.c[2], y.c[2], z.c[2], choque_.c[2], 0, 0, 0, 1);
     resultado.traspConMatriz(matrizCambioBase);
 
     resultado.normalizar();
@@ -220,15 +231,20 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
 
                 EVENT e = getRandomEvent(material);
                 if (e == DEAD){
-                    continuarCamino = false;
                     luzActual = Emission(0,0,0);
+                    continuarCamino = false;
                 }
                 else {      //Cosas que hacer con el evento...
                     //No es un emisor de luz, por lo que el rayo intentará rebotar
 
                     //Calcular iluminación del punto -> color pixel en rebote actual
-                    luzActual = luzActual * vistoCercano;
-
+                    if (e == SPECULAR){
+                        luzActual = luzActual;
+                    }else if (e == REFRACTION){
+                        luzActual = luzActual * vistoCercano;
+                    }else{
+                        luzActual = luzActual * vistoCercano;
+                    }
 
                     Vectores nuevoOrigen = ray.origen.sumarVector(ray.direccion.multiplicarValor(menorDistancia));
 
@@ -256,7 +272,7 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
                         aux32.normalizar();
 
                         //Cogemos la distancia entre ambos puntos, para compararla con la distancia a obstáculos
-                        float distanciaHastaLuz = vectorEntreImpactoYLuz.distDosPuntos(nuevoOrigen);
+                        float distanciaHastaLuz = vectorEntreImpactoYLuz.distDosPuntos(nuevoOrigen) / ray.direccion.distAbsoluta();
                         
                         Ray rayoActual = Ray(nuevoOrigen,aux32);
                         for (auto obstacle : entorno){
@@ -273,8 +289,9 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
                             }
                         }
                     }
-                    if (!recibeLuz && numRebotes == 0){
+                    if (!recibeLuz){
                         luzActual = luzActual * Emission(0.0, 0.0, 0.0);
+                        //continuarCamino = false;
                     }
 
 
@@ -282,7 +299,7 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
                     // Vectores puntoDeGolpe = calculaPunto(ray.origen,ray.direccion,menorDistancia);
                     Vectores puntoDeGolpe = ray.origen.sumarVector(ray.direccion.multiplicarValor(menorDistancia));
 
-                    Vectores nuevaDireccion = generarDireccion(e, ray.direccion, normalGolpe, puntoDeGolpe, obstaculoGolpeado);
+                    Vectores nuevaDireccion = generarDireccion(e, ray.direccion, puntoDeGolpe, normalGolpe, obstaculoGolpeado);
                     Vectores nuevoLugar = puntoDeGolpe;
 
                     //Con nueva direccion, realizamos colorRayo(nuevaDirection) para saber el color del resto de pasos
@@ -343,8 +360,7 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
                 pixelaux.update(0.0, 0.0, 0.0);
             }*/
             
-        }
-        else {
+        }else {
             continuarCamino = false;
         }
     }
