@@ -16,6 +16,8 @@ struct Emission{
 
     Emission operator*(Emission e2) const;
     Emission operator*(float difusion) const;
+    Emission operator+(Emission e2) const;
+    Emission operator+(float difusion) const;
     Emission operator/(float e) const;
 };
 

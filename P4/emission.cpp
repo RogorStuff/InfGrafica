@@ -26,6 +26,14 @@ Emission Emission::operator*(float difusion) const{
     return Emission(red * difusion, green * difusion, blue * difusion);
 }
 
+Emission Emission::operator+(Emission e2) const{
+    return Emission(red + e2.red, green + e2.green, blue + e2.blue);
+}
+
+Emission Emission::operator+(float difusion) const{
+    return Emission(red + difusion, green + difusion, blue + difusion);
+}
+
 Emission Emission::operator/(float e) const{
     return Emission(red / e, green / e, blue / e);
 }

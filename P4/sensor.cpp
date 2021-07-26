@@ -73,7 +73,7 @@ Vectores reflect(Vectores in, Vectores n) { //n is the normal of the surface (mi
     Vectores aux = n.multiplicarValor(in.punto(n));
     aux.multiplicarValor(2.0);
     Vectores resultado = (aux.restarVector(in));
-    //resultado.normalizar();
+    resultado.normalizar();
     return resultado;
 }
 
@@ -239,9 +239,10 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
 
                     //Calcular iluminación del punto -> color pixel en rebote actual
                     if (e == SPECULAR){
-                        luzActual = luzActual;
+                        luzActual = luzActual + (vistoCercano * 0.1);
                     }else if (e == REFRACTION){
                         luzActual = luzActual * vistoCercano;
+                        continuarCamino = false;
                     }else{
                         luzActual = luzActual * vistoCercano;
                     }
@@ -289,8 +290,8 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
                             }
                         }
                     }
-                    if (!recibeLuz){
-                        luzActual = luzActual * Emission(0.0, 0.0, 0.0);
+                    if (!recibeLuz && numRebotes==0){
+                        luzActual = luzActual * 0.8;
                         //continuarCamino = false;
                     }
 

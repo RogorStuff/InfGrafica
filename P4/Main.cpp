@@ -36,7 +36,7 @@ int main () {
 
     Material materialIluminado(0.0,0.0,0.0);
     materialIluminado.Emitter();
-    Material materialReflector(0.0, 1.0, 0.0);
+    Material materialReflector(0.0, 9.0, 0.0);
     materialReflector.Reflector();
     Material materialDifuso(0.8, 0.0, 0.0);
     materialDifuso.Reflector();
@@ -47,19 +47,19 @@ int main () {
     Vectores planoCentro1(100.0, 0.0, 100.0, 1);
     Vectores planoNormal1(1.0, 0.0, 0.0, 0);
     Emission color1(0.1, 0.1, 0.8);
-    Plane plano1(planoCentro1, planoNormal1, color1, materialDifuso, 0.0);
+    Plane plano1(planoCentro1, planoNormal1, color1, materialRefractor, 0.0);
     
     //Pared izquierda
     Vectores planoCentro2(-100.0, 0.0, 100.0, 1);
     Vectores planoNormal2(1.0, 0.0, 0.0, 0);
-    Emission color2(0.8, 0.1, 0.1);
-    Plane plano2(planoCentro2, planoNormal2, color2, materialDifuso, 0.0);
+    Emission color2(1.0, 0.5, 0.1);
+    Plane plano2(planoCentro2, planoNormal2, color2, materialRefractor, 0.0);
 
     //Pared fondo
     Vectores planoCentro3(0.0, 0.0, 200.0, 1);
     Vectores planoNormal3(0.0, 0.0, 1.0, 0);
     Emission color3(0.0, 1.0, 1.0);
-    Plane plano3(planoCentro3, planoNormal3, color3, materialDifuso, 0.0);
+    Plane plano3(planoCentro3, planoNormal3, color3, materialRefractor, 0.0);
 
     /*
     Vectores planoCentro6(0.1, 0.0, 0.0, 1);
@@ -71,7 +71,7 @@ int main () {
     //Suelo
     Vectores planoCentro4(0.0, -100.0, 100.0, 1);
     Vectores planoNormal4(0.0, 1.0, 0.0, 0);
-    Emission color4(1.0, 1.0, 0.0);
+    Emission color4(1.0, 1.0, 1.0);
     Plane plano4(planoCentro4, planoNormal4, color4, materialReflector, 0.0);
 
     //Techo
@@ -83,11 +83,11 @@ int main () {
     //Pelota
     Vectores bolaAux1(-5.0, -40.0, 90.0, 1);
     float radio = 10.0;
-    Emission colorSphere(0.1, 0.7, 0.8);
+    Emission colorSphere(0.8, 0.7, 0.8);
     Sphere bola1(bolaAux1,radio,colorSphere, materialRefractor, 0.0);
 
 
-    Vectores origenLuzPuntual(10.0, 0.0, 30.0, 1);
+    Vectores origenLuzPuntual(-10.0, -30.0, 30.0, 1);
     LuzPuntual luzpuntual(origenLuzPuntual);
 
     
