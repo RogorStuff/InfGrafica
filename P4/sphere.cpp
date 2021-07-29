@@ -65,7 +65,8 @@ bool Sphere::ray_intersect(Ray& r2, Emission& emite, float& distancia, Material&
     emite = this->emision;
     material = this->material;
     Vectores dondeGolpea = r2.origen.sumarVector(r2.direccion.multiplicarValor(distancia));
-    normalGolpe = dondeGolpea.restarVector(this->center);     //Vector resultante de origen - golpe
+    Vectores centro = this->center;
+    normalGolpe = dondeGolpea.restarVector(centro);     //Vector resultante de origen - golpe
     normalGolpe.normalizar();
  
     return true; 

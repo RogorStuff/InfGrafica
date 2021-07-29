@@ -82,7 +82,7 @@ Vectores refraction(Vectores in, Vectores n, Vectores choque, Obstacle* obstacul
     float refraccionExterior = 1.0003F;
     float refraccionObject = obstaculo->getRefractiveIndex();
 
-    float mu = refraccionExterior/refraccionObject;
+    float mu = refraccionExterior/(refraccionObject+0.01);
 
     Vectores normal = n;
     Vectores externa = in;
@@ -139,8 +139,9 @@ Vectores diffuse(Vectores in, Vectores n, Vectores choque){
     Vectores z = n;
     z.normalizar();
 
-    Vectores aux = Vectores(n.c[0] + 0.1, n.c[1] + 0.2, n.c[2], 0);
-    aux.normalizar();
+    Vectores aux = Vectores(n.c[0]+24, n.c[1]+48 , n.c[2], 0);
+    //Vectores aux = n;
+    //aux.normalizar();
     Vectores y = z.ProductoVectorial(aux);
     y.normalizar();
 
@@ -149,8 +150,8 @@ Vectores diffuse(Vectores in, Vectores n, Vectores choque){
 
     Vectores choque_ = choque;
 
-    Matrix4x4 matrizCambioBase = Matrix4x4(x.c[0],x.c[1],x.c[2],x.tipoPunto,y.c[0],y.c[1],y.c[2], y.tipoPunto,z.c[0],z.c[1],z.c[2], z.tipoPunto,choque_.c[0],choque_.c[1],choque_.c[2], choque_.tipoPunto);
-    //Matrix4x4 matrizCambioBase = Matrix4x4( x.c[0], y.c[0], z.c[0], choque_.c[0], x.c[1], y.c[1], z.c[1], choque_.c[1], x.c[2], y.c[2], z.c[2], choque_.c[2], 0, 0, 0, 1);
+    //Matrix4x4 matrizCambioBase = Matrix4x4(x.c[0],x.c[1],x.c[2],x.tipoPunto,y.c[0],y.c[1],y.c[2], y.tipoPunto,z.c[0],z.c[1],z.c[2], z.tipoPunto,choque_.c[0],choque_.c[1],choque_.c[2], choque_.tipoPunto);
+    Matrix4x4 matrizCambioBase = Matrix4x4( x.c[0], y.c[0], z.c[0], choque_.c[0], x.c[1], y.c[1], z.c[1], choque_.c[1], x.c[2], y.c[2], z.c[2], choque_.c[2], 0, 0, 0, 1);
     resultado.traspConMatriz(matrizCambioBase);
 
     resultado.normalizar();
@@ -231,7 +232,7 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
 
                 EVENT e = getRandomEvent(material);
                 if (e == DEAD){
-                    luzActual = Emission(0,0,0);
+                    //luzActual = Emission(0,0,0);
                     continuarCamino = false;
                 }
                 else {      //Cosas que hacer con el evento...
@@ -239,12 +240,16 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
 
                     //Calcular iluminación del punto -> color pixel en rebote actual
                     if (e == SPECULAR){
-                        luzActual = luzActual + (vistoCercano * 0.1);
+                        luzActual = luzActual /*+ (vistoCercano * 0.1)*/;
                     }else if (e == REFRACTION){
                         luzActual = luzActual * vistoCercano;
-                        continuarCamino = false;
+                        //continuarCamino = false;
                     }else{
                         luzActual = luzActual * vistoCercano;
+                        /*if(obstaculoGolpeado->queSoy()=="esfera"){
+                            continuarCamino = false;
+                            luzActual = vistoCercano;
+                        }*/
                     }
 
                     Vectores nuevoOrigen = ray.origen.sumarVector(ray.direccion.multiplicarValor(menorDistancia));
@@ -290,8 +295,8 @@ Pixel Sensor::colorRayo(Ray ray, vector<Obstacle*> &entorno, vector<LuzPuntual*>
                             }
                         }
                     }
-                    if (!recibeLuz && numRebotes==0){
-                        luzActual = luzActual * 0.8;
+                    if (!recibeLuz){
+                        luzActual = luzActual * 0.2;
                         //continuarCamino = false;
                     }
 

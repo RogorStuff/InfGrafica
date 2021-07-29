@@ -19,7 +19,7 @@
 using namespace std;
 
 
-//Copmilar: g++ -std=c++11 Main.cpp -o a
+//Copmilar: g++ -std=c++11 Main.cpp -o a -O3
 int main () {
 
     int ppp = 100;
@@ -36,30 +36,33 @@ int main () {
 
     Material materialIluminado(0.0,0.0,0.0);
     materialIluminado.Emitter();
-    Material materialReflector(0.0, 9.0, 0.0);
+    Material materialReflector(0.01, 0.9, 0.01);
     materialReflector.Reflector();
-    Material materialDifuso(0.8, 0.0, 0.0);
+    Material materialDifuso(0.9, 0.01, 0.01);
     materialDifuso.Reflector();
-    Material materialRefractor(0.0, 0.0, 0.8);
+    Material materialRefractor(0.1, 0.0, 0.8);
     materialRefractor.Reflector();
 
     //Pared derecha
     Vectores planoCentro1(100.0, 0.0, 100.0, 1);
     Vectores planoNormal1(1.0, 0.0, 0.0, 0);
     Emission color1(0.1, 0.1, 0.8);
-    Plane plano1(planoCentro1, planoNormal1, color1, materialRefractor, 0.0);
+    Plane plano1(planoCentro1, planoNormal1, color1, materialDifuso, 0.0);
     
     //Pared izquierda
     Vectores planoCentro2(-100.0, 0.0, 100.0, 1);
     Vectores planoNormal2(1.0, 0.0, 0.0, 0);
-    Emission color2(1.0, 0.5, 0.1);
-    Plane plano2(planoCentro2, planoNormal2, color2, materialRefractor, 0.0);
+    //Emission color2(1.0, 0.5, 0.1);
+    Emission color2(1.0, 0.1, 0.1);
+    Plane plano2(planoCentro2, planoNormal2, color2, materialDifuso, 0.0);
 
     //Pared fondo
     Vectores planoCentro3(0.0, 0.0, 200.0, 1);
     Vectores planoNormal3(0.0, 0.0, 1.0, 0);
-    Emission color3(0.0, 1.0, 1.0);
-    Plane plano3(planoCentro3, planoNormal3, color3, materialRefractor, 0.0);
+    //Emission color3(0.0, 1.0, 1.0);
+    //Emission color3(1.0, 1.0, 1.0);
+    Emission color3(0.0, 0.0, 0.0);
+    Plane plano3(planoCentro3, planoNormal3, color3, materialReflector, 0.0);
 
     /*
     Vectores planoCentro6(0.1, 0.0, 0.0, 1);
@@ -72,7 +75,7 @@ int main () {
     Vectores planoCentro4(0.0, -100.0, 100.0, 1);
     Vectores planoNormal4(0.0, 1.0, 0.0, 0);
     Emission color4(1.0, 1.0, 1.0);
-    Plane plano4(planoCentro4, planoNormal4, color4, materialReflector, 0.0);
+    Plane plano4(planoCentro4, planoNormal4, color4, materialDifuso, 0.0);
 
     //Techo
     Vectores planoCentro5(0.0, 100.0, 100.0, 1);
@@ -81,13 +84,13 @@ int main () {
     Plane plano5(planoCentro5, planoNormal5, color5, materialIluminado, 0.0);
     
     //Pelota
-    Vectores bolaAux1(-5.0, -40.0, 90.0, 1);
-    float radio = 10.0;
+    Vectores bolaAux1(0.0, 0.0, 100.0, 1);
+    float radio = 20.0;
     Emission colorSphere(0.8, 0.7, 0.8);
-    Sphere bola1(bolaAux1,radio,colorSphere, materialRefractor, 0.0);
+    Sphere bola1(bolaAux1,radio,colorSphere, materialDifuso, 0.0);
 
 
-    Vectores origenLuzPuntual(-10.0, -30.0, 30.0, 1);
+    Vectores origenLuzPuntual(0.0, 90.0, 120.0, 1);
     LuzPuntual luzpuntual(origenLuzPuntual);
 
     
