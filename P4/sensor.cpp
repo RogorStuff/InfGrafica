@@ -86,14 +86,14 @@ Vectores refraction(Vectores in, Vectores n, Vectores choque, Obstacle* obstacul
 
     Vectores normal = n;
     Vectores externa = in;
-    float cosExterior = - externa.punto(normal); //help
+    float cosExterior = - externa.punto(normal);
     float k = 1.0 - mu*mu * (1- cosExterior*cosExterior);
 
     Vectores interior;
     if(k<0){
         interior = externa;
     }else{
-        interior = (externa.multiplicarValor(mu)).sumarVector(normal.multiplicarValor(mu*cosExterior-sqrt(k))); //help
+        interior = (externa.multiplicarValor(mu)).sumarVector(normal.multiplicarValor(mu*cosExterior-sqrt(k)));
     }
 
     //SegundaInteraccion
@@ -120,14 +120,6 @@ Vectores refraction(Vectores in, Vectores n, Vectores choque, Obstacle* obstacul
 
     return resultado;
 } 
-
-//    static unsigned seed = chrono::system_clock::now().time_since_epoch().count();;
-//    default_random_engine generator (seed);
-//    uniform_real_distribution<float> rd (0.0,1.0);
-
-//float rand_f(float min, float max) {
-//    return rd(generator);;
-//}
 
 Vectores diffuse(Vectores in, Vectores n, Vectores choque){
     //eo = rand_f(0,1);
