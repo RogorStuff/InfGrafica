@@ -1,7 +1,7 @@
 #include "math.h"
 #include "lib/toneMapping/toneMaping.cpp"
-#include "lib/images/pixel.hpp"
-#include "lib/images/image.hpp"
+#include "lib/images/pixel.cpp"
+#include "lib/images/image.cpp"
 #include <iostream>
 #include <fstream>
 #include <string.h> 
