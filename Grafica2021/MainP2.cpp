@@ -13,9 +13,14 @@ using namespace std;
 
 int main () {
 
-    string fileName = "forest_path.ppm";
+    string fileName = "";
     cout << "Please enter the name of the img: ";
     //cin >> fileName;
+    if(fileName == ""){
+        fileName = "imageFiles/forest_path.ppm";
+    }else{
+        fileName = "imageFiles/"+fileName;
+    }
 
     Image thisImg(fileName,false,0,0);
 
