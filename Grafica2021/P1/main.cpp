@@ -8,11 +8,11 @@ using namespace std;
 
 int main(){
 
-    vec3 centro (1, 1, 1, 0);
+    vec3 centro (5, 5, 5, 0);
     vec3 normal (0, 2, 0, 0);
-    vec3 ciudad (1, 2, 1, 0);
+    vec3 ciudad (5, 5, 4, 0);
 
-    planet Espanita (centro, normal, ciudad, M_PI/2, 0);
+    planet Espanita (centro, normal, ciudad, 0, M_PI/2);
 
     vec3 primerEjeCoordenadasMundo (0.0, (normal.modulo()/2), 0.0, 0);                                  //Eje Y
     vec3 segundoEjeCoordenadasMundo =  rotarX( M_PI/2, primerEjeCoordenadasMundo);                      //Eje X

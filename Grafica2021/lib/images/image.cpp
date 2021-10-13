@@ -17,6 +17,7 @@ Image::Image(string fileName, bool nueva, int Nwidth, int Nheight){ //P3 #MAX=48
 
             string aux = max.substr(5);
             m=stof(aux);
+            //m = 1;
 
             getline(fileReader,name);
 
@@ -29,6 +30,9 @@ Image::Image(string fileName, bool nueva, int Nwidth, int Nheight){ //P3 #MAX=48
             for (int i = 0; i < total; i++){
                 fileReader >> r >> g >> b;
                 Pixel pixel(r,g,b);
+                pixel.R = pixel.R * m / 65535;  //65535
+                pixel.G = pixel.G * m / 65535;
+                pixel.B = pixel.B * m / 65535;
                 imageMatrix[i]=pixel;
             }
             cout << "Imagen guardada" << endl;
@@ -36,6 +40,7 @@ Image::Image(string fileName, bool nueva, int Nwidth, int Nheight){ //P3 #MAX=48
             cout << "No se pudo abrir o encontrar la imagen" << endl;
         }
     }else{
+        cout << "Imagen nueva. A improvisar dude" << endl;
         formatID="P3";
         m=48;
         name=fileName;
@@ -51,7 +56,7 @@ Image::Image(string fileName, bool nueva, int Nwidth, int Nheight){ //P3 #MAX=48
     }
 }
 
-void Image::save(string newFileName){
+void Image::saveLDR(string newFileName){
     ofstream fileTarget(newFileName+".ppm");
     if (fileTarget.is_open()){
         cout << "Inicia guardado"<<endl;
@@ -59,15 +64,17 @@ void Image::save(string newFileName){
         fileTarget << "#MAX=" <<this->m << endl;
         fileTarget << "# " <<newFileName<<".ppm"<< endl;
         fileTarget << this->width<<" " <<this->height<< endl;
-        fileTarget << this->c << endl;
+        fileTarget << 255 << endl;
 
         int pos=0;
         for (int i=0; i<this->height;i++){    //this->height
             for (int j=0; j<this->width;j++){ //this->width
-                fileTarget << this->imageMatrix[pos].R << " "<< this->imageMatrix[pos].G << " "<< this->imageMatrix[pos].B << "     ";
+                fileTarget << round(this->imageMatrix[pos].R*255/m) << " "<< round(this->imageMatrix[pos].G*255/m) << " "<< round(this->imageMatrix[pos].B*255/m) << "     ";
                 pos++;
             }
-            cout<<i<<"/"<<this->height<<endl;
+            if ( i % 20 == 0){
+                cout<<i<<"/"<<this->height<<endl;
+            }
             fileTarget << endl;
         }
         fileTarget.close();
@@ -76,4 +83,22 @@ void Image::save(string newFileName){
     }else{
         cout << "No se pudo abrir o encontrar la imagen" << endl;
     }
+}
+
+
+float Image::getBiggerValueRGB(){
+
+    int pos=0;
+    float max = 0;
+    for (int i=0; i<this->height;i++){    //this->height
+        for (int j=0; j<this->width;j++){ //this->width
+            if (this->imageMatrix[pos].R > max) {max = this->imageMatrix[pos].R;}
+            if (this->imageMatrix[pos].G > max) {max = this->imageMatrix[pos].G;}
+            if (this->imageMatrix[pos].B > max) {max = this->imageMatrix[pos].B;}
+            
+            pos++;
+        }
+    }
+    return max;
+
 }

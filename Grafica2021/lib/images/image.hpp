@@ -24,7 +24,9 @@ class Image {
         vector<Pixel> imageMatrix; //imageMatrix[height][width]
         Image();
         Image(string fileName, bool nueva, int Nwidth, int Nheight);
-        void save(string newFileName);
+        
+        void saveLDR(string newFileName);
+        float getBiggerValueRGB();
 };
 
 #endif

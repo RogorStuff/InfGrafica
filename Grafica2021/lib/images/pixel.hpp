@@ -14,11 +14,11 @@ using namespace std;
 
 class Pixel {
     public:
-        int R;
-        int G;
-        int B;
+        float R;
+        float G;
+        float B;
         Pixel();
-        Pixel(int Rgb, int rGb, int rgB);
+        Pixel(float Rgb, float rGb, float rgB);
         Pixel GammaCurve(float gamma, int max, float m, int c);
 };
 
