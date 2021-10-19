@@ -1,6 +1,13 @@
 #pragma once
 
 #include <math.h> 
+#include <fstream>
+#include <string> 
+#include <iostream>
+#include <string.h> 
+#include <stdio.h> 
+
+using namespace std;
 
 class vec3{
 
@@ -75,4 +82,11 @@ vec3 vec3::operator/(const float& b){
     }
     //Error, vector nulo
     return vec3();
+}
+
+
+ostream& operator<<(ostream& os, const vec3& vec)
+{
+    os << "x: "<< vec.x << "| y: " << vec.y << "| z: " << vec.z;
+    return os;
 }

@@ -21,11 +21,12 @@ int main () {
 
     bool exito = sceneReader(esferas, planos, "prueba.txt");
 
-    cout<<planos.size()<<endl;
-    planos[0].printCenter();
-    cout<<planos[0].normal.x<<endl;
-    cout<<planos[0].normal.y<<endl;
-    cout<<planos[0].normal.z<<endl;
+    //cout<<planos.size()<<endl;
+    //planos[0].color.printColour();
+    //cout<<endl;
+    //planos[1].printCenter();
+    cout<<planos[1].center<<endl;
+    cout<<planos[1].color<<endl;
     /*
     cout<<planos[0]->printNormal()<<endl;
     cout<<planos[0]->color.R<<endl;

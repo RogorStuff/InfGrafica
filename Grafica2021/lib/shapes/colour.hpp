@@ -19,7 +19,7 @@ class colour {
         float B;
         colour();
         colour(float Rgb, float rGb, float rgB);
-        string printColour();
+        void printColour();
 };
 
 #endif

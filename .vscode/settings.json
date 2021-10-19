@@ -37,7 +37,12 @@
         "random": "cpp",
         "xstring": "cpp",
         "vector": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "list": "cpp",
+        "cstddef": "cpp",
+        "cstring": "cpp",
+        "ctime": "cpp",
+        "ratio": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled"
 }
