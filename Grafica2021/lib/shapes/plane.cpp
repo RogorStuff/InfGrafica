@@ -19,10 +19,43 @@ vec3 plane::getNormal(){
     return this->normal;
 }
 
-void plane::printCenter(){
-    cout<<this->center.x<<" - "<<this->center.y<<" - "<<this->center.z;
-}
 
-void plane::printNormal(){
-    cout<<this->normal.x<<" - "<<this->normal.y<<" - "<<this->normal.z;
-}
+bool plane::ray_intersect(ray& rayo, colour& tono, float& distancia){
+    //cout << "Entra en inserseccion de plano" << endl;
+    float t_min = 0;
+    float t_max = 99999999;
+
+    vec3 l = rayo.direccion;
+    vec3 po = this->center;
+    vec3 lo = rayo.origen;
+    vec3 n = normal;
+    vec3 nNegado = negado(n);
+
+    bool ret = false;
+
+    float dist = 0.0;
+
+    float denominator = dot(l, n);
+    float denominator2 = dot(l, nNegado);
+
+
+    if (denominator != 0) {
+        vec3 aux = vector2puntos(po, lo);
+        dist = dot(aux, n) / denominator;
+        if (dist < t_max && dist > t_min) {
+            distancia = dist;
+            tono = this->color;
+            ret = true;
+        }
+    } else if (denominator2 != 0) {
+        vec3 aux = vector2puntos(po, lo);
+        dist = dot(aux, n) / denominator2;
+        if (dist < t_max && dist > t_min) {
+            distancia = dist;
+            tono = this->color;
+            ret = true;
+        }
+    }
+
+    return ret;
+};

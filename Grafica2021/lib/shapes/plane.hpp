@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../math/vec3.cpp"
+#include "../scene/ray.cpp"
 #include "colour.hpp"
 #include "math.h"
 #include <vector>
@@ -24,8 +25,7 @@ class plane {
         plane(vec3 center_,vec3 normal_, colour color_);
         vec3 getCenter();
         vec3 getNormal();
-        void printCenter();
-        void printNormal();
+        bool ray_intersect(ray& rayo, colour& tono, float& distancia);
 };
 
 #endif

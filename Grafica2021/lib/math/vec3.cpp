@@ -67,6 +67,17 @@ vec3 normalizarPunto(vec3& punto){
     return vec3(punto.x/punto.punto, punto.y/punto.punto, punto.z/punto.punto, punto.punto/punto.punto);
 }
 
+vec3 negado(vec3 vector){
+    vec3 aux;
+    aux.x = -vector.x;
+    aux.y = -vector.y;
+    aux.z = -vector.z;
+    aux.punto = vector.punto;
+    return aux;
+}
+
+
+
 vec3 vec3::operator+(const vec3& b){
     return vec3(this->x+b.x, this->y+b.y, this->z+b.z, this->punto);
 }

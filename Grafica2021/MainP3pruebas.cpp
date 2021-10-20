@@ -1,6 +1,6 @@
 #include "lib/shapes/plane.hpp"
 #include "lib/shapes/sphere.hpp"
-#include "lib/shapes/sceneReader.hpp"
+#include "lib/shapes/sceneReader.cpp"
 
 #include <iostream>
 #include <fstream>
