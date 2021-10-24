@@ -37,6 +37,7 @@ bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material
     if (denominator != 0) {
         Vectores aux = po.VectorDosPuntos(lo);
         dist =  ( aux.punto(n) ) / denominator;
+        dist = abs(dist);
         if (dist < t_max && dist > t_min) {
             distancia = dist;
             emite = this->emision;
@@ -49,6 +50,7 @@ bool Plane::ray_intersect(Ray& rayo, Emission& emite, float& distancia, Material
     } else if (denominator2 != 0) {
         Vectores aux = po.VectorDosPuntos(lo);
         dist = ( aux.punto(nNegado) ) / denominator2;
+        dist = abs(dist);
         if (dist < t_max && dist > t_min) {
             distancia = dist;
             emite = this->emision;

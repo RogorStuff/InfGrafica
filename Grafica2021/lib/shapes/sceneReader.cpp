@@ -20,7 +20,7 @@ using namespace std;
 *   tipo(sphere/plane)
 *   center.X center.Y center.Z
 *   normal.X normal.Y normal.Z/radius (dependiendo del tipo)
-*   color.R color.G color.B (aún no incluido)
+*   color.R color.G color.B
 */
 
 bool sceneReader(vector<sphere> &esferas, vector<plane> &planos, string fileName){

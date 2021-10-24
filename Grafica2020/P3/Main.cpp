@@ -227,7 +227,7 @@ struct Sensor{
             rayos.push_back(rayoAux4);
 
             vector<Pixel> recibidos;
-            for (auto ray : rayos){
+            for (Ray ray : rayos){
                 for (auto obstacle : entorno){
                     if(obstacle->ray_intersect(ray,visto,aux)){ 
                         impactado = true;

@@ -11,6 +11,17 @@ Pixel::Pixel(float Rgb, float rGb, float rgB){
     this->B=rgB;
 }
 
+void Pixel::update(Pixel pixelNuevo){
+    this->R = pixelNuevo.R;
+    this->G = pixelNuevo.G;
+    this->B = pixelNuevo.B;
+}
+
+void Pixel::update(colour pixelNuevo){
+    this->R = pixelNuevo.R;
+    this->G = pixelNuevo.G;
+    this->B = pixelNuevo.B;
+}
 
 Pixel Pixel::GammaCurve(float gamma, int max, float m, int c){
     int newR,newG,newB;
@@ -38,6 +49,29 @@ Pixel Pixel::GammaCurve(float gamma, int max, float m, int c){
         newB=max;
     }
     return Pixel(newR,newG,newB);
+}
+
+Pixel media(vector<Pixel> conjunto){
+    float redValue=0.0;
+    float greenValue=0.0;
+    float blueValue=0.0;
+    int pixeles=0;
+    for (Pixel pixel : conjunto){
+        redValue = redValue + pixel.R;
+        greenValue = greenValue + pixel.G;
+        blueValue = blueValue + pixel.B;
+        pixeles++;
+    }
+    if(pixeles == 0){
+        pixeles=1;
+    }
+    return Pixel(redValue/pixeles,greenValue/pixeles,blueValue/pixeles);
+}
+
+ostream& operator<<(ostream& os, const Pixel& vec)
+{
+    os << "R: "<< vec.R << "| G: " << vec.G << "| B: " << vec.B;
+    return os;
 }
 
 /*

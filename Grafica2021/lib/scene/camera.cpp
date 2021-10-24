@@ -4,7 +4,7 @@
 
 camera::camera(){}
 
-camera::camera(vec3 CoordenadasO, vec3 CoordenadasU, vec3 CoordenadasI, vec3 NdistanciaPlano){
+camera::camera(vec3 CoordenadasU, vec3 CoordenadasI, vec3 NdistanciaPlano, vec3 CoordenadasO){
     coordenadasO=CoordenadasO;
     coordenadasU=CoordenadasU;
     coordenadasI=CoordenadasI;

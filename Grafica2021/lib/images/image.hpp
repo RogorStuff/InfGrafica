@@ -27,6 +27,8 @@ class Image {
         
         void saveLDR(string newFileName);
         float getBiggerValueRGB();
+
+        void save(string newFileName);
 };
 
 #endif

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../shapes/colour.hpp"
 #include "math.h"
 #include <vector>
 #include <iostream>
@@ -19,6 +20,8 @@ class Pixel {
         float B;
         Pixel();
         Pixel(float Rgb, float rGb, float rgB);
+        void update(Pixel pixelNuevo);
+        void update(colour pixelNuevo);
         Pixel GammaCurve(float gamma, int max, float m, int c);
 };
 

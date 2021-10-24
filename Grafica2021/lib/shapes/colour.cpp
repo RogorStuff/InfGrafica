@@ -19,7 +19,6 @@ void colour::printColour(){
     cout<<this->R<<" - "<<this->G<<" - "<<this->B;
 }
 
-
 ostream& operator<<(ostream& os, const colour& vec)
 {
     os << "R: "<< vec.R << "| G: " << vec.G << "| B: " << vec.B;

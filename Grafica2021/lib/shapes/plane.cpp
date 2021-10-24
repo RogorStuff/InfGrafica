@@ -21,7 +21,6 @@ vec3 plane::getNormal(){
 
 
 bool plane::ray_intersect(ray& rayo, colour& tono, float& distancia){
-    //cout << "Entra en inserseccion de plano" << endl;
     float t_min = 0;
     float t_max = 99999999;
 
@@ -40,7 +39,7 @@ bool plane::ray_intersect(ray& rayo, colour& tono, float& distancia){
 
 
     if (denominator != 0) {
-        vec3 aux = vector2puntos(po, lo);
+        vec3 aux = vector2puntos(lo, po);
         dist = dot(aux, n) / denominator;
         if (dist < t_max && dist > t_min) {
             distancia = dist;
@@ -48,13 +47,15 @@ bool plane::ray_intersect(ray& rayo, colour& tono, float& distancia){
             ret = true;
         }
     } else if (denominator2 != 0) {
-        vec3 aux = vector2puntos(po, lo);
+        vec3 aux = vector2puntos(lo, po);
         dist = dot(aux, n) / denominator2;
         if (dist < t_max && dist > t_min) {
             distancia = dist;
             tono = this->color;
             ret = true;
         }
+    }else{
+        //cout<<"HUGE FUCK"<<endl;
     }
 
     return ret;
