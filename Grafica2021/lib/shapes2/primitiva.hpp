@@ -21,6 +21,8 @@ class Primitiva{
     public:
         virtual bool ray_intersect(ray& rayo, colour& tono, float& distancia) const = 0;
         virtual string queSoy() const=0;
+        virtual void material(float& Kd, float& Ks, float& Kr) const=0;
+
 };
 
 #endif

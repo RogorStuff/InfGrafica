@@ -84,3 +84,9 @@ bool plane::ray_intersect(ray& rayo, colour& tono, float& distancia) const{
 string plane::queSoy() const{
     return "plano";
 }
+
+void plane::material(float& Kd, float& Ks, float& Kr) const {
+    Kd = this->diffuse;
+    Ks = this->reflective;
+    Kr = this->refractive;
+}

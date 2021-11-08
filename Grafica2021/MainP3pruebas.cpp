@@ -19,7 +19,8 @@ using namespace std;
 
 int main () {
 
-    int numRayos = 140;
+
+    int numRayos = 150;
 
     vector<sphere> esferas;
     vector<plane> planos;
@@ -50,7 +51,7 @@ int main () {
         vec3 sensorApunta(0.0, 0.0, 1.0, 0);
         camera sensor(sensorApuntaU, sensorApuntaI, sensorApunta, sensorCentro);
 
-        Image resultado = ver(primitivas, sensor, numRayos, "test", 1080, 1080);
+        Image resultado = ver(primitivas, sensor, numRayos, "test", 2000, 2000);
         resultado.save("test");
 
     }else{

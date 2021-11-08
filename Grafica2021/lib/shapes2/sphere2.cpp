@@ -69,3 +69,9 @@ bool sphere::ray_intersect(ray& r, colour& tono, float& distancia) const{
 string sphere::queSoy() const{
     return "esfera";
 }
+
+void sphere::material(float& Kd, float& Ks, float& Kr) const {
+    Kd = this->diffuse;
+    Ks = this->reflective;
+    Kr = this->refractive;
+}

@@ -3,7 +3,7 @@
 #include "lib/shapes/primitiva.hpp"
 #include "lib/scene/camera.cpp"
 #include "lib/scene/sceneRender.cpp"
-#include "lib/shapes/sceneReader.cpp"
+#include "lib/shapes2/sceneReader2.cpp"
 
 #include <iostream>
 #include <fstream>
@@ -17,13 +17,48 @@ using namespace std;
 
 //Compilar: g++ -std=c++11 MainP3pruebas.cpp -o a -O3
 
-int main () {
+//Ejecutar ppp PPP width WIDTH height HEIGHT filename FILENAME resolution RESOLUTION
 
-    int numRayos = 140;
+int main (int argc, char *argv[]) {
+
+    int numRayos = 150;
+    int width = 500;
+    int height = 500;
+    string filename = "salida";
+    int resolution = 0;
+    char rayosCambiados = false;
+    char widthCambiado = false;
+    char heightCambiado = false;
+    char filenameCambiado = false;
+    char resolutionCambiado = false;
+
+    for (int i = 1; i < argc; i++){
+        if (strcmp (argv[i], "ppp")){
+            numRayos = atoi(argv[i+1]);
+            cout<<"Hay"<<endl;
+            rayosCambiados = true;
+        }
+        if (strcmp (argv[i], "width")){
+            width = atoi(argv[i+1]);
+            widthCambiado = true;
+        }
+        if (strcmp (argv[i], "height")){
+            height = atoi(argv[i+1]);
+            heightCambiado = true;
+        }
+        if (strcmp (argv[i], "filename")){
+            filename = (argv[i+1]);
+            filenameCambiado = true;
+        }
+        if (strcmp (argv[i], "resolution")){
+            resolution = atoi(argv[i+1]);
+            resolutionCambiado = true;
+        }
+    }
 
     vector<sphere> esferas;
     vector<plane> planos;
-    bool exito = sceneReader(esferas, planos, "prueba.txt");
+    bool exito = sceneReader(esferas, planos, "pruebaP4.txt");
 
     
     //Cargamos el vector de primitivas con las esferas y planos anteriores
@@ -50,8 +85,8 @@ int main () {
         vec3 sensorApunta(0.0, 0.0, 1.0, 0);
         camera sensor(sensorApuntaU, sensorApuntaI, sensorApunta, sensorCentro);
 
-        Image resultado = ver(primitivas, sensor, numRayos, "test", 1080, 1080);
-        resultado.save("test");
+        Image resultado = ver(primitivas, sensor, numRayos, filename, width, height);
+        resultado.save(filename);
 
     }else{
         cout<<"Ha habido un problema cargando la escena"<<endl;

@@ -50,7 +50,7 @@ bool sceneReader(vector<sphere> &esferas, vector<plane> &planos, string fileName
                 fileReader >> radius; 
                 fileReader >> color[0] >> color[1] >> color[2]; 
                 vec3 newCenter(center[0], center[1], center[2], 0);
-                colour newColor(color[0], color[1], color[2]);
+                colour newColor(color[0]/255, color[1]/255, color[2]/255);
                 sphere newSphere(newCenter, radius, newColor);
                 esferas.push_back(newSphere);
                 //primitivas.push_back(newSphere);
@@ -63,7 +63,7 @@ bool sceneReader(vector<sphere> &esferas, vector<plane> &planos, string fileName
                 fileReader >> color[0] >> color[1] >> color[2]; 
                 vec3 newCenter(center[0], center[1], center[2], 0);
                 vec3 newNormal(normal[0], normal[1], normal[2], 0);
-                colour newColor(color[0], color[1], color[2]);
+                colour newColor(color[0]/255, color[1]/255, color[2]/255);
                 //cout<<newColor.printColour()<<endl;
                 plane newPlane(newCenter, newNormal, newColor);
                 planos.push_back(newPlane);

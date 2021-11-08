@@ -1,38 +1,6 @@
 #pragma once
 
-#include <math.h> 
-#include <fstream>
-#include <string> 
-#include <iostream>
-#include <string.h> 
-#include <stdio.h> 
-
-using namespace std;
-
-class vec3{
-
-    public:
-        float x;
-        float y;
-        float z;
-
-        int punto;
-
-        vec3();
-        vec3(float x_, float y_, float z_, int punto_);
-
-        float modulo();
-        //float dot(vec3& a, vec3& b);
-        //vec3 cross(vec3& a, vec3& b);
-        //vec3 desplazarPunto(vec3& punto, vec3& direccion);
-        //vec3 vector2puntos(vec3& punto1, vec3& punto2);
-        //vec3 normalizarPunto(vec3& punto);
-        vec3 operator+(const vec3& b);
-        vec3 operator-(const vec3& b);
-        vec3 operator*(const float& b);
-        vec3 operator/(const float& b);
-        
-};
+#include "vec3.hpp"
 
 vec3::vec3(){}
 
@@ -76,7 +44,10 @@ vec3 negado(vec3 vector){
     return aux;
 }
 
-
+vec3 ProductoVectorial(vec3 p1, vec3 p2){
+    vec3 aux (p1.y*p2.z - p1.z*p2.y, p1.z*p2.x - p1.x*p2.z, p1.x*p2.y - p1.y*p2.x, 0);
+    return aux;
+}
 
 vec3 vec3::operator+(const vec3& b){
     return vec3(this->x+b.x, this->y+b.y, this->z+b.z, this->punto);

@@ -8,9 +8,12 @@
 #include "../shapes/plane.cpp"
 #include "../shapes/sphere.cpp"
 #include "../shapes/colour.cpp"
+#include "../progressBar/progressBar.hpp"
 
 #include <time.h>  
 #include <stdlib.h> 
+#include <random>
+#include <iostream>
 
 using namespace std;
 
@@ -21,11 +24,22 @@ Image ver(vector<Primitiva*> &primitivas, camera sensor, int numRayos, string im
         float aux;
 
         srand (time(NULL));
+        std::random_device rd;
+        std::mt19937 mt(rd());
+        std::uniform_real_distribution<float> dist(5.0, 95.0);
 
         float imageAspectRatio = anchototal / (float)altoTotal; 
         matrix cameraToWorld(sensor.coordenadasU, sensor.coordenadasI, sensor.apunta, sensor.coordenadasO);
         int totalPixeles = imagen.total;
-        for (int miraPixel=0; miraPixel < imagen.total; miraPixel++){
+        //cout << "Creada barra de " << totalPixeles << endl;
+        //progressbar bar(totalPixeles);
+        //bar.set_todo_char(" ");
+        //bar.set_done_char("*");
+        //bar.set_opening_bracket_char("[");
+        //bar.set_closing_bracket_char("]");
+
+        for (int miraPixel=0; miraPixel < totalPixeles; miraPixel++){
+            //bar.update();
             
             float menorDistancia=INFINITY;
             bool impactado =false;
@@ -40,8 +54,8 @@ Image ver(vector<Primitiva*> &primitivas, camera sensor, int numRayos, string im
             for (int i=0; i<numRayos; i++){
 
                 // Tomamos un punto del pixel dejando un margen de 5% por cada lado
-                float X = (float)((rand() % 90)+5)/100;
-                float Y = (float)((rand() % 90)+5)/100;
+                float X = (float)(dist(mt))/100;
+                float Y = (float)(dist(mt))/100;
                 // Ponemos las coordenadas en la esquina superior izquierda y desplazamos dentro de dicho margen
                 vec3 rayDirection(x+X/(float)anchototal, y+Y/(float)altoTotal, sensor.apunta.z, 0);
                 // Generar rayo

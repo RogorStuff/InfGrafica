@@ -35,6 +35,7 @@ class sphere : public Primitiva {
         bool getEmisor();
         bool ray_intersect(ray& r, colour& tono, float& distancia) const override;
         string queSoy() const override;
+        void material(float& Kd, float& Ks, float& Kr) const override;
 };
 
 #endif
