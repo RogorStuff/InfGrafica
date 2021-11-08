@@ -1,5 +1,6 @@
 #include "lib/shapes/plane.cpp"
 #include "lib/shapes/sphere.cpp"
+#include "lib/shapes/primitiva.hpp"
 #include "lib/scene/camera.cpp"
 #include "lib/scene/sceneRender.cpp"
 #include "lib/shapes/sceneReader.cpp"
@@ -22,8 +23,22 @@ int main () {
 
     vector<sphere> esferas;
     vector<plane> planos;
-
     bool exito = sceneReader(esferas, planos, "prueba.txt");
+
+    
+    //Cargamos el vector de primitivas con las esferas y planos anteriores
+    vector<Primitiva*> primitivas;
+    for(int i = 0; i< esferas.size(); i++){
+        sphere s = esferas.at(i);
+        sphere* a = new sphere(s.center, s.radius, s.color);
+        primitivas.push_back(a);
+    } 
+    for(int i = 0; i< planos.size(); i++){
+        plane p = planos.at(i);
+        plane* a = new plane(p.center, p.normal, p.color);
+        primitivas.push_back(a);
+    } 
+
 
     if(exito){
 
@@ -35,7 +50,7 @@ int main () {
         vec3 sensorApunta(0.0, 0.0, 1.0, 0);
         camera sensor(sensorApuntaU, sensorApuntaI, sensorApunta, sensorCentro);
 
-        Image resultado = ver(esferas, planos, sensor, numRayos, "test", 100, 100);
+        Image resultado = ver(primitivas, sensor, numRayos, "test", 1080, 1080);
         resultado.save("test");
 
     }else{

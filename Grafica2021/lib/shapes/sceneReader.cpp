@@ -3,6 +3,7 @@
 #include "plane.cpp"
 #include "sphere.cpp"
 #include "colour.cpp"
+#include "primitiva.hpp"
 #include "math.h"
 #include <vector>
 #include <iostream>
@@ -52,6 +53,7 @@ bool sceneReader(vector<sphere> &esferas, vector<plane> &planos, string fileName
                 colour newColor(color[0], color[1], color[2]);
                 sphere newSphere(newCenter, radius, newColor);
                 esferas.push_back(newSphere);
+                //primitivas.push_back(newSphere);
                 getline(fileReader, line);  //Leemos el salto de línea y lo guardamos en la basura
 
             }else if (type == "plane"){
@@ -65,6 +67,7 @@ bool sceneReader(vector<sphere> &esferas, vector<plane> &planos, string fileName
                 //cout<<newColor.printColour()<<endl;
                 plane newPlane(newCenter, newNormal, newColor);
                 planos.push_back(newPlane);
+                //primitivas.push_back(newPlane);
                 getline(fileReader, line);  //Leemos el salto de línea y lo guardamos en la basura
 
             }else{

@@ -14,7 +14,7 @@
 
 using namespace std;
 
-Image ver(vector<sphere> &entornoEsferas, vector<plane> &entornoPlanos, camera sensor, int numRayos, string imagenNombre, int anchototal, int altoTotal){
+Image ver(vector<Primitiva*> &primitivas, camera sensor, int numRayos, string imagenNombre, int anchototal, int altoTotal){
         Image imagen(imagenNombre, true, anchototal, altoTotal);        
         colour visto;
         Pixel pixel;
@@ -24,7 +24,7 @@ Image ver(vector<sphere> &entornoEsferas, vector<plane> &entornoPlanos, camera s
 
         float imageAspectRatio = anchototal / (float)altoTotal; 
         matrix cameraToWorld(sensor.coordenadasU, sensor.coordenadasI, sensor.apunta, sensor.coordenadasO);
-
+        int totalPixeles = imagen.total;
         for (int miraPixel=0; miraPixel < imagen.total; miraPixel++){
             
             float menorDistancia=INFINITY;
@@ -35,7 +35,7 @@ Image ver(vector<sphere> &entornoEsferas, vector<plane> &entornoPlanos, camera s
             float x = (2 * (alto + 0.05) / (float)anchototal - 1) * imageAspectRatio; 
             float y = (1 - 2 * (ancho + 0.05) / (float)altoTotal); 
 
-            vector<ray> rayos;
+            vector<ray> rayos;  //Vector de todos los rayos lanzados a un pixel
 
             for (int i=0; i<numRayos; i++){
 
@@ -53,28 +53,17 @@ Image ver(vector<sphere> &entornoEsferas, vector<plane> &entornoPlanos, camera s
 
             vector<Pixel> recibidos;
             for (ray rayo : rayos){
-                if(!entornoPlanos.empty()){
-                    for (plane obstacle : entornoPlanos){
-                        if(obstacle.ray_intersect(rayo,visto,aux)){ 
-                            impactado = true;
-                            if(aux<menorDistancia){
-                                pixel.update(visto);
-                                menorDistancia=aux;
-                            }
+
+                for (Primitiva* p : primitivas){
+                    if (p->ray_intersect(rayo, visto, aux)){
+                        impactado = true;
+                        if (aux < menorDistancia){
+                            pixel.update(visto);
+                            menorDistancia=aux;
                         }
                     }
                 }
-                if(!entornoEsferas.empty()){
-                    for (sphere obstacle : entornoEsferas){
-                        if(obstacle.ray_intersect(rayo,visto,aux)){ 
-                            impactado = true;
-                            if(aux<menorDistancia){
-                                pixel.update(visto);
-                                menorDistancia=aux;
-                            }
-                        }
-                    }
-                }
+
                 if(impactado){
                     recibidos.push_back(pixel);
                 }
@@ -85,6 +74,11 @@ Image ver(vector<sphere> &entornoEsferas, vector<plane> &entornoPlanos, camera s
             }else{
                 //cout<<"No impacta";
             }
+
+            if (miraPixel % 100000 == 0){
+                cout << "Calculados " << (float)miraPixel*100/totalPixeles << " % de pixeles" << endl;
+            }
         }
+        cout << "Calculados " << "100" << " % de pixeles" << endl;
         return imagen;
     }
