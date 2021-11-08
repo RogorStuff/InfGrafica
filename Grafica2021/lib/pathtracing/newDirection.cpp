@@ -74,7 +74,7 @@ vec3 generarDireccion(EVENT e, vec3 entra, vec3 normal, vec3 puntoChoque, Primit
         break;
 
     case REFRACTION:
-        return refraction(entra, normal, puntoChoque, obstaculo);
+        return refract(entra, normal, puntoChoque, obstaculo);
         break;
 
     case DEAD:
@@ -90,8 +90,13 @@ vec3 generarDireccion(EVENT e, vec3 entra, vec3 normal, vec3 puntoChoque, Primit
 
 vec3 diffuse(vec3 in, vec3 n, vec3 choque){
     //eo = rand_f(0,1);
-    float theta = acos(sqrt(((double) rand() / (RAND_MAX))));   //Inclinacion
-    float p = 2.0 * M_PI * ((double) rand() / (RAND_MAX));      //Azimuth
+
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_real_distribution<double> dist(0.0, 1.0);
+
+    float theta = acos(sqrt(dist(mt)));   //Inclinacion
+    float p = 2.0 * M_PI * (dist(mt));      //Azimuth
 
     vec3 resultado = vec3((sin(theta)*cos(p)), (sin(theta)*sin(p)), cos(theta), 0); 
 
@@ -116,3 +121,54 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
     resultado = normalizarPunto(resultado);
     return resultado;
 }
+
+vec3 reflect(vec3 in, vec3 n) { //n is the normal of the surface (mirror), in is the received vector
+    vec3 aux = n*(dot(in, n));
+    aux*(2.0);
+    vec3 resultado = aux-in;
+    resultado = normalizarPunto(resultado);
+    return resultado;
+}
+
+
+vec3 refract(vec3 in, vec3 n, vec3 choque, Primitiva* obstaculo){
+
+    float refraccionExterior = 1.0003F;
+    float refraccionObject = obstaculo->getRIndex();
+
+    float mu = refraccionExterior/(refraccionObject+0.01);
+
+    vec3 normal = n;
+    vec3 externa = in;
+    float cosExterior = - dot(externa,normal);
+    float k = 1.0 - mu*mu * (1- cosExterior*cosExterior);
+
+    vec3 interior;
+    if(k<0){
+        interior = externa;
+    }else{
+        interior = (externa*mu)+(normal*(mu*cosExterior-sqrt(k)));
+    }
+
+    //SegundaInteraccion
+
+    ray rayoInterno = ray (choque, interior);
+    float distanciaAux;
+    vec3 normalGolpe;
+    //obstaculo->ray_intersect(rayoInterno, emisorAux, distanciaAux, materialAux, normalGolpe); 
+
+    normal = normalGolpe;
+    externa = rayoInterno.direccion;
+    cosExterior = - dot(externa, normal);
+    k = 1.0 - mu * mu * (1- cosExterior*cosExterior);
+    
+    vec3 resultado;
+    if(k<0){
+        resultado = cross(normal, externa);
+    }
+    else{
+        resultado = (externa*(mu))+(normal*(mu*cosExterior-sqrt(k)));
+    }
+
+    return resultado;
+} 

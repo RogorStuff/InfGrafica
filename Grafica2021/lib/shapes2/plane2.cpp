@@ -5,13 +5,14 @@
 plane::plane(){
 }
 
-plane::plane(vec3 center_,vec3 normal_, colour color_, float _diffuse, float _reflective, float _refractive, bool _emisor){
+plane::plane(vec3 center_,vec3 normal_, colour color_, float _diffuse, float _reflective, float _refractive, float _refractIndex, bool _emisor){
     this->center=center_;
     this->normal=normal_;
     this->color=color_;
     this->diffuse=_diffuse;
     this->reflective=_reflective;
     this->refractive=_refractive;
+    this->refractIndex=_refractIndex;
     this->emisor=_emisor;
 }
 
@@ -40,7 +41,7 @@ bool plane::getEmisor(){
 }
 
 
-bool plane::ray_intersect(ray& rayo, colour& tono, float& distancia) const{
+bool plane::ray_intersect(ray& rayo, colour& tono, float& distancia, vec3 normal) const{
     float t_min = 0;
     float t_max = 99999999;
 
@@ -64,6 +65,7 @@ bool plane::ray_intersect(ray& rayo, colour& tono, float& distancia) const{
         if (dist < t_max && dist > t_min) {
             distancia = dist;
             tono = this->color;
+            normal = this->normal;
             ret = true;
         }
     } else if (denominator2 != 0) {
@@ -72,6 +74,7 @@ bool plane::ray_intersect(ray& rayo, colour& tono, float& distancia) const{
         if (dist < t_max && dist > t_min) {
             distancia = dist;
             tono = this->color;
+            normal = this->normal;
             ret = true;
         }
     }else{
@@ -89,4 +92,12 @@ void plane::material(float& Kd, float& Ks, float& Kr) const {
     Kd = this->diffuse;
     Ks = this->reflective;
     Kr = this->refractive;
+}
+
+bool plane::getEmisor() const {
+    return emisor;
+}
+
+float plane::getRIndex() const {
+    return this->refractIndex;
 }

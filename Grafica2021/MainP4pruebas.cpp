@@ -1,6 +1,6 @@
-#include "lib/shapes/plane.cpp"
-#include "lib/shapes/sphere.cpp"
-#include "lib/shapes/primitiva.hpp"
+#include "lib/shapes2/plane2.cpp"
+#include "lib/shapes2/sphere2.cpp"
+#include "lib/shapes2/primitiva.hpp"
 #include "lib/scene/camera.cpp"
 #include "lib/scene/sceneRender.cpp"
 #include "lib/shapes2/sceneReader2.cpp"
@@ -65,12 +65,12 @@ int main (int argc, char *argv[]) {
     vector<Primitiva*> primitivas;
     for(int i = 0; i< esferas.size(); i++){
         sphere s = esferas.at(i);
-        sphere* a = new sphere(s.center, s.radius, s.color);
+        sphere* a = new sphere(s.center, s.radius, s.color, s.diffuse, s.reflective, s.refractive, s.refractIndex, s.emisor);
         primitivas.push_back(a);
     } 
     for(int i = 0; i< planos.size(); i++){
-        plane p = planos.at(i);
-        plane* a = new plane(p.center, p.normal, p.color);
+        plane p = planos.at(i);        
+        plane* a = new plane(p.center, p.normal, p.color, p.diffuse, p.reflective, p.refractive, p.refractIndex, p.emisor);
         primitivas.push_back(a);
     } 
 

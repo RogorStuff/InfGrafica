@@ -5,13 +5,14 @@
 sphere::sphere(){
 }
 
-sphere::sphere(vec3 center_, float radius_, colour color_, float _diffuse, float _reflective, float _refractive, bool _emisor){
+sphere::sphere(vec3 center_, float radius_, colour color_, float _diffuse, float _reflective, float _refractive, float _refractIndex, bool _emisor){
     this->center=center_;
     this->radius=radius_;
     this->color=color_;
     this->diffuse=_diffuse;
     this->reflective=_reflective;
     this->refractive=_refractive;
+    this->refractIndex=_refractIndex;
     this->emisor=_emisor;
 }
 
@@ -39,7 +40,7 @@ bool sphere::getEmisor(){
     return this->emisor;
 }
 
-bool sphere::ray_intersect(ray& r, colour& tono, float& distancia) const{
+bool sphere::ray_intersect(ray& r, colour& tono, float& distancia, vec3 normal) const{
     vec3 d = r.direccion;
     vec3 o = r.origen;
 
@@ -58,9 +59,14 @@ bool sphere::ray_intersect(ray& r, colour& tono, float& distancia) const{
         tono = this->color;
         if (temp > temp2) {
             distancia = temp2;
-            return true;
+        }else{
+            distancia = temp;
         }
-        distancia = temp;
+            
+        vec3 dondeGolpea = r.origen+(r.direccion*(distancia));
+        vec3 centro = this->center;
+        vec3 normalGolpe = dondeGolpea-centro;     //Vector resultante de origen - golpe
+        normal = normalizarPunto(normalGolpe);
         return true;
     } 
     return false;
@@ -74,4 +80,12 @@ void sphere::material(float& Kd, float& Ks, float& Kr) const {
     Kd = this->diffuse;
     Ks = this->reflective;
     Kr = this->refractive;
+}
+
+bool sphere::getEmisor() const {
+    return emisor;
+}
+
+float sphere::getRIndex() const {
+    return this->refractIndex;
 }

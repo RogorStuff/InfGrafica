@@ -36,6 +36,7 @@ bool sceneReader(vector<sphere> &esferas, vector<plane> &planos, string fileName
         float diffuse;
         float reflective;
         float refractive;
+        float refractIndex;
         bool emisor;
 
         while(getline(fileReader, type, ' ')){
@@ -51,12 +52,11 @@ bool sceneReader(vector<sphere> &esferas, vector<plane> &planos, string fileName
 
                 fileReader >> center[0] >> center[1] >> center[2]; 
                 fileReader >> radius; 
-                fileReader >> color[0] >> color[1] >> color[2]; 
-                fileReader >> color[0] >> color[1] >> color[2]; 
-                fileReader >> diffuse >> reflective >> refractive >> emisor; 
+                fileReader >> color[0] >> color[1] >> color[2];
+                fileReader >> diffuse >> reflective >> refractive >> refractIndex >> emisor; 
                 vec3 newCenter(center[0], center[1], center[2], 0);
                 colour newColor(color[0]/255, color[1]/255, color[2]/255);
-                sphere newSphere(newCenter, radius, newColor, diffuse, reflective, refractive, emisor);
+                sphere newSphere(newCenter, radius, newColor, diffuse, reflective, refractive, refractIndex, emisor);
                 esferas.push_back(newSphere);
                 getline(fileReader, line);  //Leemos el salto de línea y lo guardamos en la basura
 
@@ -65,11 +65,11 @@ bool sceneReader(vector<sphere> &esferas, vector<plane> &planos, string fileName
                 fileReader >> center[0] >> center[1] >> center[2]; 
                 fileReader >> normal[0] >> normal[1] >> normal[2]; 
                 fileReader >> color[0] >> color[1] >> color[2]; 
-                fileReader >> diffuse >> reflective >> refractive >> emisor; 
+                fileReader >> diffuse >> reflective >> refractive >> refractIndex >> emisor; 
                 vec3 newCenter(center[0], center[1], center[2], 0);
                 vec3 newNormal(normal[0], normal[1], normal[2], 0);
                 colour newColor(color[0]/255, color[1]/255, color[2]/255);
-                plane newPlane(newCenter, newNormal, newColor, diffuse, reflective, refractive, emisor);
+                plane newPlane(newCenter, newNormal, newColor, diffuse, reflective, refractive, refractIndex, emisor);
                 planos.push_back(newPlane);
                 getline(fileReader, line);  //Leemos el salto de línea y lo guardamos en la basura
 
