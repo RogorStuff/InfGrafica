@@ -40,7 +40,7 @@ bool plane::getEmisor(){
 }
 
 
-bool plane::ray_intersect(ray& rayo, colour& tono, float& distancia){
+bool plane::ray_intersect(ray& rayo, colour& tono, float& distancia) const{
     float t_min = 0;
     float t_max = 99999999;
 
@@ -79,4 +79,8 @@ bool plane::ray_intersect(ray& rayo, colour& tono, float& distancia){
     }
 
     return ret;
-};
+}
+
+string plane::queSoy() const{
+    return "plano";
+}

@@ -10,13 +10,14 @@
 #include <fstream>
 #include <string.h> 
 #include <stdio.h> 
+#include "primitiva.hpp"
 
 using namespace std;
 
 #ifndef plane_HPP
 #define plane_HPP
 
-class plane {
+class plane : public Primitiva {
     public:
         vec3 center;
         vec3 normal;
@@ -33,7 +34,8 @@ class plane {
         float getReflective();
         float getRefractive();
         bool getEmisor();
-        bool ray_intersect(ray& rayo, colour& tono, float& distancia);
+        bool ray_intersect(ray& rayo, colour& tono, float& distancia) const override;
+        string queSoy() const override;
 };
 
 #endif

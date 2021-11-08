@@ -9,13 +9,14 @@
 #include <fstream>
 #include <string.h> 
 #include <stdio.h> 
+#include "primitiva.hpp"
 
 using namespace std;
 
 #ifndef sphere_HPP
 #define sphere_HPP
 
-class sphere {
+class sphere : public Primitiva {
     public:
         vec3 center;
         float radius;
@@ -32,7 +33,8 @@ class sphere {
         float getReflective();
         float getRefractive();
         bool getEmisor();
-        bool ray_intersect(ray& r, colour& tono, float& distancia);
+        bool ray_intersect(ray& r, colour& tono, float& distancia) const override;
+        string queSoy() const override;
 };
 
 #endif
