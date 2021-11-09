@@ -20,6 +20,7 @@ using namespace std;
 
 
 Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea){
+            cout<<"path"<<endl;
     colour visto = colour(0.0, 0.0, 0.0);
     float distanciaGolpe;
     float menorDistancia = INFINITY;
@@ -40,22 +41,24 @@ Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea)
     }
 
     if (!noGolpea){
-        return resultado;
-        /*
         if (objetoGolpeado->getEmisor()){
             return resultado;
         } else {    //Objeto golpeado no emisor
             bool golpeAux;
             EVENT eventoObjeto = getRandomEvent(objetoGolpeado);
+            cout<<"Evento"<<endl;
             if (eventoObjeto != DEAD){
                 vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, distanciaGolpe);
-                vec3 newDirectionRay = generarDireccion(eventoObjeto, rayoLanzado.direccion, vectorNormal, puntoChoque, objetoGolpeado);
+            cout<<"desplazo"<<endl;
+                vec3 newDirectionRay = generarDireccion(eventoObjeto, rayoLanzado.direccion, vectorNormal, puntoChoque, objetoGolpeado); //Falla ésto
+            cout<<"direction"<<endl;
                 ray nuevoRayo = ray(puntoChoque, newDirectionRay);
+            cout<<"rayo"<<endl;
                 return (resultado * colorPath(primitivas, nuevoRayo, golpeAux));
             }else{
                 return Pixel(0.0, 0.0, 0.0);
             }
-        }*/
+        }
     }
 
     return resultado;
