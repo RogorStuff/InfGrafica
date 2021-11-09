@@ -9,6 +9,7 @@
 #include "../shapes2/sphere2.cpp"
 #include "../shapes2/colour.cpp"
 #include "../progressBar/progressBar.hpp"
+#include "../pathtracing/newDirection.cpp"
 
 #include <time.h>  
 #include <stdlib.h> 
@@ -39,11 +40,22 @@ Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea)
     }
 
     if (!noGolpea){
+        return resultado;
+        /*
         if (objetoGolpeado->getEmisor()){
             return resultado;
         } else {    //Objeto golpeado no emisor
-            ...
-        }
+            bool golpeAux;
+            EVENT eventoObjeto = getRandomEvent(objetoGolpeado);
+            if (eventoObjeto != DEAD){
+                vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, distanciaGolpe);
+                vec3 newDirectionRay = generarDireccion(eventoObjeto, rayoLanzado.direccion, vectorNormal, puntoChoque, objetoGolpeado);
+                ray nuevoRayo = ray(puntoChoque, newDirectionRay);
+                return (resultado * colorPath(primitivas, nuevoRayo, golpeAux));
+            }else{
+                return Pixel(0.0, 0.0, 0.0);
+            }
+        }*/
     }
 
     return resultado;

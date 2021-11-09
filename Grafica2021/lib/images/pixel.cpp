@@ -68,6 +68,11 @@ Pixel media(vector<Pixel> conjunto){
     return Pixel(redValue/pixeles,greenValue/pixeles,blueValue/pixeles);
 }
 
+
+Pixel Pixel::operator*(const Pixel& b){
+    return Pixel(this->R*b.R, this->G*b.G, this->B*b.B);
+}
+
 ostream& operator<<(ostream& os, const Pixel& vec)
 {
     os << "R: "<< vec.R << "| G: " << vec.G << "| B: " << vec.B;

@@ -35,7 +35,7 @@ class plane : public Primitiva {
         float getReflective();
         float getRefractive();
         bool getEmisor();
-        bool ray_intersect(ray& rayo, colour& tono, float& distancia,  vec3 normal) const override;
+        bool ray_intersect(ray& rayo, colour& tono, float& distancia, vec3& normalParam) const override;
         string queSoy() const override;
         void material(float& Kd, float& Ks, float& Kr) const override;
         bool getEmisor() const override;

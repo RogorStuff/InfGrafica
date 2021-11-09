@@ -13,6 +13,7 @@
 #include <iostream>
 
 using namespace std;
+# define M_PI           3.14159265358979323846
 
 enum EVENT {
     DIFFUSE,
@@ -60,33 +61,6 @@ EVENT getRandomEvent(Primitiva* primitiva) {
         return DEAD;
     }
 }
-
-
-vec3 generarDireccion(EVENT e, vec3 entra, vec3 normal, vec3 puntoChoque, Primitiva* obstaculo){
-    switch (e)
-    {
-    case DIFFUSE:
-        return diffuse(entra, normal, puntoChoque);
-        break;
-
-    case REFLECTION:
-        return reflect(entra, normal);
-        break;
-
-    case REFRACTION:
-        return refract(entra, normal, puntoChoque, obstaculo);
-        break;
-
-    case DEAD:
-        return vec3(0.0, 0.0, 0.0, 0);      //Vector nulo
-        break;
-        
-    default:
-        return vec3(0.0, 0.0, 0.0, 0);      //Vector nulo
-        break;
-    }
-}
-
 
 vec3 diffuse(vec3 in, vec3 n, vec3 choque){
     //eo = rand_f(0,1);
@@ -172,3 +146,28 @@ vec3 refract(vec3 in, vec3 n, vec3 choque, Primitiva* obstaculo){
 
     return resultado;
 } 
+
+vec3 generarDireccion(EVENT e, vec3 entra, vec3 normal, vec3 puntoChoque, Primitiva* obstaculo){
+    switch (e)
+    {
+    case DIFFUSE:
+        return diffuse(entra, normal, puntoChoque);
+        break;
+
+    case REFLECTION:
+        return reflect(entra, normal);
+        break;
+
+    case REFRACTION:
+        return refract(entra, normal, puntoChoque, obstaculo);
+        break;
+
+    case DEAD:
+        return vec3(0.0, 0.0, 0.0, 0);      //Vector nulo
+        break;
+        
+    default:
+        return vec3(0.0, 0.0, 0.0, 0);      //Vector nulo
+        break;
+    }
+}

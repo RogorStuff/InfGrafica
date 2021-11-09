@@ -27,6 +27,10 @@ vec3 desplazarPunto(vec3& punto, vec3& direccion){
     return vec3(punto.x+direccion.x, punto.y+direccion.y, punto.z+direccion.z, 1);
 }
 
+vec3 desplazarPunto(vec3& punto, vec3& direccion, float distancia){
+    return vec3(punto.x+direccion.x*distancia, punto.y+direccion.y*distancia, punto.z+direccion.z*distancia, 1);
+}
+
 vec3 vector2puntos(vec3& punto1, vec3& punto2){
     return vec3(punto2.x-punto1.x, punto2.y-punto1.y, punto2.z-punto1.z, 0);
 }

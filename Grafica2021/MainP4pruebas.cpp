@@ -15,15 +15,15 @@
 
 using namespace std;
 
-//Compilar: g++ -std=c++11 MainP3pruebas.cpp -o a -O3
+//Compilar: g++ -std=c++11 MainP4pruebas.cpp -o a -O3
 
 //Ejecutar ppp PPP width WIDTH height HEIGHT filename FILENAME resolution RESOLUTION
 
 int main (int argc, char *argv[]) {
 
-    int numRayos = 150;
-    int width = 500;
-    int height = 500;
+    int numRayos = 100;
+    int width = 100;
+    int height = 100;
     string filename = "salida";
     int resolution = 0;
     char rayosCambiados = false;
@@ -59,7 +59,7 @@ int main (int argc, char *argv[]) {
     vector<sphere> esferas;
     vector<plane> planos;
     bool exito = sceneReader(esferas, planos, "pruebaP4.txt");
-
+    cout<<"Tenemos "<<esferas.size()<<" esferas y "<<planos.size()<<" planos."<<endl;
     
     //Cargamos el vector de primitivas con las esferas y planos anteriores
     vector<Primitiva*> primitivas;

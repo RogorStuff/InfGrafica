@@ -40,7 +40,7 @@ bool sphere::getEmisor(){
     return this->emisor;
 }
 
-bool sphere::ray_intersect(ray& r, colour& tono, float& distancia, vec3 normal) const{
+bool sphere::ray_intersect(ray& r, colour& tono, float& distancia, vec3& normalParam) const{
     vec3 d = r.direccion;
     vec3 o = r.origen;
 
@@ -66,7 +66,7 @@ bool sphere::ray_intersect(ray& r, colour& tono, float& distancia, vec3 normal) 
         vec3 dondeGolpea = r.origen+(r.direccion*(distancia));
         vec3 centro = this->center;
         vec3 normalGolpe = dondeGolpea-centro;     //Vector resultante de origen - golpe
-        normal = normalizarPunto(normalGolpe);
+        normalParam = normalizarPunto(normalGolpe);
         return true;
     } 
     return false;

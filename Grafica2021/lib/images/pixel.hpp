@@ -23,6 +23,7 @@ class Pixel {
         void update(Pixel pixelNuevo);
         void update(colour pixelNuevo);
         Pixel GammaCurve(float gamma, int max, float m, int c);
+        Pixel operator*(const Pixel& b);
 };
 
 #endif
