@@ -75,16 +75,17 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
     vec3 resultado = vec3((sin(theta)*cos(p)), (sin(theta)*sin(p)), cos(theta), 0); 
 
     vec3 z = n;
-    z = normalizarPunto(z);
+    z = normalizar(z);
 
     vec3 aux = vec3(n.x+24, n.y+48 , n.z, 0);
     //vec3 aux = n;
-    //aux.normalizar();
+    aux = normalizar(aux);
     vec3 y = ProductoVectorial(z, aux);
-    y = normalizarPunto(y);
+    
+    y = normalizar(y);
 
     vec3 x = ProductoVectorial(z, y);
-    x = normalizarPunto(x);
+    x = normalizar(x);
 
     vec3 choque_ = choque;
 
@@ -92,7 +93,7 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
     matrix matrizCambioBase = matrix(x, y, z, choque);
     resultado = translation(matrizCambioBase, resultado);
 
-    resultado = normalizarPunto(resultado);
+    resultado = normalizar(resultado);
     return resultado;
 }
 
@@ -100,7 +101,7 @@ vec3 reflect(vec3 in, vec3 n) { //n is the normal of the surface (mirror), in is
     vec3 aux = n*(dot(in, n));
     aux*(2.0);
     vec3 resultado = aux-in;
-    resultado = normalizarPunto(resultado);
+    resultado = normalizar(resultado);
     return resultado;
 }
 

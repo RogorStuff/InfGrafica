@@ -43,8 +43,9 @@ bool plane::getEmisor(){
 
 bool plane::ray_intersect(ray& rayo, colour& tono, float& distancia, vec3& normalParam) const{
     float t_min = 0;
-    float t_max = 99999999;
+    float t_max = INFINITY;
 
+/*
     vec3 l = rayo.direccion;
     vec3 po = this->center;
     vec3 lo = rayo.origen;
@@ -57,7 +58,6 @@ bool plane::ray_intersect(ray& rayo, colour& tono, float& distancia, vec3& norma
 
     float denominator = dot(l, n);
     float denominator2 = dot(l, nNegado);
-
 
     if (denominator != 0) {
         vec3 aux = vector2puntos(lo, po);
@@ -81,7 +81,22 @@ bool plane::ray_intersect(ray& rayo, colour& tono, float& distancia, vec3& norma
         //cout<<"HUGE FUCK"<<endl;
     }
 
-    return ret;
+    return ret;*/
+    //https://stackoverflow.com/questions/23975555/how-to-do-ray-plane-intersection
+    vec3 esteCentro = this->center;
+    vec3 estaNormal = this->normal;
+    float denom = dot(estaNormal, rayo.direccion);
+    if (fabs(denom) > 0){
+        float t = dot((esteCentro-rayo.origen), estaNormal) / denom;
+        if (t >= 0){
+            distancia = t ;
+            tono = this->color;
+            normalParam = this->normal;
+            return true; // you might want to allow an epsilon here too
+        }
+    }
+    return false;
+
 }
 
 string plane::queSoy() const{

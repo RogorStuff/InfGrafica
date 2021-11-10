@@ -46,9 +46,6 @@ bool sphere::ray_intersect(ray& r, colour& tono, float& distancia, vec3& normalP
 
     vec3 oc = this->center;
 
-    float t_min = -1;
-    float t_max = 999999999999999;
-
     float a = dot(d, d);
     float b = dot(oc, d);
     float c = dot(oc, oc) - (this->radius * this->radius);
@@ -70,6 +67,25 @@ bool sphere::ray_intersect(ray& r, colour& tono, float& distancia, vec3& normalP
         return true;
     } 
     return false;
+
+/*
+    vec3 p = this->center;
+    vec3 po = o-p;
+    double t = 1e-4;
+    double b = dot(po, r.direccion);
+    double det = b*b-dot(po, po)+this->radius*this->radius;
+    if(det<0)return false;
+    else det = sqrt(det);
+    float A = b+det;
+    float B = b-det;
+    distancia = (A>B) ? B : A;
+        vec3 dondeGolpea = r.origen+(r.direccion*(distancia));
+        vec3 centro = this->center;
+        vec3 normalGolpe = dondeGolpea-centro;     //Vector resultante de origen - golpe
+        normalParam = normalizar(normalGolpe);
+        tono = this->color;
+        return true;*/
+
 }
 
 string sphere::queSoy() const{

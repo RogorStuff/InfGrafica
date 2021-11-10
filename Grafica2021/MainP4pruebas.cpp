@@ -21,9 +21,9 @@ using namespace std;
 
 int main (int argc, char *argv[]) {
 
-    int numRayos = 100;
-    int width = 100;
-    int height = 100;
+    int numRayos = 20;
+    int width = 500;
+    int height = 500;
     string filename = "salida";
     int resolution = 0;
     char rayosCambiados = false;

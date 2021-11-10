@@ -15,7 +15,7 @@ float vec3::modulo(){
     return sqrt(this->x*this->x+this->y*this->y+this->z*this->z);
 }
 
-float dot(vec3& a, vec3& b){
+float dot(vec3 a, vec3 b){
     return (a.x*b.x+a.y*b.y+a.z*b.z);
 }
 
@@ -37,6 +37,15 @@ vec3 vector2puntos(vec3& punto1, vec3& punto2){
 
 vec3 normalizarPunto(vec3& punto){
     return vec3(punto.x/punto.punto, punto.y/punto.punto, punto.z/punto.punto, punto.punto/punto.punto);
+}
+
+vec3 normalizar(vec3& punto){
+    
+    float mod = punto.modulo();
+    float Ax = punto.x/mod;
+    float Ay = punto.y/mod;
+    float Az = punto.z/mod;
+    return vec3(Ax, Ay, Az, punto.punto);
 }
 
 vec3 negado(vec3 vector){
