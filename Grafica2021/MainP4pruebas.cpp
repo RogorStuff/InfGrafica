@@ -21,9 +21,9 @@ using namespace std;
 
 int main (int argc, char *argv[]) {
 
-    int numRayos = 100;
-    int width = 100;
-    int height = 100;
+    int numRayos = 20;
+    int width = 300;
+    int height = 300;
     string filename = "salida";
     int resolution = 0;
     char rayosCambiados = false;
@@ -85,8 +85,25 @@ int main (int argc, char *argv[]) {
         vec3 sensorApunta(0.0, 0.0, 1.0, 0);
         camera sensor(sensorApuntaU, sensorApuntaI, sensorApunta, sensorCentro);
 
+        /*
+        vec3 rayDirection(0, 0.301, sensor.apunta.z, 0);
+        matrix cameraToWorld(sensor.coordenadasU, sensor.coordenadasI, sensor.apunta, sensor.coordenadasO);
+        //rayDirection = translation(cameraToWorld, rayDirection);
+        ray rayoAux(sensor.coordenadasO,rayDirection);
+        colour colorAux;
+        float distnaciaAux;
+        vec3 normalAux;
+        for (int i=0; i<1;i++){
+            bool testEsfera = primitivas.at(0)->ray_intersect(rayoAux, colorAux, distnaciaAux, normalAux);
+            if(testEsfera){
+                cout<<normalAux<<endl;
+            }
+        }
+        */
+        
         Image resultado = ver(primitivas, sensor, numRayos, filename, width, height);
         resultado.save(filename);
+        
 
     }else{
         cout<<"Ha habido un problema cargando la escena"<<endl;

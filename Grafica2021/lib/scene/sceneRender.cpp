@@ -18,9 +18,11 @@
 
 using namespace std;
 
+matrix cameraToWorld;
+matrix worldToCamera;
+
 
 Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea){
-            cout<<"path"<<endl;
     colour visto = colour(0.0, 0.0, 0.0);
     float distanciaGolpe;
     float menorDistancia = INFINITY;
@@ -42,19 +44,30 @@ Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea)
 
     if (!noGolpea){
         if (objetoGolpeado->getEmisor()){
+            //cout<<"Emisor"<<endl;
             return resultado;
         } else {    //Objeto golpeado no emisor
             bool golpeAux;
             EVENT eventoObjeto = getRandomEvent(objetoGolpeado);
             cout<<"Evento"<<endl;
             if (eventoObjeto != DEAD){
+                vec3 rayodirCamera = translation(worldToCamera, rayoLanzado.direccion);
+                cout<<rayoLanzado.direccion<<"Pasa a "<<rayodirCamera<<endl;
                 vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, distanciaGolpe);
-            cout<<"desplazo"<<endl;
+            //cout<<"desplazo"<<endl;
                 vec3 newDirectionRay = generarDireccion(eventoObjeto, rayoLanzado.direccion, vectorNormal, puntoChoque, objetoGolpeado); //Falla ésto
-            cout<<"direction"<<endl;
+            //cout<<"direction"<<endl;
+                newDirectionRay = translation(cameraToWorld, newDirectionRay);
                 ray nuevoRayo = ray(puntoChoque, newDirectionRay);
-            cout<<"rayo"<<endl;
-                return (resultado * colorPath(primitivas, nuevoRayo, golpeAux));
+            //cout<<"rayo"<<endl;
+
+                if (eventoObjeto == REFLECTION){
+                    //cout<<"Nuevo origen: "<<puntoChoque<<" y nueva direccion "<<newDirectionRay<<endl;
+                    return (colorPath(primitivas, nuevoRayo, golpeAux));
+                }else{
+                    return (resultado * colorPath(primitivas, nuevoRayo, golpeAux));
+                }
+
             }else{
                 return Pixel(0.0, 0.0, 0.0);
             }
@@ -74,9 +87,13 @@ Image ver(vector<Primitiva*> &primitivas, camera sensor, int numRayos, string im
     std::random_device rd;
     std::mt19937 mt(rd());
     std::uniform_real_distribution<float> dist(5.0, 95.0);
+    cout<<"test";
 
     float imageAspectRatio = anchototal / (float)altoTotal; 
-    matrix cameraToWorld(sensor.coordenadasU, sensor.coordenadasI, sensor.apunta, sensor.coordenadasO);
+    cameraToWorld = matrix(sensor.coordenadasU, sensor.coordenadasI, sensor.apunta, sensor.coordenadasO);
+    cout<<"test";
+    worldToCamera = inverseMatrix(cameraToWorld);
+    cout<<"test";
     int totalPixeles = imagen.total;
 
     for (int miraPixel=0; miraPixel < totalPixeles; miraPixel++){
