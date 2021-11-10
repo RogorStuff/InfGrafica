@@ -61,6 +61,7 @@ bool sphere::ray_intersect(ray& r, colour& tono, float& distancia, vec3& normalP
         }
             
         vec3 dondeGolpea = r.origen+(r.direccion*(distancia));
+        //cout<<r.origen<<" "<<r.direccion<<endl;
         vec3 centro = this->center;
         vec3 normalGolpe = dondeGolpea-centro;     //Vector resultante de origen - golpe
         normalParam = normalizarPunto(normalGolpe);

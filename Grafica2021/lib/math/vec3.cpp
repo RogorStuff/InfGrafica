@@ -62,6 +62,34 @@ vec3 ProductoVectorial(vec3 p1, vec3 p2){
     return aux;
 }
 
+vec3 inverso(vec3 v){
+    float x;
+    if(v.x>0){
+        x=1/v.x;
+    }else{
+        x=0;
+    }
+    float y;
+    if(v.y>0){
+        y=1/v.y;
+    }else{
+        y=0;
+    }
+    float z;
+    if(v.z>0){
+        z=1/v.z;
+    }else{
+        z=0;
+    }
+    int punto;
+    if(v.punto>0){
+        punto=1/v.punto;
+    }else{
+        punto=0;
+    }
+    return vec3(x,y,z,punto);
+}
+
 vec3 vec3::operator+(const vec3& b){
     return vec3(this->x+b.x, this->y+b.y, this->z+b.z, this->punto);
 }

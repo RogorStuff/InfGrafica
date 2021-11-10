@@ -91,7 +91,7 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
 
     //Matrix4x4 matrizCambioBase = Matrix4x4(x.c[0],x.c[1],x.c[2],x.tipoPunto,y.c[0],y.c[1],y.c[2], y.tipoPunto,z.c[0],z.c[1],z.c[2], z.tipoPunto,choque_.c[0],choque_.c[1],choque_.c[2], choque_.tipoPunto);
     matrix matrizCambioBase = matrix(x, y, z, choque);
-    resultado = translation(matrizCambioBase, resultado);
+    //resultado = translation(matrizCambioBase, resultado);
 
     resultado = normalizar(resultado);
     return resultado;
@@ -99,9 +99,14 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
 
 vec3 reflect(vec3 in, vec3 n) { //n is the normal of the surface (mirror), in is the received vector
     vec3 aux = n*(dot(in, n));
-    aux*(2.0);
+    aux = aux*(2.0);
     vec3 resultado = aux-in;
+<<<<<<< HEAD
     resultado = normalizar(resultado);
+=======
+    resultado = normalizarPunto(resultado);
+    //cout<<"Direccion tras reflejo "<<resultado<<endl;
+>>>>>>> f2706a53d5ee1ca13af7f02f1df799bf85232452
     return resultado;
 }
 
@@ -144,6 +149,7 @@ vec3 refract(vec3 in, vec3 n, vec3 choque, Primitiva* obstaculo){
     else{
         resultado = (externa*(mu))+(normal*(mu*cosExterior-sqrt(k)));
     }
+    //matrix cambio = matrix()
 
     return resultado;
 } 
