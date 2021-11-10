@@ -33,7 +33,7 @@ EVENT getRandomEvent(Primitiva* primitiva) {
     primitiva->material(Kd, Ks, Kr);
 
     // Max value limit
-    const float MAX = 0.95f;
+    const float MAX = 0.90;
     float sum = Kd + Ks + Kr;
     //if (sum > MAX) {
         Kd *= MAX / sum;
@@ -101,12 +101,7 @@ vec3 reflect(vec3 in, vec3 n) { //n is the normal of the surface (mirror), in is
     vec3 aux = n*(dot(in, n));
     aux = aux*(2.0);
     vec3 resultado = aux-in;
-<<<<<<< HEAD
     resultado = normalizar(resultado);
-=======
-    resultado = normalizarPunto(resultado);
-    //cout<<"Direccion tras reflejo "<<resultado<<endl;
->>>>>>> f2706a53d5ee1ca13af7f02f1df799bf85232452
     return resultado;
 }
 

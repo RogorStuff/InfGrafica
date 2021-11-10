@@ -41,11 +41,10 @@ bool plane::getEmisor(){
 }
 
 
-bool plane::ray_intersect(ray& rayo, colour& tono, float& distancia, vec3& normalParam) const{
+bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normalParam) const{
     float t_min = 0;
     float t_max = INFINITY;
 
-/*
     vec3 l = rayo.direccion;
     vec3 po = this->center;
     vec3 lo = rayo.origen;
@@ -59,44 +58,46 @@ bool plane::ray_intersect(ray& rayo, colour& tono, float& distancia, vec3& norma
     float denominator = dot(l, n);
     float denominator2 = dot(l, nNegado);
 
-    if (denominator != 0) {
+    if (denominator > 0) {
         vec3 aux = vector2puntos(lo, po);
         dist = dot(aux, n) / denominator;
-        if (dist < t_max && dist > t_min) {
+        if (dist > 0) {
             distancia = dist;
             tono = this->color;
             normalParam = this->normal;
             ret = true;
         }
-    } else if (denominator2 != 0) {
+    } else if (denominator2 > 0) {
         vec3 aux = vector2puntos(lo, po);
-        dist = dot(aux, nNegado) / denominator2;
-        if (dist < t_max && dist > t_min) {
+        dist = dot(aux, n) / denominator2;
+        if (dist > 0 && dist<distancia) {
             distancia = dist;
             tono = this->color;
             normalParam = this->normal;
             ret = true;
         }
-    }else{
-        //cout<<"HUGE FUCK"<<endl;
     }
-
-    return ret;*/
+    return ret;
+   /*
     //https://stackoverflow.com/questions/23975555/how-to-do-ray-plane-intersection
+    // Crashea al generar la imagne, parece que es bucle infinito
     vec3 esteCentro = this->center;
     vec3 estaNormal = this->normal;
     float denom = dot(estaNormal, rayo.direccion);
     if (fabs(denom) > 0){
-        float t = dot((esteCentro-rayo.origen), estaNormal) / denom;
-        if (t >= 0){
+        vec3 polo = vector2puntos(rayo.origen, esteCentro);
+        float t = dot(estaNormal, esteCentro);
+        if (t > 0){
             distancia = t ;
             tono = this->color;
             normalParam = this->normal;
-            return true; // you might want to allow an epsilon here too
+            return true;
+        }else{
+            return false;
         }
     }
     return false;
-
+*/
 }
 
 string plane::queSoy() const{

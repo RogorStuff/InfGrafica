@@ -40,7 +40,7 @@ bool sphere::getEmisor(){
     return this->emisor;
 }
 
-bool sphere::ray_intersect(ray& r, colour& tono, float& distancia, vec3& normalParam) const{
+bool sphere::ray_intersect(ray r, colour& tono, float& distancia, vec3& normalParam) const{
     vec3 d = r.direccion;
     vec3 o = r.origen;
 
