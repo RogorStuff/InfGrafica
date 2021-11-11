@@ -43,17 +43,22 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea
     if (!noGolpea){
         if (objetoGolpeado->getEmisor()){
             //cout<<"Emisor"<<endl;
+            //std::cout << "Rayo golpea con emisor" << std::endl;
+            //float kd, ks, ktuputamadre;
+            //objetoGolpeado->material(kd, ks, ktuputamadre);
+            //std::cout << "El emisor golpea tla que " << kd << std::endl;
             return resultado;
         } else {    //Objeto golpeado no emisor
             bool golpeAux;
             EVENT eventoObjeto = getRandomEvent(objetoGolpeado);
             if (eventoObjeto != DEAD){
-                vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, distanciaGolpe);
+                vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, menorDistancia);
                 //cout<<"Antiguo centro: "<<rayoLanzado.origen<<" y antigua direccion "<<rayoLanzado.direccion<<" con distancia "<<distanciaGolpe <<" en iteracion "<<loop<<endl;
+                //cout << "Loop: "<< loop << endl;
                 vec3 newDirectionRay = generarDireccion(eventoObjeto, rayoLanzado.direccion, vectorNormal, puntoChoque, objetoGolpeado);
                 //cout<<"Nuevo direccion: "<<newDirectionRay<<endl;
-                newDirectionRay = normalizar(newDirectionRay);
-                //newDirectionRay = translation(cameraToWorld, newDirectionRay);
+                //newDirectionRay = normalizar(newDirectionRay);
+                newDirectionRay = translation(cameraToWorld, newDirectionRay);
                 ray nuevoRayo = ray(puntoChoque, newDirectionRay);
                 if (eventoObjeto == REFLECTION){
                     //cout<<"Nuevo origen: "<<puntoChoque<<" y nueva direccion "<<newDirectionRay<<endl;
@@ -62,11 +67,14 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea
                     return (resultado * colorPathR(primitivas, nuevoRayo, golpeAux, loop+1));
                 }
             }else{
+                //std::cout << "Rayo muere en ruleta" << std::endl;
                 return Pixel(0.0, 0.0, 0.0);
             }
         }
     }
-
+    else {
+        //std::cout << "Rayo no golpea con nada" << std::endl;
+    }
     return resultado;
 }
 
@@ -101,15 +109,15 @@ Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea)
             bool golpeAux;
             EVENT eventoObjeto = getRandomEvent(objetoGolpeado);
             if (eventoObjeto != DEAD){
-                vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, distanciaGolpe);
+                vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, menorDistancia);
                 //cout<<"Antiguo centro: "<<rayoLanzado.origen<<" y antigua direccion "<<rayoLanzado.direccion<<" con distancia "<<distanciaGolpe <<endl;
                 //cout<<"Nuevo centro: "<<puntoChoque<<endl;
                 vec3 newDirectionRay = generarDireccion(eventoObjeto, rayoLanzado.direccion, vectorNormal, puntoChoque, objetoGolpeado);
-                newDirectionRay = normalizar(newDirectionRay);
-                //newDirectionRay = translation(cameraToWorld, newDirectionRay);
+                //newDirectionRay = normalizar(newDirectionRay);
+                newDirectionRay = translation(cameraToWorld, newDirectionRay);
                 ray nuevoRayo = ray(puntoChoque, newDirectionRay);
+                //cout<<"Nuevo origen: "<<puntoChoque<<" y nueva direccion "<<newDirectionRay<<endl;
                 if (eventoObjeto == REFLECTION){
-                    //cout<<"Nuevo origen: "<<puntoChoque<<" y nueva direccion "<<newDirectionRay<<endl;
                     //return (colorPath(primitivas, nuevoRayo, golpeAux));
                 }else{
                     return (resultado * colorPathR(primitivas, nuevoRayo, golpeAux, 1));

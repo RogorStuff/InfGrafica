@@ -118,8 +118,8 @@ void Image::save(string newFileName){
                 fileTarget << this->imageMatrix[pos].R*this->c << " "<< this->imageMatrix[pos].G*this->c << " "<< this->imageMatrix[pos].B*this->c << "     ";
                 pos++;
             }
-            if (i % 100 == 0){
-                cout << "Guardado " << (float)i*width*100/total << " %" << endl;
+            if (i % 10 == 0){
+                cout << "Guardado " << (float)i*width*10/total << " %" << endl;
             }
             //cout<<i<<"/"<<this->height<<endl;
             fileTarget << endl;

@@ -16,18 +16,21 @@ float vec3::modulo(){
 }
 
 float dot(vec3 a, vec3 b){
-    return (a.x*b.x+a.y*b.y+a.z*b.z);
+    //std::cout << "------------------------" << std::endl;
+    //std::cout << a.x << " " << a.y << " " << a.z << " " << std::endl;
+    //std::cout << b.x << " " << b.y << " " << b.z << " " << std::endl;
+    return (a.x*b.x + a.y*b.y + a.z*b.z);
 }
 
-vec3 cross(vec3& a, vec3& b){
-    return vec3(a.y*b.z-a.z*b.y, a.z*b.x-a.x*b.z, a.x*b.y-a.y*b.x, 0);
+vec3 cross(vec3 a, vec3 b){
+    return vec3(a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x, 0);
 }
 
 vec3 desplazarPunto(vec3& punto, vec3& direccion){
     return vec3(punto.x+direccion.x, punto.y+direccion.y, punto.z+direccion.z, 1);
 }
 
-vec3 desplazarPunto(vec3& punto, vec3& direccion, float distancia){
+vec3 desplazarPunto(vec3& punto, vec3 direccion, float distancia){
     return vec3(punto.x+direccion.x*distancia, punto.y+direccion.y*distancia, punto.z+direccion.z*distancia, 1);
 }
 
@@ -39,7 +42,7 @@ vec3 normalizarPunto(vec3& punto){
     return vec3(punto.x/punto.punto, punto.y/punto.punto, punto.z/punto.punto, punto.punto/punto.punto);
 }
 
-vec3 normalizar(vec3& punto){
+vec3 normalizar(vec3 punto){
     
     float mod = punto.modulo();
     float Ax = punto.x/mod;

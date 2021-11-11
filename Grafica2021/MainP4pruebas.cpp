@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <time.h>
+#include <time.h>
 
 using namespace std;
 
@@ -20,8 +21,9 @@ using namespace std;
 //Ejecutar ppp PPP width WIDTH height HEIGHT filename FILENAME resolution RESOLUTION
 
 int main (int argc, char *argv[]) {
+    srand (time(NULL));
 
-    int numRayos = 1;
+    int numRayos = 20;
     int width = 400;
     int height = 400;
     string filename = "salida";
