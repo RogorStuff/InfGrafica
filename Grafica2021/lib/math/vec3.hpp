@@ -29,6 +29,7 @@ class vec3{
         //vec3 normalizarPunto(vec3& punto);
         vec3 operator+(const vec3& b);
         vec3 operator-(const vec3& b);
+        vec3 operator-()const;
         vec3 operator*(const float& b);
         vec3 operator/(const float& b);
         

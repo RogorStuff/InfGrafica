@@ -48,7 +48,7 @@ bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normal
     vec3 l = rayo.direccion;
     vec3 po = this->center;
     vec3 lo = rayo.origen;
-    vec3 n = normal;
+    vec3 n = this->normal;
     vec3 nNegado = negado(n);
 
     bool ret = false;
@@ -58,8 +58,8 @@ bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normal
     float denominator = dot(l, n);
     float denominator2 = dot(l, nNegado);
 
-    if (denominator > 0) {
-        vec3 aux = vector2puntos(lo, po);
+    if (denominator != 0) {
+        vec3 aux = po-lo;
         dist = dot(aux, n) / denominator;
         if (dist > 0) {
             distancia = dist;
@@ -67,13 +67,13 @@ bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normal
             normalParam = this->normal;
             ret = true;
         }
-    } else if (denominator2 > 0) {
-        vec3 aux = vector2puntos(lo, po);
+    } else if (denominator2 != 0) {
+        vec3 aux = po-lo;
         dist = dot(aux, nNegado) / denominator2;
         if (dist > 0 && dist<distancia) {
             distancia = dist;
             tono = this->color;
-            normalParam = this->normal;
+            normalParam = -(this->normal);
             ret = true;
         }
     }

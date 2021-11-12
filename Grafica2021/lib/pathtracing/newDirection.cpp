@@ -117,11 +117,11 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
     //vec3 aux = n;
     //aux = normalizar(aux);
     vec3 y = cross(z, in);
-    //y = normalizar(y);
+    y = normalizar(y);
 
     vec3 x = cross(z, y);
-    //x = normalizar(x);
-
+    x = normalizar(x);
+    z = normalizar(z);
     //Matrix4x4 matrizCambioBase = Matrix4x4(x.c[0],x.c[1],x.c[2],x.tipoPunto,y.c[0],y.c[1],y.c[2], y.tipoPunto,z.c[0],z.c[1],z.c[2], z.tipoPunto,choque_.c[0],choque_.c[1],choque_.c[2], choque_.tipoPunto);
     matrix matrizCambioBase = matrix(x, y, z, choque);
     //cout<<resultado<<endl;
@@ -136,7 +136,7 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
     float r2 = (float)(rand() % 100)/100.0;
     float r2s = sqrt(r2);
     vec3 w = n;
-    vec3 u = normalizar(cross(fabs(w.x) >.1?vec3(0, 1, 0, 0):vec3(1, 0, 0, 0),w));
+    vec3 u = (cross(fabs(w.x) >.1?vec3(0, 1, 0, 0):vec3(1, 0, 0, 0),w));
     vec3 v = cross(w, u);
     vec3 d = normalizar(u * cos(r1) * r2s + v*sin(r1)*r2s + w*sqrt(1-r2));
 
