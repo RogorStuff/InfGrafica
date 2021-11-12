@@ -26,6 +26,7 @@ class Pixel {
         Pixel operator/(const float& b);
         Pixel operator*(const float& b);
         Pixel operator*(const Pixel& b);
+        Pixel operator+(const Pixel& b);
 };
 
 #endif

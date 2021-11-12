@@ -59,6 +59,7 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea
             }else{
                 eventoObjeto = getRandomEvent(objetoGolpeado);
             }
+            
             if (eventoObjeto != DEAD){
                 vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, menorDistancia);
                 //cout<<"Antiguo centro: "<<rayoLanzado.origen<<" y antigua direccion "<<rayoLanzado.direccion<<" con distancia "<<distanciaGolpe <<" en iteracion "<<loop<<endl;
@@ -66,7 +67,7 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea
                 vec3 newDirectionRay = generarDireccion(eventoObjeto, rayoLanzado.direccion, vectorNormal, puntoChoque, objetoGolpeado);
                 //cout<<"Nuevo direccion: "<<newDirectionRay<<endl;
                 //newDirectionRay = normalizar(newDirectionRay);
-                newDirectionRay = translation(cameraToWorld, newDirectionRay);
+                //newDirectionRay = translation(cameraToWorld, newDirectionRay);
                 ray nuevoRayo = ray(puntoChoque, newDirectionRay);
                 if (eventoObjeto == REFLECTION){
                     //cout<<"Nuevo origen: "<<puntoChoque<<" y nueva direccion "<<newDirectionRay<<endl;
@@ -192,9 +193,9 @@ Image ver(vector<Primitiva*> &primitivas, camera sensor, int numRayos, string im
             bool noGolpeado;
             Pixel devuelto = colorPath(primitivas, rayo, noGolpeado);
 
-            if(!noGolpeado){
-                recibidos.push_back(devuelto);            //TODO CUIDADO QUE IGUAL ES REFERENCIA Y PASA TODO A 0 0 0
-            }
+            //if(!noGolpeado){
+            recibidos.push_back(devuelto);            //TODO CUIDADO QUE IGUAL ES REFERENCIA Y PASA TODO A 0 0 0
+            //}
         }
 
         
