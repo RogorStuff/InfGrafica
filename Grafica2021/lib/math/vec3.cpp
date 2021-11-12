@@ -99,6 +99,12 @@ vec3 vec3::operator+(const vec3& b){
 vec3 vec3::operator-(const vec3& b){
     return vec3(this->x-b.x, this->y-b.y, this->z-b.z, this->punto);
 }
+vec3 vec3::operator-()const{
+    float _x = this->x * -1;
+    float _y = this->y * -1;
+    float _z = this->z * -1;
+    return vec3(_x, _y, _z, this->punto);
+}
 vec3 vec3::operator*(const float& b){
     return vec3(this->x*b, this->y*b, this->z*b, this->punto);
 }

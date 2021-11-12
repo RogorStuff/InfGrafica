@@ -73,7 +73,7 @@ Pixel Pixel::operator*(const Pixel& b){
     return Pixel(this->R*b.R, this->G*b.G, this->B*b.B);
 }*/
 Pixel Pixel::operator*(const Pixel& b){
-    return Pixel((this->R+b.R)/2, (this->G+b.G)/2, (this->B+b.B)/2);
+    return Pixel((this->R*b.R), (this->G*b.G), (this->B*b.B));
 }
 Pixel Pixel::operator*(const float& b){
     return Pixel(this->R*b, this->G*b, this->B*b);
