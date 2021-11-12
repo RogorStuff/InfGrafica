@@ -119,7 +119,7 @@ void Image::save(string newFileName){
                 pos++;
             }
             if (i % 10 == 0){
-                cout << "Guardado " << (float)i*width*10/total << " %" << endl;
+                cout << "Guardado " << (float)i*width*100/total << " %" << endl;
             }
             //cout<<i<<"/"<<this->height<<endl;
             fileTarget << endl;

@@ -45,7 +45,7 @@ EVENT getRandomEvent(Primitiva* primitiva) {
     std::mt19937 mt(rd());
     std::uniform_real_distribution<double> dist(0.0, 1.0);
 
-    float randomZTO = dist(mt); //((double) rand() / (RAND_MAX));
+    float randomZTO = (float)(rand() % 100)/100.0; //((double) rand() / (RAND_MAX));
 
     if ((randomZTO -= Kd) < 0) {
         // DIFFUSE case
@@ -59,6 +59,42 @@ EVENT getRandomEvent(Primitiva* primitiva) {
     } else {
         // DEAD case
         return DEAD;
+    }
+}
+
+EVENT getRandomEvent2(Primitiva* primitiva) {
+    // Russian roulette
+    
+    float Kd;
+    float Ks;
+    float Kr;
+    
+    primitiva->material(Kd, Ks, Kr);
+
+    // Max value limit
+    const float MAX = 1.0;
+    float sum = Kd + Ks + Kr;
+    //if (sum > MAX) {
+        Kd *= MAX / sum;
+        Ks *= MAX / sum;
+        Kr *= MAX / sum;
+    //}
+
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_real_distribution<double> dist(0.0, 1.0);
+
+    float randomZTO = (float)(rand() % 100)/100.0; //((double) rand() / (RAND_MAX));
+
+    if ((randomZTO -= Kd) < 0) {
+        // DIFFUSE case
+        return DIFFUSE;
+    } else if ((randomZTO -= Ks) < 0) {
+        // SPECULAR case 
+        return REFLECTION;
+    } else if ((randomZTO -= Kr) < 0) {
+        // REFRACTION case
+        return REFRACTION;
     }
 }
 

@@ -50,7 +50,15 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea
             return resultado;
         } else {    //Objeto golpeado no emisor
             bool golpeAux;
-            EVENT eventoObjeto = getRandomEvent(objetoGolpeado);
+            EVENT eventoObjeto;
+            if(loop<4){
+                eventoObjeto = getRandomEvent2(objetoGolpeado);
+                while (eventoObjeto == DEAD){
+                    eventoObjeto = getRandomEvent2(objetoGolpeado);
+                }
+            }else{
+                eventoObjeto = getRandomEvent(objetoGolpeado);
+            }
             if (eventoObjeto != DEAD){
                 vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, menorDistancia);
                 //cout<<"Antiguo centro: "<<rayoLanzado.origen<<" y antigua direccion "<<rayoLanzado.direccion<<" con distancia "<<distanciaGolpe <<" en iteracion "<<loop<<endl;
@@ -64,6 +72,9 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea
                     //cout<<"Nuevo origen: "<<puntoChoque<<" y nueva direccion "<<newDirectionRay<<endl;
                     return (colorPathR(primitivas, nuevoRayo, golpeAux,0));
                 }else{
+                    if(loop==2){
+                        resultado = Pixel(0.0, 0.0, 0.0);
+                    }
                     return (resultado * colorPathR(primitivas, nuevoRayo, golpeAux, loop+1));
                 }
             }else{
@@ -118,8 +129,9 @@ Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea)
                 ray nuevoRayo = ray(puntoChoque, newDirectionRay);
                 //cout<<"Nuevo origen: "<<puntoChoque<<" y nueva direccion "<<newDirectionRay<<endl;
                 if (eventoObjeto == REFLECTION){
-                    //return (colorPath(primitivas, nuevoRayo, golpeAux));
+                    return (colorPath(primitivas, nuevoRayo, golpeAux));
                 }else{
+                       // resultado = Pixel(0.0, 0.0, 0.0);
                     return (resultado * colorPathR(primitivas, nuevoRayo, golpeAux, 1));
                 }
             }else{
