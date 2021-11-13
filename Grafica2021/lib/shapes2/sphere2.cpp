@@ -40,31 +40,33 @@ bool sphere::getEmisor(){
     return this->emisor;
 }
 
-
+//https://viclw17.github.io/2018/07/16/raytracing-ray-sphere-intersection/
 bool sphere::ray_intersect(ray r, colour& tono, float& distancia, vec3& normalParam) const{
-    vec3 d = r.direccion;
-    vec3 o = r.origen;
-    vec3 oc =this->center;
+    vec3 d = (r.direccion);
+    vec3 o = (r.origen);
+    vec3 oc =(this->center);
+    vec3 oc2 = (o-oc);
 
     float a = dot(d, d);
-    float b = dot(oc, d);
-    float c = dot(oc, oc) - (this->radius * this->radius);
-    float discriminant = (b * b) - ((a * c));
+    float b = 2*dot(d, oc2);
+    float c = dot(oc2, oc2) - (this->radius * this->radius);
+    float discriminant = (b * b) - (4*(a * c));
     if (discriminant > 0) {
-        float temp = fabs((-b - sqrt(discriminant)) / a);
-        float temp2 = fabs((-b + sqrt(discriminant)) / a);
-        tono = this->color;
-        if (temp > temp2) {
-            distancia = temp2;
+        float temp = (-(b + sqrt(discriminant)) / 2*a);
+        float temp2 = (-(b - sqrt(discriminant)) / 2*a);
+        if ((temp) > (temp2)) {
+            distancia = (temp2);
         }else{
-            distancia = temp;
+            distancia = (temp);
         }
             
-        vec3 dondeGolpea = r.origen+(r.direccion*(distancia));
+        tono = this->color;
+        vec3 dondeGolpea = desplazarPunto(o, d, distancia);
+        distancia = fabs(distancia);
         vec3 centro = this->center;
-        vec3 normalGolpe = dondeGolpea-centro;     //Vector resultante de origen - golpe
-        //normalParam = normalizar(normalGolpe);
+        vec3 normalGolpe = vector2puntos(centro, dondeGolpea);     //Vector resultante de origen - golpe
         normalParam = normalGolpe;
+        //normalParam = normalizar(normalGolpe);
         return true;
     } 
     return false;

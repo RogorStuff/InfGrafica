@@ -51,14 +51,14 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea
         } else {    //Objeto golpeado no emisor
             bool golpeAux;
             EVENT eventoObjeto;
-            /*if(loop<4){
+            if(loop<4){
                 eventoObjeto = getRandomEvent2(objetoGolpeado);
                 while (eventoObjeto == DEAD){
                     eventoObjeto = getRandomEvent2(objetoGolpeado);
                 }
-            }else{*/
+            }else{
                 eventoObjeto = getRandomEvent(objetoGolpeado);
-            //}
+            }
             if (eventoObjeto != DEAD){
                 vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, menorDistancia);
                 //cout<<"Antiguo centro: "<<rayoLanzado.origen<<" y antigua direccion "<<rayoLanzado.direccion<<" con distancia "<<distanciaGolpe <<" en iteracion "<<loop<<endl;
@@ -204,9 +204,9 @@ Image ver(vector<Primitiva*> &primitivas, camera sensor, int numRayos, string im
         
 
         if (miraPixel % 1000 == 0){
-            cout << "Calculados " << (float)miraPixel*100/totalPixeles << " % de pixeles" << endl;
+            cout << "\r" << "Calculados " << (float)miraPixel*100/totalPixeles << " % de pixeles";
         }
     }
-    cout << "Calculados " << "100" << " % de pixeles" << endl;
+    cout << "\r" << "Calculados " << "100" << " % de pixeles" << endl;
     return imagen;
 }

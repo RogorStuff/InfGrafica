@@ -110,7 +110,7 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
 
     vec3 resultado = vec3((sin(theta)*cos(p)), (sin(theta)*sin(p)), cos(theta), 0); 
     vec3 z = n;
-    //z = normalizar(z);
+    z = normalizar(z);
 
     //vec3 aux = vec3(n.x, n.y , n.z, 0);
     //vec3 aux = n;

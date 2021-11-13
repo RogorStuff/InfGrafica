@@ -23,7 +23,7 @@ using namespace std;
 int main (int argc, char *argv[]) {
     srand (time(NULL));
 
-    int numRayos = 20;
+    int numRayos = 1;
     int width = 400;
     int height = 400;
     string filename = "salida";

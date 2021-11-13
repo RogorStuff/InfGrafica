@@ -111,7 +111,6 @@ void Image::save(string newFileName){
         fileTarget << "# " <<newFileName<<".ppm"<< endl;
         fileTarget << this->width<<" " <<this->height<< endl;
         fileTarget << this->c << endl;
-
         int pos=0;
         for (int i=0; i<this->height;i++){    //this->height
             for (int j=0; j<this->width;j++){ //this->width
@@ -119,14 +118,14 @@ void Image::save(string newFileName){
                 pos++;
             }
             if (i % 10 == 0){
-                cout << "Guardado " << (float)i*width*100/total << " %" << endl;
+                cout<< "\r" << "Guardado " << (float)i*width*100/total << " %" ;
             }
             //cout<<i<<"/"<<this->height<<endl;
             fileTarget << endl;
         }
         fileTarget.close();
-        cout << "Guardado " << "100" << " %" << endl;
-        cout << "Acaba guardado"<<endl;
+        cout << "\r" << "Guardado " << "100" << " %";
+        cout << endl <<"Acaba guardado"<<endl;
 
     }else{
         cout << "No se pudo abrir o encontrar la imagen" << endl;
