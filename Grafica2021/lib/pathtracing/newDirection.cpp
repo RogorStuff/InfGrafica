@@ -96,6 +96,7 @@ EVENT getRandomEvent2(Primitiva* primitiva) {
         // REFRACTION case
         return REFRACTION;
     }
+    return DEAD;
 }
 
 vec3 diffuse(vec3 in, vec3 n, vec3 choque){

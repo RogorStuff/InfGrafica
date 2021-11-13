@@ -65,13 +65,16 @@ Pixel media(vector<Pixel> conjunto){
     if(pixeles == 0){
         pixeles=1;
     }
-    return Pixel(redValue/pixeles,greenValue/pixeles,blueValue/pixeles);
+    return Pixel(redValue/pixeles , greenValue/pixeles , blueValue/pixeles);
 }
 
 /*
 Pixel Pixel::operator*(const Pixel& b){
     return Pixel(this->R*b.R, this->G*b.G, this->B*b.B);
 }*/
+Pixel Pixel::operator+(const Pixel& b){
+    return Pixel((this->R+b.R), (this->G+b.G), (this->B+b.B));
+}
 Pixel Pixel::operator*(const Pixel& b){
     return Pixel((this->R*b.R), (this->G*b.G), (this->B*b.B));
 }

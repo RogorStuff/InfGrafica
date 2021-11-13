@@ -193,7 +193,7 @@ Image ver(vector<Primitiva*> &primitivas, camera sensor, int numRayos, string im
             Pixel devuelto = colorPath(primitivas, rayo, noGolpeado);
 
             //if(!noGolpeado){
-                recibidos.push_back(devuelto);            //TODO CUIDADO QUE IGUAL ES REFERENCIA Y PASA TODO A 0 0 0
+            recibidos.push_back(devuelto);            //TODO CUIDADO QUE IGUAL ES REFERENCIA Y PASA TODO A 0 0 0
             //}
         }
 

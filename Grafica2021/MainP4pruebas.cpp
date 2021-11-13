@@ -35,24 +35,24 @@ int main (int argc, char *argv[]) {
     char resolutionCambiado = false;
 
     for (int i = 1; i < argc; i++){
-        if (strcmp (argv[i], "ppp")){
+        if (strcmp (argv[i], "ppp") == 0){
             numRayos = atoi(argv[i+1]);
-            cout<<"Hay"<<endl;
+            cout<<"Hay "<< argv[i] << endl;
             rayosCambiados = true;
         }
-        if (strcmp (argv[i], "width")){
+        if (strcmp (argv[i], "width") == 0){
             width = atoi(argv[i+1]);
             widthCambiado = true;
         }
-        if (strcmp (argv[i], "height")){
+        if (strcmp (argv[i], "height") == 0){
             height = atoi(argv[i+1]);
             heightCambiado = true;
         }
-        if (strcmp (argv[i], "filename")){
+        if (strcmp (argv[i], "filename") == 0){
             filename = (argv[i+1]);
             filenameCambiado = true;
         }
-        if (strcmp (argv[i], "resolution")){
+        if (strcmp (argv[i], "resolution") == 0){
             resolution = atoi(argv[i+1]);
             resolutionCambiado = true;
         }
