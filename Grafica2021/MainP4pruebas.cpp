@@ -4,6 +4,7 @@
 #include "lib/scene/camera.cpp"
 #include "lib/scene/sceneRender.cpp"
 #include "lib/shapes2/sceneReader2.cpp"
+#include "lib/images/image.cpp"
 
 #include <iostream>
 #include <fstream>
@@ -23,9 +24,9 @@ using namespace std;
 int main (int argc, char *argv[]) {
     srand (time(NULL));
 
-    int numRayos = 50;
-    int width = 400;
-    int height = 400;
+    int numRayos = 20;
+    int width = 300;
+    int height = 300;
     string filename = "salida";
     int resolution = 0;
     char rayosCambiados = false;

@@ -60,7 +60,7 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea
                 eventoObjeto = getRandomEvent(objetoGolpeado);
             }
             if (eventoObjeto != DEAD){
-                vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, menorDistancia);
+                vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion);
                 //cout<<"Antiguo centro: "<<rayoLanzado.origen<<" y antigua direccion "<<rayoLanzado.direccion<<" con distancia "<<distanciaGolpe <<" en iteracion "<<loop<<endl;
                 //cout << "Loop: "<< loop << endl;
                 vec3 newDirectionRay = generarDireccion(eventoObjeto, rayoLanzado.direccion, vectorNormal, puntoChoque, objetoGolpeado);
@@ -69,10 +69,10 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea
                 //newDirectionRay = translation(cameraToWorld, newDirectionRay);
                 ray nuevoRayo = ray(puntoChoque, newDirectionRay);
                 if (eventoObjeto == REFLECTION){
-                    //cout<<"Nuevo origen: "<<puntoChoque<<" y nueva direccion "<<newDirectionRay<<endl;
-                    return (colorPathR(primitivas, nuevoRayo, golpeAux,0));
+                    //cout<<"Reflejo con Nuevo origen: "<<puntoChoque<<" y nueva direccion "<<newDirectionRay<<endl;
+                    return (colorPathR(primitivas, nuevoRayo, golpeAux,loop+1));
                 }else{
-                    if(loop==2){
+                    if(loop==6){
                         //resultado = Pixel(0.0, 0.0, 0.0);
                     }
                     return (resultado * colorPathR(primitivas, nuevoRayo, golpeAux, loop+1));
@@ -121,7 +121,9 @@ Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea)
             EVENT eventoObjeto = getRandomEvent(objetoGolpeado);
             if (eventoObjeto != DEAD){
                 vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, menorDistancia);
+                if(rayoLanzado.direccion.y<0.8){
                 //cout<<"Antiguo centro: "<<rayoLanzado.origen<<" y antigua direccion "<<rayoLanzado.direccion<<" con distancia "<<distanciaGolpe <<endl;
+                }
                 //cout<<"Nuevo centro: "<<puntoChoque<<endl;
                 vec3 newDirectionRay = generarDireccion(eventoObjeto, rayoLanzado.direccion, vectorNormal, puntoChoque, objetoGolpeado);
                 //newDirectionRay = normalizar(newDirectionRay);  //Esto aclara, puede que no deba estar

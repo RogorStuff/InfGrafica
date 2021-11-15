@@ -111,24 +111,24 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
 
     vec3 resultado = vec3((sin(theta)*cos(p)), (sin(theta)*sin(p)), cos(theta), 0); 
     vec3 z = n;
-    z = normalizar(z);
+    //z = normalizar(z);
 
     //vec3 aux = vec3(n.x, n.y , n.z, 0);
     //vec3 aux = n;
     //aux = normalizar(aux);
     vec3 y = cross(z, in);
-    y = normalizar(y);
+    //y = normalizar(y);
 
     vec3 x = cross(z, y);
-    x = normalizar(x);
-    z = normalizar(z);
+    //x = normalizar(x);
+    //z = normalizar(z);
     //Matrix4x4 matrizCambioBase = Matrix4x4(x.c[0],x.c[1],x.c[2],x.tipoPunto,y.c[0],y.c[1],y.c[2], y.tipoPunto,z.c[0],z.c[1],z.c[2], z.tipoPunto,choque_.c[0],choque_.c[1],choque_.c[2], choque_.tipoPunto);
-    matrix matrizCambioBase = matrix(x, y, z, choque);
+    matrix matrizCambioBase = matrix(x, y, z, n);
     //cout<<resultado<<endl;
     resultado = baseChange(matrizCambioBase, resultado);
     //cout<<resultado<<endl;
 
-    resultado = normalizar(resultado);
+    //resultado = normalizar(resultado);
 
     return resultado;
 /*
@@ -145,10 +145,10 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
 }
 
 vec3 reflect(vec3 in, vec3 n) { //n is the normal of the surface (mirror), in is the received vector
-    vec3 aux = n*(dot(in, n));
-    aux = aux*(2.0);
-    vec3 resultado = aux-in;
-    resultado = normalizar(resultado);
+    //vec3 aux = n*(dot(in, n));
+    //aux = aux*(2.0);
+    vec3 resultado = in-(n*dot(in,n)*2.0);
+    //resultado = normalizar(resultado);
     return resultado;
 }
 
