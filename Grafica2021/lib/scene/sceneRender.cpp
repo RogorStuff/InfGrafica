@@ -205,7 +205,7 @@ Image ver(vector<Primitiva*> &primitivas, camera sensor, int numRayos, string im
         //cout<<"No impacta";
         
 
-        if (miraPixel % 1000 == 0){
+        if (miraPixel % 10000 == 0){
             cout << "\r" << "Calculados " << (float)miraPixel*100/totalPixeles << " % de pixeles";
         }
     }

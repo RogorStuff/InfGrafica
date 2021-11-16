@@ -42,7 +42,7 @@ bool plane::getEmisor(){
 
 
 bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normalParam) const{
-    float t_min = 0;
+    float t_min = 0.0;
     float t_max = INFINITY;
 
     vec3 l = rayo.direccion;

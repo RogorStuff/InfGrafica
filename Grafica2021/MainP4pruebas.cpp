@@ -38,7 +38,6 @@ int main (int argc, char *argv[]) {
     for (int i = 1; i < argc; i++){
         if (strcmp (argv[i], "ppp") == 0){
             numRayos = atoi(argv[i+1]);
-            cout<<"Hay "<< argv[i] << endl;
             rayosCambiados = true;
         }
         if (strcmp (argv[i], "width") == 0){
@@ -82,7 +81,7 @@ int main (int argc, char *argv[]) {
 
         //Generamos la cámara
         
-        vec3 sensorCentro(0.0, 0.0, 0.0, 1);
+        vec3 sensorCentro(10.0, 10.0, 10.0, 1);
         vec3 sensorApuntaI(-1.0, 0.0, 0.0, 0);
         vec3 sensorApuntaU(0.0, -1.0, 0.0, 0);
         vec3 sensorApunta(0.0, 0.0, 1.0, 0);
