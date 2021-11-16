@@ -51,21 +51,22 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea
         } else {    //Objeto golpeado no emisor
             bool golpeAux;
             EVENT eventoObjeto;
-            if(loop<4){
+            /*if(loop<4){
                 eventoObjeto = getRandomEvent2(objetoGolpeado);
                 while (eventoObjeto == DEAD){
                     eventoObjeto = getRandomEvent2(objetoGolpeado);
                 }
-            }else{
+            }else{*/
                 eventoObjeto = getRandomEvent(objetoGolpeado);
-            }
+            //}
             if (eventoObjeto != DEAD){
-                vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion);
+                vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, menorDistancia);
+                //vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion);
                 //cout<<"Antiguo centro: "<<rayoLanzado.origen<<" y antigua direccion "<<rayoLanzado.direccion<<" con distancia "<<distanciaGolpe <<" en iteracion "<<loop<<endl;
                 //cout << "Loop: "<< loop << endl;
                 vec3 newDirectionRay = generarDireccion(eventoObjeto, rayoLanzado.direccion, vectorNormal, puntoChoque, objetoGolpeado);
                 //cout<<"Nuevo direccion: "<<newDirectionRay<<endl;
-                //newDirectionRay = normalizar(newDirectionRay);  //Esto aclara, puede que no deba estar
+                newDirectionRay = normalizar(newDirectionRay);  //Esto aclara, puede que no deba estar
                 //newDirectionRay = translation(cameraToWorld, newDirectionRay);
                 ray nuevoRayo = ray(puntoChoque, newDirectionRay);
                 if (eventoObjeto == REFLECTION){
@@ -78,7 +79,7 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea
                     return (resultado * colorPathR(primitivas, nuevoRayo, golpeAux, loop+1));
                 }
             }else{
-                //std::cout << "Rayo muere en ruleta" << std::endl;
+                //std::cout << "Rayo muere en ruleta con normal "<< resultado<<" en rebote "<<loop<< std::endl;
                 return Pixel(0.0, 0.0, 0.0);
             }
         }
@@ -113,6 +114,8 @@ Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea)
     }
 
     if (!noGolpea){
+                //cout<<objetoGolpeado->queSoy();
+                //cout<<" y distancia "<<menorDistancia<<endl;
         if (objetoGolpeado->getEmisor()){
             //cout<<"Emisor"<<endl;
             return resultado;
@@ -121,12 +124,13 @@ Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea)
             EVENT eventoObjeto = getRandomEvent(objetoGolpeado);
             if (eventoObjeto != DEAD){
                 vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, menorDistancia);
+                //vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion);
                 if(rayoLanzado.direccion.y<0.8){
                 //cout<<"Antiguo centro: "<<rayoLanzado.origen<<" y antigua direccion "<<rayoLanzado.direccion<<" con distancia "<<distanciaGolpe <<endl;
                 }
                 //cout<<"Nuevo centro: "<<puntoChoque<<endl;
                 vec3 newDirectionRay = generarDireccion(eventoObjeto, rayoLanzado.direccion, vectorNormal, puntoChoque, objetoGolpeado);
-                //newDirectionRay = normalizar(newDirectionRay);  //Esto aclara, puede que no deba estar
+                newDirectionRay = normalizar(newDirectionRay);  //Esto aclara, puede que no deba estar
                 //newDirectionRay = translation(cameraToWorld, newDirectionRay);
                 ray nuevoRayo = ray(puntoChoque, newDirectionRay);
                 //cout<<"Nuevo origen: "<<puntoChoque<<" y nueva direccion "<<newDirectionRay<<endl;
@@ -181,6 +185,7 @@ Image ver(vector<Primitiva*> &primitivas, camera sensor, int numRayos, string im
             float Y = (float)(dist(mt))/100;
             // Ponemos las coordenadas en la esquina superior izquierda y desplazamos dentro de dicho margen
             vec3 rayDirection(x+X/(float)anchototal, y+Y/(float)altoTotal, sensor.apunta.z, 0);
+            rayDirection = normalizar(rayDirection);
             // Generar rayo
             //rayDirection = translation(cameraToWorld, rayDirection);
             ray rayoAux(sensor.coordenadasO,rayDirection);

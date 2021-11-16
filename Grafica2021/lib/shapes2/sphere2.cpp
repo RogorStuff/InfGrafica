@@ -44,7 +44,7 @@ bool sphere::getEmisor(){
 bool sphere::ray_intersect(ray r, colour& tono, float& distancia, vec3& normalParam) const{
 
     
-    
+    /*
     vec3 d = (r.direccion);
     vec3 d2 = normalizar(d);
     vec3 o = (r.origen);
@@ -58,8 +58,8 @@ bool sphere::ray_intersect(ray r, colour& tono, float& distancia, vec3& normalPa
     vec3 dondeGolpea;// = desplazarPunto(o, d);
     vec3 normalGolpe;
     if (discriminant >= 0) {
-        float temp = ((b + sqrt(discriminant)) / 2.0*a); //Esto técnicamente esta mal
-        float temp2 = ((b - sqrt(discriminant)) / 2.0*a);
+        float temp = (-(b + sqrt(discriminant)) / 2.0*a);
+        float temp2 = (-(b - sqrt(discriminant)) / 2.0*a);
             
         tono = this->color;
 
@@ -67,23 +67,112 @@ bool sphere::ray_intersect(ray r, colour& tono, float& distancia, vec3& normalPa
             distancia = (temp);
             vec3 aux = d2 * distancia;
             dondeGolpea = desplazarPunto(o, aux);
-            //normalGolpe = vector2puntos(dondeGolpea, oc); 
-            normalGolpe = vector2puntos(oc, dondeGolpea);
+            normalGolpe = vector2puntos(dondeGolpea, oc); 
+            //normalGolpe = vector2puntos(oc, dondeGolpea);
         }else{
             distancia = (temp2);
             vec3 aux = d2 * distancia;
             dondeGolpea = desplazarPunto(o, aux);  
-            //normalGolpe = vector2puntos(dondeGolpea, oc);
-            normalGolpe = vector2puntos(oc, dondeGolpea);  
+            normalGolpe = vector2puntos(dondeGolpea, oc);
+            //normalGolpe = vector2puntos(oc, dondeGolpea);  
         }
         //vec3 normalGolpe = vector2puntos(centro, dondeGolpea);     //Vector resultante de origen - golpe
         normalParam = normalGolpe;
-        //normalParam = normalizar(normalGolpe);
+        normalParam = normalizar(normalGolpe);
         return true;
     } 
     return false;
+*/
 
-    
+
+
+    vec3 oc = r.origen - this->center;
+    vec3 rdir = normalizar(r.direccion);
+    float a = dot(rdir, rdir);
+    float b = 2.0 * dot(oc, rdir);
+    float c = dot(oc,oc) - this->radius*this->radius;
+    float discriminant = b*b - 4*a*c;
+    tono = this->color;
+    if(discriminant < 0){
+        return false;
+    }
+    else{
+
+/*
+        distancia =  (-b - sqrt(discriminant)) / (2.0*a);
+        tono = this->color;
+        vec3 dondeGolpea = desplazarPunto(r.origen, r.direccion, distancia);
+        vec3 normalGolpe = vector2puntos( this->center, dondeGolpea ); //centro - impacto
+        normalParam = normalizar(normalGolpe);
+        return true;
+*/
+        float numerator = -b - sqrt(discriminant);
+        if (numerator > 0.0) {
+            distancia = numerator / (2.0 * a);
+             tono = this->color;
+            vec3 dondeGolpea = desplazarPunto(r.origen, rdir, distancia);
+            vec3 normalGolpe = vector2puntos( this->center, dondeGolpea ); //centro - impacto
+            normalParam = normalizar(normalGolpe);
+            return true;
+        }
+
+        numerator = -b + sqrt(discriminant);
+        if (numerator > 0.0) {
+             distancia = numerator / (2.0 * a);
+             tono = this->color;
+            vec3 dondeGolpea = desplazarPunto(r.origen, rdir, distancia);
+            vec3 normalGolpe = vector2puntos( this->center, dondeGolpea ); //centro - impacto
+            normalParam = normalizar(normalGolpe);
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    }
+
+
+
+
+/*
+    vec3 d = normalizar(r.direccion);
+    vec3 o = r.origen;
+    vec3 c = this->center;
+    float r2 = this->radius;
+
+    float t1, t2;
+
+    vec3 l = l-(o);
+    float tca = dot(l, d);
+
+    if(tca < 0) return false;
+
+    float d2 = dot(l,l) - tca * tca;
+
+    if (d2 > r2 * r2) return false; 
+
+    float thc = sqrt((r2*r2)-d2);
+    t1 = tca - thc;
+    t2 = tca + thc;
+
+    if(t1 > t2) swap(t1,t2);
+    if(t1 < 0) {
+        t1 = t2;
+        if(t1 < 0){
+            return false;
+        }
+    }
+
+    tono = this->color;
+    distancia = t1;
+    vec3 dondeGolpea = o+(normalizar(d)*(distancia));
+    vec3 normalGolpe = dondeGolpea-(c);     //Vector resultante de origen - golpe
+    vec3 aux = d * distancia;
+    dondeGolpea = desplazarPunto(o, aux);
+    normalGolpe = vector2puntos(dondeGolpea, c); 
+    normalParam = normalizar(normalGolpe);
+    return true;
+    */
    
    /*
    vec3 oc = r.origen - center;

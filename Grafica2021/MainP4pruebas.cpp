@@ -24,9 +24,9 @@ using namespace std;
 int main (int argc, char *argv[]) {
     srand (time(NULL));
 
-    int numRayos = 20;
-    int width = 300;
-    int height = 300;
+    int numRayos = 15;
+    int width = 2000;
+    int height = 2000;
     string filename = "salida";
     int resolution = 0;
     char rayosCambiados = false;
@@ -88,20 +88,21 @@ int main (int argc, char *argv[]) {
         camera sensor(sensorApuntaU, sensorApuntaI, sensorApunta, sensorCentro);
 
         /*
-        vec3 rayDirection(0, 0.301, sensor.apunta.z, 0);
-        matrix cameraToWorld(sensor.coordenadasU, sensor.coordenadasI, sensor.apunta, sensor.coordenadasO);
+        vec3 rayDirection(0.0, -0.0, sensor.apunta.z, 0);
+        //matrix cameraToWorld(sensor.coordenadasU, sensor.coordenadasI, sensor.apunta, sensor.coordenadasO);
         //rayDirection = translation(cameraToWorld, rayDirection);
         ray rayoAux(sensor.coordenadasO,rayDirection);
         colour colorAux;
         float distnaciaAux;
         vec3 normalAux;
-        for (int i=0; i<1;i++){
-            bool testEsfera = primitivas.at(0)->ray_intersect(rayoAux, colorAux, distnaciaAux, normalAux);
+        for (int i=0; i<primitivas.size();i++){
+            bool testEsfera = primitivas.at(i)->ray_intersect(rayoAux, colorAux, distnaciaAux, normalAux);
             if(testEsfera){
-                cout<<normalAux<<endl;
+                cout<<primitivas.at(i)->queSoy()<<endl;
+                cout<<normalAux<<" y distancia "<<distnaciaAux<<endl;
             }
-        }
-        */
+        }*/
+        
         
         Image resultado = ver(primitivas, sensor, numRayos, filename, width, height);
         resultado.save(filename);

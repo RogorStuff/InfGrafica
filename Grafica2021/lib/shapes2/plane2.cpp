@@ -64,7 +64,7 @@ bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normal
         if (dist > 0) {
             distancia = dist;
             tono = this->color;
-            normalParam = this->normal;
+            normalParam = normalizar(this->normal);
             ret = true;
         }
     } else if (denominator2 != 0) {
@@ -73,7 +73,7 @@ bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normal
         if (dist > 0 && dist<distancia) {
             distancia = dist;
             tono = this->color;
-            normalParam = -(this->normal);
+            normalParam = normalizar(nNegado);
             ret = true;
         }
     }
