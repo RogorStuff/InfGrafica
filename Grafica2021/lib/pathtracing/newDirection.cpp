@@ -35,11 +35,11 @@ EVENT getRandomEvent(Primitiva* primitiva) {
     // Max value limit
     const float MAX = 0.95;
     float sum = Kd + Ks + Kr;
-    //if (sum > MAX) {
+    if (sum > MAX) {
         Kd *= MAX / sum;
         Ks *= MAX / sum;
         Kr *= MAX / sum;
-    //}
+    }
 
     std::random_device rd;
     std::mt19937 mt(rd());
@@ -110,16 +110,15 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
     float p = 2.0 * M_PI * ((float)(rand() % 100)/100.0);      //Azimuth
 
     vec3 resultado = vec3((sin(theta)*cos(p)), (sin(theta)*sin(p)), cos(theta), 0); 
-    vec3 z = n;
+    vec3 y = n;
     //z = normalizar(z);
-
     //vec3 aux = vec3(n.x, n.y , n.z, 0);
     //vec3 aux = n;
     //aux = normalizar(aux);
-    vec3 y = cross(z, in);
+    vec3 x = cross(y, in);
     //y = normalizar(y);
 
-    vec3 x = cross(z, y);
+    vec3 z = cross(y, x);
     //x = normalizar(x);
     //z = normalizar(z);
     //Matrix4x4 matrizCambioBase = Matrix4x4(x.c[0],x.c[1],x.c[2],x.tipoPunto,y.c[0],y.c[1],y.c[2], y.tipoPunto,z.c[0],z.c[1],z.c[2], z.tipoPunto,choque_.c[0],choque_.c[1],choque_.c[2], choque_.tipoPunto);
