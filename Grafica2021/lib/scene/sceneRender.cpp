@@ -60,7 +60,7 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea
                 eventoObjeto = getRandomEvent(objetoGolpeado);
             //}
             if (eventoObjeto != DEAD){
-                vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, menorDistancia);
+                vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, normalizar(rayoLanzado.direccion), menorDistancia);
                 //vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion);
                 //cout<<"Antiguo centro: "<<rayoLanzado.origen<<" y antigua direccion "<<rayoLanzado.direccion<<" con distancia "<<distanciaGolpe <<" en iteracion "<<loop<<endl;
                 //cout << "Loop: "<< loop << endl;
@@ -123,11 +123,11 @@ Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea)
             bool golpeAux;
             EVENT eventoObjeto = getRandomEvent(objetoGolpeado);
             if (eventoObjeto != DEAD){
-                vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, menorDistancia);
+                vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, normalizar(rayoLanzado.direccion), menorDistancia);
                 //vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion);
-                if(rayoLanzado.direccion.y<0.8){
-                //cout<<"Antiguo centro: "<<rayoLanzado.origen<<" y antigua direccion "<<rayoLanzado.direccion<<" con distancia "<<distanciaGolpe <<endl;
-                }
+                //if(rayoLanzado.direccion.y<0.8){
+                    //cout<<"Antiguo centro: "<<rayoLanzado.origen<<" y antigua direccion "<<rayoLanzado.direccion<<" con distancia "<<distanciaGolpe <<endl;
+                //}
                 //cout<<"Nuevo centro: "<<puntoChoque<<endl;
                 vec3 newDirectionRay = generarDireccion(eventoObjeto, rayoLanzado.direccion, vectorNormal, puntoChoque, objetoGolpeado);
                 newDirectionRay = normalizar(newDirectionRay);  //Esto aclara, puede que no deba estar
