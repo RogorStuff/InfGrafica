@@ -85,11 +85,10 @@ bool sphere::ray_intersect(ray r, colour& tono, float& distancia, vec3& normalPa
 */
 
 
-
     vec3 oc = r.origen - this->center;
     vec3 rdir = normalizar(r.direccion);
     float a = dot(rdir, rdir);
-    float b = 2.0 * dot(oc, rdir);
+    float b = 2*dot(oc, rdir);
     float c = dot(oc,oc) - this->radius*this->radius;
     float discriminant = b*b - 4*a*c;
     tono = this->color;
@@ -98,30 +97,22 @@ bool sphere::ray_intersect(ray r, colour& tono, float& distancia, vec3& normalPa
     }
     else{
 
-/*
-        distancia =  (-b - sqrt(discriminant)) / (2.0*a);
-        tono = this->color;
-        vec3 dondeGolpea = desplazarPunto(r.origen, r.direccion, distancia);
-        vec3 normalGolpe = vector2puntos( this->center, dondeGolpea ); //centro - impacto
-        normalParam = normalizar(normalGolpe);
-        return true;
-*/
-        float numerator = -b - sqrt(discriminant);
-        if (numerator > 0.0) {
-            distancia = numerator / (2.0 * a);
+        float numerator = -b - 2*sqrt(discriminant);
+        if (numerator >= 0.0) {
+            distancia = numerator / (2*a);
              tono = this->color;
             vec3 dondeGolpea = desplazarPunto(r.origen, rdir, distancia);
-            vec3 normalGolpe = vector2puntos( this->center, dondeGolpea ); //centro - impacto
+            vec3 normalGolpe = vector2puntos( this->center, dondeGolpea ); //impacto - centro
             normalParam = normalizar(normalGolpe);
             return true;
         }
 
-        numerator = -b + sqrt(discriminant);
-        if (numerator > 0.0) {
-             distancia = numerator / (2.0 * a);
+        numerator = -b + 2*sqrt(discriminant);
+        if (numerator >= 0.0) {
+             distancia = numerator / (2*a);
              tono = this->color;
             vec3 dondeGolpea = desplazarPunto(r.origen, rdir, distancia);
-            vec3 normalGolpe = vector2puntos( this->center, dondeGolpea ); //centro - impacto
+            vec3 normalGolpe = vector2puntos( this->center, dondeGolpea ); //impacto - centro
             normalParam = normalizar(normalGolpe);
             return true;
         }
@@ -132,22 +123,56 @@ bool sphere::ray_intersect(ray r, colour& tono, float& distancia, vec3& normalPa
     }
 
 
-
-
 /*
-    vec3 d = normalizar(r.direccion);
+//http://kylehalladay.com/blog/tutorial/math/2013/12/24/Ray-Sphere-Intersection.html
+    vec3 d = r.direccion;
     vec3 o = r.origen;
     vec3 c = this->center;
     float r2 = this->radius;
 
     float t1, t2;
 
-    vec3 l = l-(o);
-    float tca = dot(l, d);
+    vec3 L = c-o;
+    float tc = dot(L, d);
+
+    if(tc < 0) return false;
+
+    float d2 = tc * tc - dot(L,L);
+
+    if (d2 > r2 * r2) return false; 
+
+    float thc = sqrt((r2*r2)-d2);
+    t1 = tc - thc;
+    t2 = tc + thc;
+
+    if(t1 > t2) swap(t1,t2);
+    if(t1 < 0) {
+        t1 = t2;
+    }
+
+    tono = this->color;
+    distancia = t1;
+    vec3 dondeGolpea = o+(d)*(distancia);
+    vec3 normalGolpe = dondeGolpea-(c);     //Vector resultante de origen - golpe
+    normalParam = normalizar(normalGolpe);
+    return true;
+*/
+
+/*
+    vec3 d = normalizar(r.direccion);
+    vec3 l = r.direccion;
+    vec3 o = r.origen;
+    vec3 c = this->center;
+    float r2 = this->radius;
+
+    float t1, t2;
+
+    vec3 L = l-(o);
+    float tca = dot(L, d);
 
     if(tca < 0) return false;
 
-    float d2 = dot(l,l) - tca * tca;
+    float d2 = dot(L,L) - tca * tca;
 
     if (d2 > r2 * r2) return false; 
 

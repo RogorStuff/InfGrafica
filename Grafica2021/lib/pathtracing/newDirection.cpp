@@ -106,8 +106,8 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
     std::uniform_real_distribution<double> dist(0.0, 1.0);
 
 
-    float theta = acos(sqrt(dist(mt)));   //Inclinacion
-    float p = 2.0 * M_PI * (dist(mt));      //Azimuth
+    float theta = acos(sqrt((float)(rand() % 100)/100.0));   //Inclinacion
+    float p = 2.0 * M_PI * ((float)(rand() % 100)/100.0);      //Azimuth
 
     vec3 resultado = vec3((sin(theta)*cos(p)), (sin(theta)*sin(p)), cos(theta), 0); 
     //vec3 y = n;
@@ -119,7 +119,7 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
     x = normalizar(x);
 
     //vec3 z = cross(y, x);
-    vec3 y = cross(z, x);
+    vec3 y = cross(x, z);
     y = normalizar(y);
     
     matrix matrizCambioBase = matrix(x, y, z, choque);
@@ -145,17 +145,17 @@ vec3 reflect(vec3 in, vec3 n) { //n is the normal of the surface (mirror), in is
     //vec3 aux = n*(dot(in, n));
     //aux = aux*(2.0);
     vec3 resultado = in-(n*dot(in,n)*2.0);
-    //resultado = normalizar(resultado);
+    resultado = normalizar(resultado);
     return resultado;
 }
 
 
 vec3 refract(vec3 in, vec3 n, vec3 choque, Primitiva* obstaculo){
 
-    float refraccionExterior = 1.0003F;
+    float refraccionExterior = 1.001;
     float refraccionObject = obstaculo->getRIndex();
 
-    float mu = refraccionExterior/(refraccionObject+0.01);
+    float mu = refraccionExterior/(refraccionObject+0.001);
 
     vec3 normal = n;
     vec3 externa = in;
@@ -188,7 +188,6 @@ vec3 refract(vec3 in, vec3 n, vec3 choque, Primitiva* obstaculo){
     else{
         resultado = (externa*(mu))+(normal*(mu*cosExterior-sqrt(k)));
     }
-    //matrix cambio = matrix()
 
     return resultado;
 } 
