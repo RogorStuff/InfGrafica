@@ -81,7 +81,7 @@ int main (int argc, char *argv[]) {
 
         //Generamos la cámara
         
-        vec3 sensorCentro(0.0, 0.0, -10.0, 1);
+        vec3 sensorCentro(10.0, 10.0, 10.0, 1);
         vec3 sensorApuntaI(-1.0, 0.0, 0.0, 0);
         vec3 sensorApuntaU(0.0, -1.0, 0.0, 0);
         vec3 sensorApunta(0.0, 0.0, 1.0, 0);
