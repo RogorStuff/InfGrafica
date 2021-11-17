@@ -42,6 +42,8 @@ bool plane::getEmisor(){
 
 
 bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normalParam) const{
+
+    
     float t_min = 0.0;
     float t_max = INFINITY;
 
@@ -58,26 +60,30 @@ bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normal
     float denominator = dot(l, n);
     float denominator2 = dot(l, nNegado);
 
-    if (denominator != 0) {
+    if (denominator != 0.0) {
         vec3 aux = po-lo;
         dist = dot(aux, n) / denominator;
-        if (dist > 0) {
+        //dist = fabs(dist);
+        if (dist > 0 && dist < 100000) {
             distancia = dist;
             tono = this->color;
             normalParam = normalizar(this->normal);
             ret = true;
         }
-    } else if (denominator2 != 0) {
+    } else if (denominator2 != 0.0) {
         vec3 aux = po-lo;
-        dist = dot(aux, nNegado) / denominator2;
-        if (dist > 0 && dist<distancia) {
+        dist = dot(aux, n) / denominator2;
+        //dist = fabs(dist);
+        if (dist > 0 && dist < 100000) {
             distancia = dist;
             tono = this->color;
-            normalParam = normalizar(nNegado);
+            normalParam = normalizar(n);
             ret = true;
         }
     }
     return ret;
+
+
     /*
     //https://stackoverflow.com/questions/23975555/how-to-do-ray-plane-intersection
     // Crashea al generar la imagne, parece que es bucle infinito
