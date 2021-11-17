@@ -106,8 +106,8 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
     std::uniform_real_distribution<double> dist(0.0, 1.0);
 
 
-    float theta = acos(sqrt(dist(mt)));   //Inclinacion
-    float p = 2.0 * M_PI * (dist(mt));      //Azimuth
+    float theta = acos(sqrt((float)(rand() % 100)/100.0));   //Inclinacion
+    float p = 2.0 * M_PI * ((float)(rand() % 100)/100.0);      //Azimuth
 
     vec3 resultado = vec3((sin(theta)*cos(p)), (sin(theta)*sin(p)), cos(theta), 0); 
     //vec3 y = n;
