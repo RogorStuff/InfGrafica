@@ -33,7 +33,7 @@ EVENT getRandomEvent(Primitiva* primitiva) {
     primitiva->material(Kd, Ks, Kr);
 
     // Max value limit
-    const float MAX = 0.95;
+    const float MAX = 0.9;
     float sum = Kd + Ks + Kr;
     if (sum > MAX) {
         Kd *= MAX / sum;
@@ -100,7 +100,7 @@ EVENT getRandomEvent2(Primitiva* primitiva) {
 }
 
 vec3 diffuse(vec3 in, vec3 n, vec3 choque){
-
+/*
     std::random_device rd;
     std::mt19937 mt(rd());
     std::uniform_real_distribution<double> dist(0.0, 1.0);
@@ -110,15 +110,12 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
     float p = 2.0 * M_PI * ((float)(rand() % 100)/100.0);      //Azimuth
 
     vec3 resultado = vec3((sin(theta)*cos(p)), (sin(theta)*sin(p)), cos(theta), 0); 
-    //vec3 y = n;
     vec3 z = n;
     z = normalizar(z);
 
-    //vec3 x = cross(y, vec3(y.y, y.z, y.x, 0));
-    vec3 x = cross(z, vec3(z.y, z.z, z.x, 0));
+    vec3 x = cross(in, z);
     x = normalizar(x);
 
-    //vec3 z = cross(y, x);
     vec3 y = cross(x, z);
     y = normalizar(y);
     
@@ -128,7 +125,8 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
     resultado = normalizar(resultado);
 
     return resultado;
-/*
+*/
+
     float r1 = 2*M_PI*((float)(rand() % 100)/100.0);
     float r2 = (float)(rand() % 100)/100.0;
     float r2s = sqrt(r2);
@@ -138,12 +136,10 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
     vec3 d = normalizar(u * cos(r1) * r2s + v*sin(r1)*r2s + w*sqrt(1-r2));
 
     return d;
-    */
+    
 }
 
 vec3 reflect(vec3 in, vec3 n) { //n is the normal of the surface (mirror), in is the received vector
-    //vec3 aux = n*(dot(in, n));
-    //aux = aux*(2.0);
     vec3 resultado = in-(n*dot(in,n)*2.0);
     resultado = normalizar(resultado);
     return resultado;

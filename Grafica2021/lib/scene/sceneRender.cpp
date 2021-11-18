@@ -20,18 +20,18 @@ using namespace std;
 
 matrix cameraToWorld;
 
-Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea, int loop){
+Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, int loop){
     colour visto = colour(0.0, 0.0, 0.0);
     float distanciaGolpe;
     float menorDistancia = INFINITY;
     Pixel resultado;
-    noGolpea = true;
+    bool golpea = false;
     vec3 vectorNormal;
     Primitiva* objetoGolpeado;
     for (Primitiva* p : primitivas){
 
         if (p->ray_intersect(rayoLanzado, visto, distanciaGolpe, vectorNormal)){
-            noGolpea = false;
+            golpea = true;
             if (distanciaGolpe < menorDistancia){
                 resultado.update(visto);
                 menorDistancia=distanciaGolpe;
@@ -40,13 +40,8 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea
         }
     }
 
-    if (!noGolpea){
+    if (golpea){
         if (objetoGolpeado->getEmisor()){
-            //cout<<"Emisor"<<endl;
-            //std::cout << "Rayo golpea con emisor" << std::endl;
-            //float kd, ks, ktuputamadre;
-            //objetoGolpeado->material(kd, ks, ktuputamadre);
-            //std::cout << "El emisor golpea tla que " << kd << std::endl;
             return resultado;
         } else {    //Objeto golpeado no emisor
             bool golpeAux;
@@ -61,31 +56,19 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea
             //}
             if (eventoObjeto != DEAD){
                 vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, menorDistancia);
-                //vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion);
-                //cout<<"Antiguo centro: "<<rayoLanzado.origen<<" y antigua direccion "<<rayoLanzado.direccion<<" con distancia "<<distanciaGolpe <<" en iteracion "<<loop<<endl;
-                //cout << "Loop: "<< loop << endl;
                 vec3 newDirectionRay = generarDireccion(eventoObjeto, rayoLanzado.direccion, vectorNormal, puntoChoque, objetoGolpeado);
-                //cout<<"Nuevo direccion: "<<newDirectionRay<<endl;
-                newDirectionRay = normalizar(newDirectionRay);  //Esto aclara, puede que no deba estar
-                //newDirectionRay = translation(cameraToWorld, newDirectionRay);
+                //newDirectionRay = normalizar(newDirectionRay);    //Se normaliza en generarDireccion
                 ray nuevoRayo = ray(puntoChoque, newDirectionRay);
                 if (eventoObjeto == REFLECTION){
                     //cout<<"Reflejo con Nuevo origen: "<<puntoChoque<<" y nueva direccion "<<newDirectionRay<<endl;
-                    return (colorPathR(primitivas, nuevoRayo, golpeAux,loop+1));
+                    return (colorPathR(primitivas, nuevoRayo,loop+1));
                 }else{
-                    if(loop==6){
-                        //resultado = Pixel(0.0, 0.0, 0.0);
-                    }
-                    return (resultado * colorPathR(primitivas, nuevoRayo, golpeAux, loop+1));
+                    return (resultado * colorPathR(primitivas, nuevoRayo, loop+1));
                 }
             }else{
-                //std::cout << "Rayo muere en ruleta con normal "<< resultado<<" en rebote "<<loop<< std::endl;
                 return Pixel(0.0, 0.0, 0.0);
             }
         }
-    }
-    else {
-        //std::cout << "Rayo no golpea con nada" << std::endl;
     }
     return resultado;
 }
@@ -93,18 +76,18 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea
 
 
 
-Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea){
+Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado){
     colour visto = colour(0.0, 0.0, 0.0);
     float distanciaGolpe;
     float menorDistancia = INFINITY;
     Pixel resultado;
-    noGolpea = true;
+    bool golpea = false;
     vec3 vectorNormal;
     Primitiva* objetoGolpeado;
     for (Primitiva* p : primitivas){
 
         if (p->ray_intersect(rayoLanzado, visto, distanciaGolpe, vectorNormal)){
-            noGolpea = false;
+            golpea = true;
             if (distanciaGolpe < menorDistancia){
                 resultado.update(visto);
                 menorDistancia=distanciaGolpe;
@@ -113,32 +96,21 @@ Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado, bool& noGolpea)
         }
     }
 
-    if (!noGolpea){
-                //cout<<objetoGolpeado->queSoy();
-                //cout<<" y distancia "<<menorDistancia<<endl;
+    if (golpea){
         if (objetoGolpeado->getEmisor()){
-            //cout<<"Emisor"<<endl;
             return resultado;
         } else {    //Objeto golpeado no emisor
-            bool golpeAux;
             EVENT eventoObjeto = getRandomEvent(objetoGolpeado);
             if (eventoObjeto != DEAD){
                 vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, menorDistancia);
-                //vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion);
-                if(rayoLanzado.direccion.y<0.8){
-                //cout<<"Antiguo centro: "<<rayoLanzado.origen<<" y antigua direccion "<<rayoLanzado.direccion<<" con distancia "<<distanciaGolpe <<endl;
-                }
-                //cout<<"Nuevo centro: "<<puntoChoque<<endl;
                 vec3 newDirectionRay = generarDireccion(eventoObjeto, rayoLanzado.direccion, vectorNormal, puntoChoque, objetoGolpeado);
-                newDirectionRay = normalizar(newDirectionRay);  //Esto aclara, puede que no deba estar
-                //newDirectionRay = translation(cameraToWorld, newDirectionRay);
+                //newDirectionRay = normalizar(newDirectionRay);    //Se normaliza en generarDireccion
                 ray nuevoRayo = ray(puntoChoque, newDirectionRay);
-                //cout<<"Nuevo origen: "<<puntoChoque<<" y nueva direccion "<<newDirectionRay<<endl;
                 if (eventoObjeto == REFLECTION){
-                    return (colorPathR(primitivas, nuevoRayo, golpeAux, 1));
+                    return (colorPathR(primitivas, nuevoRayo, 1));
                 }else{
                     // resultado = Pixel(0.0, 0.0, 0.0);
-                    return (resultado * colorPathR(primitivas, nuevoRayo, golpeAux, 1));
+                    return (resultado * colorPathR(primitivas, nuevoRayo, 1));
                 }
             }else{
                 return Pixel(0.0, 0.0, 0.0);
@@ -186,8 +158,6 @@ Image ver(vector<Primitiva*> &primitivas, camera sensor, int numRayos, string im
             // Ponemos las coordenadas en la esquina superior izquierda y desplazamos dentro de dicho margen
             vec3 rayDirection(x+X/(float)anchototal, y+Y/(float)altoTotal, sensor.apunta.z, 0);
             rayDirection = normalizar(rayDirection);
-            // Generar rayo
-            //rayDirection = translation(cameraToWorld, rayDirection);
             ray rayoAux(sensor.coordenadasO,rayDirection);
             // Añadimos rayo al conjunto total
             rayos.push_back(rayoAux);
@@ -196,24 +166,17 @@ Image ver(vector<Primitiva*> &primitivas, camera sensor, int numRayos, string im
         vector<Pixel> recibidos;    //Tenemos todos los rayos, empezamos a mirar que color devuelve cada rayo
         for (ray rayo : rayos){
 
-            bool noGolpeado;
-            Pixel devuelto = colorPath(primitivas, rayo, noGolpeado);
+            Pixel devuelto = colorPath(primitivas, rayo);
 
-            //if(!noGolpeado){
-            recibidos.push_back(devuelto);            //TODO CUIDADO QUE IGUAL ES REFERENCIA Y PASA TODO A 0 0 0
-            //}
+            recibidos.push_back(devuelto);
         }
 
-        
         imagen.imageMatrix[miraPixel]=media(recibidos);
-        
-        //cout<<"No impacta";
-        
 
         if (miraPixel % 10000 == 0){
-            cout << "\r" << "Calculados " << (float)miraPixel*100/totalPixeles << " % de pixeles";
+            cout << "\r" << "Calculados " << (float)miraPixel*100/totalPixeles << " % de pixeles     ";
         }
     }
-    cout << "\r" << "Calculados " << "100" << " % de pixeles" << endl;
+    cout << "\r" << "Calculados " << "100" << " % de pixeles     " << endl;
     return imagen;
 }

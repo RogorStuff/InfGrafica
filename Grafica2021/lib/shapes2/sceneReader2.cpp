@@ -69,7 +69,7 @@ bool sceneReader(vector<sphere> &esferas, vector<plane> &planos, string fileName
                 vec3 newCenter(center[0], center[1], center[2], 0);
                 vec3 newNormal(normal[0], normal[1], normal[2], 0);
                 colour newColor(color[0]/255, color[1]/255, color[2]/255);
-                plane newPlane(newCenter, newNormal, newColor, diffuse, reflective, refractive, refractIndex, emisor);
+                plane newPlane(newCenter, normalizar(newNormal), newColor, diffuse, reflective, refractive, refractIndex, emisor);
                 planos.push_back(newPlane);
                 //if (newPlane.getEmisor()){std::cout << "Guardado plano" << center << " que es emisor" << emisor << std::endl;}
                 getline(fileReader, line);  //Leemos el salto de línea y lo guardamos en la basura

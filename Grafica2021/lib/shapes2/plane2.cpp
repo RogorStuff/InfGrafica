@@ -43,10 +43,6 @@ bool plane::getEmisor(){
 
 bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normalParam) const{
 
-    
-    float t_min = 0.0;
-    float t_max = INFINITY;
-
     vec3 l = rayo.direccion;
     vec3 po = this->center;
     vec3 lo = rayo.origen;
@@ -54,7 +50,6 @@ bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normal
     vec3 nNegado = negado(n);
 
     bool ret = false;
-
     float dist = 0.0;
 
     float denominator = dot(l, n);
@@ -63,21 +58,19 @@ bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normal
     if (denominator != 0.0) {
         vec3 aux = po-lo;
         dist = dot(aux, n) / denominator;
-        //dist = fabs(dist);
-        if (dist > 0 && dist < 100000) {
+        if (dist > 0) {
             distancia = dist;
             tono = this->color;
-            normalParam = normalizar(this->normal);
+            normalParam = n;
             ret = true;
         }
     } else if (denominator2 != 0.0) {
         vec3 aux = po-lo;
-        dist = dot(aux, n) / denominator2;
-        //dist = fabs(dist);
-        if (dist > 0 && dist < 100000) {
+        dist = dot(aux, nNegado) / denominator2;
+        if (dist > 0) {
             distancia = dist;
             tono = this->color;
-            normalParam = normalizar(n);
+            normalParam = nNegado;
             ret = true;
         }
     }
