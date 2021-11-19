@@ -146,13 +146,13 @@ bool sphere::ray_intersect(ray r, colour& tono, float& distancia, vec3& normalPa
     if(t1 > t2) swap(t1,t2);
     if(t1 < 0) {
         t1 = t2;
-        if (t1 < 0) return false;
+        if (t1 < 0 || t1 > 1000) return false;
     }
 
     tono = this->color;
     distancia = t1;
-    vec3 dondeGolpea = o+(d)*(distancia);
-    vec3 normalGolpe = dondeGolpea-(c);     //Vector resultante de origen - golpe
+    vec3 dondeGolpea = o+d*distancia;
+    vec3 normalGolpe = dondeGolpea-c;
     normalParam = normalizar(normalGolpe);
     return true;
 

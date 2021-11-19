@@ -100,7 +100,7 @@ EVENT getRandomEvent2(Primitiva* primitiva) {
 }
 
 vec3 diffuse(vec3 in, vec3 n, vec3 choque){
-/*
+
     std::random_device rd;
     std::mt19937 mt(rd());
     std::uniform_real_distribution<double> dist(0.0, 1.0);
@@ -125,8 +125,8 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
     resultado = normalizar(resultado);
 
     return resultado;
-*/
 
+/*
     float r1 = 2*M_PI*((float)(rand() % 100)/100.0);
     float r2 = (float)(rand() % 100)/100.0;
     float r2s = sqrt(r2);
@@ -136,12 +136,14 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
     vec3 d = normalizar(u * cos(r1) * r2s + v*sin(r1)*r2s + w*sqrt(1-r2));
 
     return d;
-    
+    */
 }
 
 vec3 reflect(vec3 in, vec3 n) { //n is the normal of the surface (mirror), in is the received vector
+//cout<<"REFLEJHA con entrada "<<in<<" y normal "<<n;
     vec3 resultado = in-(n*dot(in,n)*2.0);
     resultado = normalizar(resultado);
+//cout<<" y salida "<<resultado<<endl;
     return resultado;
 }
 
