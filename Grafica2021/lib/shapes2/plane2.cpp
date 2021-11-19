@@ -64,6 +64,7 @@ bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normal
             normalParam = n;
             ret = true;
         }
+        
     } else if (denominator2 != 0.0) {
         vec3 aux = po-lo;
         dist = dot(aux, nNegado) / denominator2;
@@ -75,28 +76,7 @@ bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normal
         }
     }
     return ret;
-
-
-    /*
-    //https://stackoverflow.com/questions/23975555/how-to-do-ray-plane-intersection
-    // Crashea al generar la imagne, parece que es bucle infinito
-    vec3 esteCentro = this->center;
-    vec3 estaNormal = this->normal;
-    float denom = dot(estaNormal, rayo.direccion);
-    if (fabs(denom) > 0){
-        vec3 polo = vector2puntos(rayo.origen, esteCentro);
-        float t = dot(estaNormal, esteCentro);
-        if (t > 0){
-            distancia = t ;
-            tono = this->color;
-            normalParam = this->normal;
-            return true;
-        }else{
-            return false;
-        }
-    }
-    return false;
-    */
+    
 }
 
 string plane::queSoy() const{
