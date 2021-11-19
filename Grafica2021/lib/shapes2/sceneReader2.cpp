@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../images/pixel.cpp"
 #include "plane2.cpp"
 #include "sphere2.cpp"
 #include "colour.cpp"
@@ -85,6 +86,36 @@ bool sceneReader(vector<sphere> &esferas, vector<plane> &planos, string fileName
         return true;
     }else{
         cout << "No se pudo abrir o encontrar el escenario" << endl;
+        return false;
+    }
+}
+
+bool textureReader(vector<Pixel> &textura, string fileName){
+    ifstream fileReader(fileName);
+    if (fileReader.is_open()){
+
+        float rValue;
+        string line;
+
+        while(true){
+                fileReader >> rValue;
+                getline(fileReader, line);  //Leemos el salto de línea y lo guardamos en la basura
+                if (rValue < 0){break;}
+                float gValue, bValue;
+                fileReader >> gValue;
+                getline(fileReader, line);  //Leemos el salto de línea y lo guardamos en la basura
+                fileReader >> bValue;
+                getline(fileReader, line);  //Leemos el salto de línea y lo guardamos en la basura
+                Pixel nuevo = Pixel(rValue/255, gValue/255, bValue/255);
+                textura.push_back(nuevo);
+
+            rValue = -1;
+        }
+
+        cout << "Textura Cargada" << endl;
+        return true;
+    }else{
+        cout << "No se pudo cargar la textura" << endl;
         return false;
     }
 }

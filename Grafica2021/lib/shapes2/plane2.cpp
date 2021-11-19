@@ -70,7 +70,7 @@ bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normal
         if (dist > 0) {
             distancia = dist;
             tono = this->color;
-            normalParam = nNegado;
+            normalParam = n;
             ret = true;
         }
     }

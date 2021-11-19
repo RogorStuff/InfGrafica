@@ -24,9 +24,9 @@ using namespace std;
 int main (int argc, char *argv[]) {
     srand (time(NULL));
 
-    int numRayos = 40;
-    int width = 2000;
-    int height = 2000;
+    int numRayos = 10;
+    int width = 1000;
+    int height = 1000;
     string filename = "salida";
     int resolution = 0;
     char rayosCambiados = false;
@@ -82,8 +82,8 @@ int main (int argc, char *argv[]) {
         //Generamos la cámara
         
         vec3 sensorCentro(0.0, 0.0, 0.0, 1);
-        vec3 sensorApuntaI(1.0, 0.0, 0.0, 0);       //palado, x
-        vec3 sensorApuntaU(0.0, 1.0, 0.0, 0);       //Parriba, y
+        vec3 sensorApuntaI(-1.0, 0.0, 0.0, 0);       //palado, x
+        vec3 sensorApuntaU(0.0, -1.0, 0.0, 0);       //Parriba, y
         vec3 sensorApunta(0.0, 0.0, 1.0, 0);        //Palante, z
         
         camera sensor(sensorApuntaU, sensorApuntaI, sensorApunta, sensorCentro);
@@ -107,9 +107,11 @@ int main (int argc, char *argv[]) {
             }
         }
         */
+    vector<Pixel> textura;
+    exito = textureReader(textura, "lantern.ppm");
+            
         
-        
-        Image resultado = ver(primitivas, sensor, numRayos, filename, width, height);
+        Image resultado = ver(primitivas, sensor, numRayos, filename, width, height, textura);
         resultado.save(filename);
         
 

@@ -100,21 +100,21 @@ EVENT getRandomEvent2(Primitiva* primitiva) {
 }
 
 vec3 diffuse(vec3 in, vec3 n, vec3 choque){
-/*
+
     std::random_device rd;
     std::mt19937 mt(rd());
     std::uniform_real_distribution<double> dist(0.0, 1.0);
 
 
-    float theta = acos(sqrt(dist(mt)));   //Inclinacion
-    float p = 2.0 * M_PI * (dist(mt));      //Azimuth
+    float theta = acos(sqrt((float)(rand() % 100)/100.0));   //Inclinacion
+    float p = 2.0 * M_PI * ((float)(rand() % 100)/100.0);      //Azimuth
 
     vec3 resultado = vec3((sin(theta)*cos(p)), (sin(theta)*sin(p)), cos(theta), 0); 
 
     vec3 z = n;
-    z = normalizar(z);
+    //z = normalizar(z);
 
-    vec3 x = cross(z, vec3(z.z, z.x, z.y, 1));
+    vec3 x = cross(z, vec3(z.z, z.x, z.y, 0));
     x = normalizar(x);
 
     vec3 y = cross(x, z);
@@ -126,8 +126,8 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
     resultado = normalizar(resultado);
 
     return resultado;
-*/
 
+/*
     float r1 = 2*M_PI*((float)(rand() % 100)/100.0);
     float r2 = (float)(rand() % 100)/100.0;
     float r2s = sqrt(r2);
@@ -137,7 +137,7 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
     vec3 d = normalizar(u * cos(r1) * r2s + v*sin(r1)*r2s + w*sqrt(1-r2));
 
     return d;
-    
+*/
 }
 
 vec3 reflect(vec3 in, vec3 n) { //n is the normal of the surface (mirror), in is the received vector
@@ -147,7 +147,7 @@ vec3 reflect(vec3 in, vec3 n) { //n is the normal of the surface (mirror), in is
 }
 
 
-vec3 refract(vec3 in, vec3 n, vec3 choque, Primitiva* obstaculo){
+vec3 refract(vec3 in, vec3 n, vec3& choque, Primitiva* obstaculo){
 
     float refraccionExterior = 1.001;
     float refraccionObject = obstaculo->getRIndex();
@@ -170,14 +170,19 @@ vec3 refract(vec3 in, vec3 n, vec3 choque, Primitiva* obstaculo){
 
     //SegundaInteraccion
 
-    ray rayoInterno = ray (choque, interior);
+    //Avanzamos un poquito para que no impacte con el mismo punto de la esfera de entrada
+    ray rayoInterno = ray (choque+in*0.001, interior);
     float distanciaAux;
+    colour colorAux;
     vec3 normalGolpe;
-    //obstaculo->ray_intersect(rayoInterno, emisorAux, distanciaAux, materialAux, normalGolpe); 
+    vec3 normalAux;
+    obstaculo->ray_intersect(rayoInterno, colorAux, distanciaAux, normalAux);
 
-    normal = normalGolpe;
-    externa = rayoInterno.direccion;
-    cosExterior = - dot(externa, normal);
+    vec3 puntoSalida =  choque + interior * distanciaAux;
+
+    normal = - normalAux;
+
+    cosExterior = - dot(interior, normal);
     k = 1.0 - mu * mu * (1- cosExterior*cosExterior);
     
     vec3 resultado;
@@ -188,11 +193,11 @@ vec3 refract(vec3 in, vec3 n, vec3 choque, Primitiva* obstaculo){
         resultado = (externa*(mu))+(normal*(mu*cosExterior-sqrt(k)));
     }
     resultado = normalizar(resultado);
-
+    choque = puntoSalida;
     return resultado;
 } 
 
-vec3 generarDireccion(EVENT e, vec3 entra, vec3 normal, vec3 puntoChoque, Primitiva* obstaculo){
+vec3 generarDireccion(EVENT e, vec3 entra, vec3 normal, vec3& puntoChoque, Primitiva* obstaculo){
     switch (e)
     {
     case DIFFUSE:
