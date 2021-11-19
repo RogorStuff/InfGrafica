@@ -24,7 +24,7 @@ using namespace std;
 int main (int argc, char *argv[]) {
     srand (time(NULL));
 
-    int numRayos = 10;
+    int numRayos = 40;
     int width = 2000;
     int height = 2000;
     string filename = "salida";
