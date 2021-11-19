@@ -21,6 +21,12 @@ using namespace std;
 matrix cameraToWorld;
 
 Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, int loop){
+
+    if (loop == 2){
+        //std::cout << "cortamos por loop" << std::endl;
+        return Pixel(1.0, 1.0, 1.0);
+    }
+
     colour visto = colour(0.0, 0.0, 0.0);
     float distanciaGolpe;
     float menorDistancia = INFINITY;
@@ -44,23 +50,17 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, int loop){
         if (objetoGolpeado->getEmisor()){
             return resultado;
         } else {    //Objeto golpeado no emisor
-            bool golpeAux;
+
             EVENT eventoObjeto;
-            /*if(loop<4){
-                eventoObjeto = getRandomEvent2(objetoGolpeado);
-                while (eventoObjeto == DEAD){
-                    eventoObjeto = getRandomEvent2(objetoGolpeado);
-                }
-            }else{*/
-                eventoObjeto = getRandomEvent(objetoGolpeado);
-            //}
+
+            eventoObjeto = getRandomEvent(objetoGolpeado);
+            
             if (eventoObjeto != DEAD){
                 vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, menorDistancia);
                 vec3 newDirectionRay = generarDireccion(eventoObjeto, rayoLanzado.direccion, vectorNormal, puntoChoque, objetoGolpeado);
                 //newDirectionRay = normalizar(newDirectionRay);    //Se normaliza en generarDireccion
                 ray nuevoRayo = ray(puntoChoque, newDirectionRay);
                 if (eventoObjeto == REFLECTION){
-                    //cout<<"Reflejo con Nuevo origen: "<<puntoChoque<<" y nueva direccion "<<newDirectionRay<<endl;
                     return (colorPathR(primitivas, nuevoRayo,loop+1));
                 }else{
                     return (resultado * colorPathR(primitivas, nuevoRayo, loop+1));
@@ -76,7 +76,12 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, int loop){
 
 
 
-Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado){
+Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado, bool verbose){
+
+    if (verbose){
+        std::cout << "Yo que se, patata" << std::endl;
+    }
+
     colour visto = colour(0.0, 0.0, 0.0);
     float distanciaGolpe;
     float menorDistancia = INFINITY;
@@ -107,10 +112,12 @@ Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado){
                 //newDirectionRay = normalizar(newDirectionRay);    //Se normaliza en generarDireccion
                 ray nuevoRayo = ray(puntoChoque, newDirectionRay);
                 if (eventoObjeto == REFLECTION){
-                    return (colorPathR(primitivas, nuevoRayo, 1));
+                    std::cout << "CAGATE EN TU PUTA MADRE" << std::endl;
+                    //return (colorPathR(primitivas, nuevoRayo, 1));
                 }else{
                     // resultado = Pixel(0.0, 0.0, 0.0);
-                    return (resultado * colorPathR(primitivas, nuevoRayo, 1));
+                    //return (resultado * colorPathR(primitivas, nuevoRayo, 1));
+                    return (resultado * colorPath(primitivas, nuevoRayo, verbose));
                 }
             }else{
                 return Pixel(0.0, 0.0, 0.0);
@@ -133,7 +140,7 @@ Image ver(vector<Primitiva*> &primitivas, camera sensor, int numRayos, string im
     std::uniform_real_distribution<float> dist(0.0, 90.0);
 
     float imageAspectRatio = anchototal / (float)altoTotal; 
-    //matrix cameraToWorld(sensor.coordenadasU, sensor.coordenadasI, sensor.apunta, sensor.coordenadasO);
+    matrix cameraToWorld(sensor.coordenadasU, sensor.coordenadasI, sensor.apunta, sensor.coordenadasO);
     cameraToWorld = matrix(sensor.coordenadasU, sensor.coordenadasI, sensor.apunta, sensor.coordenadasO);
     int totalPixeles = imagen.total;
 
@@ -150,11 +157,19 @@ Image ver(vector<Primitiva*> &primitivas, camera sensor, int numRayos, string im
 
         vector<ray> rayos;  //Vector de todos los rayos lanzados a un pixel
 
+
+        float pixelXSide = (float)2 / altoTotal;
+        float pixelYSide = (float)2 / anchototal;
+        float x2 =  (miraPixel / anchototal) * pixelXSide - 1.0;
+        float y2 =  (miraPixel % anchototal) * pixelYSide - 1.0;
+
         for (int i=0; i<numRayos; i++){
 
             // Tomamos un punto del pixel dejando un margen de 5% por cada lado
             float X = (float)(dist(mt))/100;
             float Y = (float)(dist(mt))/100;
+            //float X = (float)(50)/100;
+            //float Y = (float)(50)/100;
             // Ponemos las coordenadas en la esquina superior izquierda y desplazamos dentro de dicho margen
             vec3 rayDirection(x+X/(float)anchototal, y+Y/(float)altoTotal, sensor.apunta.z, 0);
             rayDirection = normalizar(rayDirection);
@@ -164,11 +179,18 @@ Image ver(vector<Primitiva*> &primitivas, camera sensor, int numRayos, string im
         }
 
         vector<Pixel> recibidos;    //Tenemos todos los rayos, empezamos a mirar que color devuelve cada rayo
+        double rayosLanzados = 0;
+        double rayoAnalizar = (700*680+300)*numRayos;
         for (ray rayo : rayos){
-
-            Pixel devuelto = colorPath(primitivas, rayo);
+            bool verbose = false;
+            //if (rayosLanzados == rayoAnalizar) {
+            //    verbose = true;
+            //}
+            
+            Pixel devuelto = colorPath(primitivas, rayo, verbose);
 
             recibidos.push_back(devuelto);
+            rayosLanzados++;
         }
 
         imagen.imageMatrix[miraPixel]=media(recibidos);
