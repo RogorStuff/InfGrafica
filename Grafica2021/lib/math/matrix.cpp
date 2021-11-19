@@ -36,11 +36,19 @@ vec3 translation(matrix& desplazamiento, vec3& objeto){
     float X2 = objeto.x*desplazamiento.U.x + objeto.y*desplazamiento.V.x + objeto.z*desplazamiento.W.x + objeto.punto*desplazamiento.O.x;
     float Y2 = objeto.x*desplazamiento.U.y + objeto.y*desplazamiento.V.y + objeto.z*desplazamiento.W.y + objeto.punto*desplazamiento.O.y;
     float Z2 = objeto.x*desplazamiento.U.z + objeto.y*desplazamiento.V.z + objeto.z*desplazamiento.W.z + objeto.punto*desplazamiento.O.z;
-    float punto2 = objeto.x*desplazamiento.U.punto+objeto.y*desplazamiento.V.punto+objeto.z*desplazamiento.W.punto+objeto.punto*desplazamiento.O.punto;
+    float punto2 = objeto.x*0+objeto.y*0+objeto.z*0+objeto.punto*1;
     return vec3(X2, Y2, Z2, punto2);
 }
 
 vec3 baseChange(matrix& desplazamiento, vec3& objeto){
+    float X2 = objeto.x*desplazamiento.U.x+objeto.y*desplazamiento.V.x+objeto.z*desplazamiento.W.x+objeto.punto*desplazamiento.O.x;
+    float Y2 = objeto.x*desplazamiento.U.y+objeto.y*desplazamiento.V.y+objeto.z*desplazamiento.W.y+objeto.punto*desplazamiento.O.y;
+    float Z2 = objeto.x*desplazamiento.U.z+objeto.y*desplazamiento.V.z+objeto.z*desplazamiento.W.z+objeto.punto*desplazamiento.O.z;
+    float punto2 = objeto.x*desplazamiento.U.punto+objeto.y*desplazamiento.V.punto+objeto.z*desplazamiento.W.punto+objeto.punto*desplazamiento.O.punto;
+    return vec3(X2, Y2, Z2, punto2);
+}
+
+vec3 baseChange2(matrix& desplazamiento, vec3& objeto){
     float X2 = objeto.x*desplazamiento.U.x+objeto.y*desplazamiento.V.x+objeto.z*desplazamiento.W.x+objeto.punto*desplazamiento.O.x;
     float Y2 = objeto.x*desplazamiento.U.y+objeto.y*desplazamiento.V.y+objeto.z*desplazamiento.W.y+objeto.punto*desplazamiento.O.y;
     float Z2 = objeto.x*desplazamiento.U.z+objeto.y*desplazamiento.V.z+objeto.z*desplazamiento.W.z+objeto.punto*desplazamiento.O.z;

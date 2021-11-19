@@ -106,14 +106,15 @@ vec3 diffuse(vec3 in, vec3 n, vec3 choque){
     std::uniform_real_distribution<double> dist(0.0, 1.0);
 
 
-    float theta = acos(sqrt((float)(rand() % 100)/100.0));   //Inclinacion
-    float p = 2.0 * M_PI * ((float)(rand() % 100)/100.0);      //Azimuth
+    float theta = acos(sqrt(dist(mt)));   //Inclinacion
+    float p = 2.0 * M_PI * (dist(mt));      //Azimuth
 
     vec3 resultado = vec3((sin(theta)*cos(p)), (sin(theta)*sin(p)), cos(theta), 0); 
+
     vec3 z = n;
     z = normalizar(z);
 
-    vec3 x = cross(in, z);
+    vec3 x = cross(z, vec3(z.z, z.x, z.y, 1));
     x = normalizar(x);
 
     vec3 y = cross(x, z);
@@ -153,7 +154,8 @@ vec3 refract(vec3 in, vec3 n, vec3 choque, Primitiva* obstaculo){
     float refraccionExterior = 1.001;
     float refraccionObject = obstaculo->getRIndex();
 
-    float mu = refraccionExterior/(refraccionObject+0.001);
+    //float mu = refraccionExterior/(refraccionObject+0.001);
+    float mu = 1;
 
     vec3 normal = n;
     vec3 externa = in;
@@ -166,6 +168,7 @@ vec3 refract(vec3 in, vec3 n, vec3 choque, Primitiva* obstaculo){
     }else{
         interior = (externa*mu)+(normal*(mu*cosExterior-sqrt(k)));
     }
+    interior = normalizar(interior);
 
     //SegundaInteraccion
 
@@ -186,6 +189,7 @@ vec3 refract(vec3 in, vec3 n, vec3 choque, Primitiva* obstaculo){
     else{
         resultado = (externa*(mu))+(normal*(mu*cosExterior-sqrt(k)));
     }
+    resultado = normalizar(resultado);
 
     return resultado;
 } 

@@ -54,8 +54,13 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, int loop, bool
         } else {    //Objeto golpeado no emisor
 
             EVENT eventoObjeto;
-
-            eventoObjeto = getRandomEvent(objetoGolpeado);
+            if (loop<2){
+                eventoObjeto = getRandomEvent(objetoGolpeado);
+                while (eventoObjeto==DEAD){
+                    eventoObjeto = getRandomEvent(objetoGolpeado);
+                }
+            }
+            //eventoObjeto = getRandomEvent(objetoGolpeado);
             
             if (eventoObjeto != DEAD){
                 vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, menorDistancia);
@@ -110,7 +115,7 @@ Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado, bool verbose){
         if (objetoGolpeado->getEmisor()){
             return resultado;
         } else {    //Objeto golpeado no emisor
-            EVENT eventoObjeto = getRandomEvent(objetoGolpeado);
+            EVENT eventoObjeto = getRandomEvent2(objetoGolpeado);
             if (eventoObjeto != DEAD){
                 vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, menorDistancia);
                 vec3 newDirectionRay = generarDireccion(eventoObjeto, rayoLanzado.direccion, normalFinal, puntoChoque, objetoGolpeado);
@@ -163,31 +168,44 @@ Image ver(vector<Primitiva*> &primitivas, camera sensor, int numRayos, string im
 
         vector<ray> rayos;  //Vector de todos los rayos lanzados a un pixel
 
-
+        /*
+        //-----------MARCOS
         float pixelXSide = (float)2 / altoTotal;
         float pixelYSide = (float)2 / anchototal;
-        float x2 =  (miraPixel / anchototal) * pixelXSide - 1.0;
-        float y2 =  (miraPixel % anchototal) * pixelYSide - 1.0;
-
+        float x2 =  (miraPixel / anchototal) * pixelXSide - 1.0;        //No se si es ancho o alto pero jaja salu2
+        float y2 =  (miraPixel % anchototal) * pixelYSide - 1.0;        //No se si es ancho o alto pero jaja salu2
+        //----------MARCOS
+        */
         for (int i=0; i<numRayos; i++){
-
+            /*
+            //--------------MARCOS
+            float xIter = x2 + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / ((x2 + pixelXSide) - x2)));
+            float yIter = y2 + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / ((y2 + pixelYSide) - y2)));
+            vec3 image_point = vec3(xIter, yIter, -sensor.apunta.z, 1);
+            matrix baseChange2 = matrix(sensor.coordenadasI, sensor.coordenadasU ,sensor.apunta, sensor.coordenadasO);        // ES POSIBLE QUE HAY QUE CAMBIAR I E U
+            vec3 p2 = baseChange(baseChange2, image_point);
+            vec3 dir2 = vec3(p2.x - sensor.coordenadasO.x, p2.y - sensor.coordenadasO.y, p2.z - sensor.coordenadasO.z, 0);
+            ray rayoActual2 = ray(sensor.coordenadasO, vec3(dir2.x / dir2.modulo(), dir2.y / dir2.modulo(), dir2.z / dir2.modulo(), 0));
+            rayos.push_back(rayoActual2);
+            //--------------NARCOS*/
+            
             // Tomamos un punto del pixel dejando un margen de 5% por cada lado
             float X = (float)(dist(mt))/100;
             float Y = (float)(dist(mt))/100;
             //float X = (float)(50)/100;
             //float Y = (float)(50)/100;
             // Ponemos las coordenadas en la esquina superior izquierda y desplazamos dentro de dicho margen
-            vec3 rayDirection(x+X/(float)anchototal, y+Y/(float)altoTotal, sensor.apunta.z, 0);
-            //rayDirection = baseChange(cameraToWorld, rayDirection);
-            rayDirection = normalizar(rayDirection);
+            vec3 rayDirection(x, y, sensor.apunta.z, 0);
+            rayDirection = baseChange(cameraToWorld, rayDirection);
+            rayDirection = normalizar(rayDirection-sensor.coordenadasO);
             ray rayoAux(sensor.coordenadasO,rayDirection);
             // Añadimos rayo al conjunto total
             rayos.push_back(rayoAux);
         }
 
         vector<Pixel> recibidos;    //Tenemos todos los rayos, empezamos a mirar que color devuelve cada rayo
-        double rayosLanzados = 0;
-        double rayoAnalizar = (700*680+300)*numRayos;
+        //double rayosLanzados = 0;
+        //double rayoAnalizar = (anchototal*680+300)*numRayos;
         for (ray rayo : rayos){
             bool verbose = false;
             //if (rayosLanzados == rayoAnalizar) {
@@ -197,7 +215,7 @@ Image ver(vector<Primitiva*> &primitivas, camera sensor, int numRayos, string im
             Pixel devuelto = colorPath(primitivas, rayo, verbose);
 
             recibidos.push_back(devuelto);
-            rayosLanzados++;
+            //rayosLanzados++;
         }
 
         imagen.imageMatrix[miraPixel]=media(recibidos);
