@@ -99,6 +99,14 @@ bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normal
     */
 }
 
+
+
+bool plane::ray_intersect2(ray rayo, colour& tono, float& distancia, vec3& normalParam) const{
+
+    return false;
+}
+
+
 string plane::queSoy() const{
     return "plano";
 }

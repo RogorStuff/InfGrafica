@@ -35,6 +35,7 @@ class sphere : public Primitiva {
         float getRefractive();
         bool getEmisor();
         bool ray_intersect(ray r, colour& tono, float& distancia, vec3& normalParam) const override;
+        bool ray_intersect2(ray r, colour& tono, float& distancia, vec3& normalParam) const override;
         string queSoy() const override;
         void material(float& Kd, float& Ks, float& Kr) const override;
         bool getEmisor() const override;

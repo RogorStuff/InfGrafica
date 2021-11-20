@@ -219,6 +219,42 @@ bool sphere::ray_intersect(ray r, colour& tono, float& distancia, vec3& normalPa
    
 }
 
+//http://kylehalladay.com/blog/tutorial/math/2013/12/24/Ray-Sphere-Intersection.html
+bool sphere::ray_intersect2(ray r, colour& tono, float& distancia, vec3& normalParam) const{
+
+    vec3 d = r.direccion;
+    vec3 o = r.origen;
+    vec3 c = this->center;
+    float r2 = this->radius;
+
+    float t1, t2;
+
+    vec3 L = c-o;
+    float tca = dot(L, d);
+    if(tca < 0) return false;
+
+    float d2 = dot(L,L) - tca * tca;
+    if (d2 > r2 * r2) return false; 
+
+    float thc = sqrt(r2*r2-d2);
+    t1 = tca - thc;
+    t2 = tca + thc;
+
+    if(t1 > t2) swap(t1,t2);
+    if(t1 < 0) {
+        t1 = t2;
+        if (t1 < 0) return false;
+    }
+
+    tono = this->color;
+    distancia = t2;
+    vec3 dondeGolpea = o+(d)*(distancia);
+    vec3 normalGolpe = dondeGolpea-(c);     //Vector resultante de origen - golpe
+    normalParam = normalizar(normalGolpe);
+    return true;   
+}
+
+
 string sphere::queSoy() const{
     return "esfera";
 }

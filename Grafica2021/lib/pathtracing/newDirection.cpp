@@ -152,46 +152,52 @@ vec3 refract(vec3 in, vec3 n, vec3& choque, Primitiva* obstaculo){
     float refraccionExterior = 1.001;
     float refraccionObject = obstaculo->getRIndex();
 
-    //float mu = refraccionExterior/(refraccionObject+0.001);
-    float mu = 1;
+    float mu = refraccionExterior/(refraccionObject+0.001);
+    //float mu = 1;
 
     vec3 normal = n;
     vec3 externa = in;
     float cosExterior = - dot(externa,normal);
-    float k = 1.0 - mu*mu * (1- cosExterior*cosExterior);
+    float sinExterior = 1.0 - cosExterior * cosExterior;
+    float k = 1.0 - mu*mu * sinExterior;
 
     vec3 interior;
     if(k<0){
+        //interior = cross (normal, externa);
         interior = externa;
     }else{
-        interior = (externa*mu)+(normal*(mu*cosExterior-sqrt(k)));
+        interior = (externa*mu)+(normal*mu*(cosExterior-sqrt(k)));
     }
+
     interior = normalizar(interior);
 
     //SegundaInteraccion
 
-    //Avanzamos un poquito para que no impacte con el mismo punto de la esfera de entrada
-    ray rayoInterno = ray (choque+in*0.001, interior);
-    float distanciaAux;
+    ray rayoInterno = ray (choque, interior);
+
     colour colorAux;
-    vec3 normalGolpe;
+    float distanciaAux;
     vec3 normalAux;
-    obstaculo->ray_intersect(rayoInterno, colorAux, distanciaAux, normalAux);
+
+    obstaculo->ray_intersect2(rayoInterno, colorAux, distanciaAux, normalAux);
 
     vec3 puntoSalida =  choque + interior * distanciaAux;
 
     normal = - normalAux;
 
     cosExterior = - dot(interior, normal);
-    k = 1.0 - mu * mu * (1- cosExterior*cosExterior);
+    sinExterior = 1.0 - cosExterior * cosExterior;
+    k = 1.0 - mu * mu * sinExterior;
     
     vec3 resultado;
-    if(k<0){
-        resultado = cross(normal, externa);
+
+    if(k < 0){
+        resultado = cross(normal, interior);
     }
     else{
-        resultado = (externa*(mu))+(normal*(mu*cosExterior-sqrt(k)));
+        resultado = (interior*mu) + (normal*mu*(cosExterior-sqrt(k)));
     }
+
     resultado = normalizar(resultado);
     choque = puntoSalida;
     return resultado;
