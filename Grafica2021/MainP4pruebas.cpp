@@ -24,7 +24,7 @@ using namespace std;
 int main (int argc, char *argv[]) {
     srand (time(NULL));
 
-    int numRayos = 10;
+    int numRayos = 5;
     int width = 1000;
     int height = 1000;
     string filename = "salida";
@@ -89,7 +89,7 @@ int main (int argc, char *argv[]) {
         camera sensor(sensorApuntaU, sensorApuntaI, sensorApunta, sensorCentro);
 
         /*
-        vec3 rayDirection(0.5, -0.8, sensor.apunta.z, 0);
+        vec3 rayDirection(0.0, -0.005, sensor.apunta.z, 0);
         //matrix cameraToWorld(sensor.coordenadasU, sensor.coordenadasI, sensor.apunta, sensor.coordenadasO);
         //rayDirection = translation(cameraToWorld, rayDirection);
         ray rayoAux(sensor.coordenadasO,rayDirection);
@@ -102,8 +102,10 @@ int main (int argc, char *argv[]) {
                 float kd, ks, kr;
                 primitivas.at(i)->material(kd, ks, kr);
                 cout<<"Soy "<<primitivas.at(i)->queSoy()<<endl;
-                cout<<"Material "<<kd<<" "<<ks<<" "<<kr<<" "<<endl;
-                cout<<normalAux<<" y distancia "<<distnaciaAux<<endl;
+                vec3 puntoChoque = desplazarPunto(sensorCentro, rayDirection, distnaciaAux);
+                vec3 newDirectionRay = generarDireccion(REFRACTION, rayDirection, normalAux, puntoChoque, primitivas.at(i));
+                cout<<"Vector de entrada "<<rayDirection<<endl;
+                cout<<"Vector de salida  "<<newDirectionRay<<endl;
             }
         }
         */

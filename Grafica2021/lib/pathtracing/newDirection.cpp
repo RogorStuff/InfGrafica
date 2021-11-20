@@ -166,10 +166,10 @@ vec3 refract(vec3 in, vec3 n, vec3& choque, Primitiva* obstaculo){
         //interior = cross (normal, externa);
         interior = externa;
     }else{
-        interior = (externa*mu)+(normal*mu*(cosExterior-sqrt(k)));
+        interior = externa*mu+normal*(mu*cosExterior-sqrt(k));
     }
 
-    interior = normalizar(interior);
+    //interior = normalizar(interior);
 
     //SegundaInteraccion
 
@@ -185,6 +185,7 @@ vec3 refract(vec3 in, vec3 n, vec3& choque, Primitiva* obstaculo){
 
     normal = - normalAux;
 
+    mu = refraccionObject/refraccionExterior;
     cosExterior = - dot(interior, normal);
     sinExterior = 1.0 - cosExterior * cosExterior;
     k = 1.0 - mu * mu * sinExterior;
@@ -195,10 +196,9 @@ vec3 refract(vec3 in, vec3 n, vec3& choque, Primitiva* obstaculo){
         resultado = cross(normal, interior);
     }
     else{
-        resultado = (interior*mu) + (normal*mu*(cosExterior-sqrt(k)));
+        resultado = interior*mu + normal*(mu*cosExterior-sqrt(k));
     }
-
-    resultado = normalizar(resultado);
+    //resultado = normalizar(resultado);
     choque = puntoSalida;
     return resultado;
 } 
