@@ -240,7 +240,7 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, int loop, vect
             }
         }
     }
-    return resultado;
+    return Pixel(0.0, 0.0, 0.0);
 }
 
 
@@ -329,7 +329,7 @@ Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado, vector<Pixel> &
         }
     }
 
-    return resultado;
+    return Pixel(0.0, 0.0, 0.0);
 }
 
 Image ver(vector<Primitiva*> &primitivas, camera sensor, int numRayos, string imagenNombre, int anchototal, int altoTotal, pointLight light, vector<Pixel> &textura){

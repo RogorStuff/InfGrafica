@@ -94,7 +94,7 @@ bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normal
             //if ((puntoChoque.x> supizq.x && puntoChoque.x< infder.x) || (puntoChoque.x< supizq.x && puntoChoque.x> infder.x) || (supizq.x == infder.x)) {
             //    if ((puntoChoque.y> supizq.y && puntoChoque.y< infder.y) || (puntoChoque.y< supizq.y && puntoChoque.y> infder.y) || (supizq.y == infder.y)) {
             //        if ((puntoChoque.z> supizq.z && puntoChoque.z< infder.z) || (puntoChoque.z< supizq.z && puntoChoque.z> infder.z) || (supizq.z == infder.z)) {
-            if ( (puntoChoque.x< supizq.x && puntoChoque.x> infder.x) || (supizq.x == infder.x)) {
+            /*if ( (puntoChoque.x< supizq.x && puntoChoque.x> infder.x) || (supizq.x == infder.x)) {
                 if ( (puntoChoque.y< supizq.y && puntoChoque.y> infder.y) || (supizq.y == infder.y)) {
                     if ( (puntoChoque.z< supizq.z && puntoChoque.z> infder.z) || (supizq.z == infder.z)) {
                         ret= true;
@@ -106,8 +106,8 @@ bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normal
                 }
             } else {
                 ret = false;
-            }
-            //ret = true;
+            }*/
+            ret = true;
         }
     } else if (denominator2 != 0.0) {
         vec3 aux = po-lo;
@@ -117,7 +117,7 @@ bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normal
             tono = this->color;
             normalParam = n;
             vec3 puntoChoque = desplazarPunto(rayo.origen, rayo.direccion, distancia);
-            if ( (puntoChoque.x< supizq.x && puntoChoque.x> infder.x) || (supizq.x == infder.x)) {
+            /*if ( (puntoChoque.x< supizq.x && puntoChoque.x> infder.x) || (supizq.x == infder.x)) {
                 if ( (puntoChoque.y< supizq.y && puntoChoque.y> infder.y) || (supizq.y == infder.y)) {
                     if ( (puntoChoque.z< supizq.z && puntoChoque.z> infder.z) || (supizq.z == infder.z)) {
                         ret= true;
@@ -129,8 +129,8 @@ bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normal
                 }
             } else {
                 ret = false;
-            }
-            //ret = true;
+            }*/
+            ret = true;
         }
     }
     return ret;
