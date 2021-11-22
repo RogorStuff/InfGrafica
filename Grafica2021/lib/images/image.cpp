@@ -1,6 +1,7 @@
 #pragma once
 
 #include "image.hpp"
+#include <algorithm>
 
 Image::Image(){
 }
@@ -114,7 +115,7 @@ void Image::save(string newFileName){
         int pos=0;
         for (int i=0; i<this->height;i++){    //this->height
             for (int j=0; j<this->width;j++){ //this->width
-                fileTarget << (int)(this->imageMatrix[pos].R*(float)this->c) << " "<< (int)(this->imageMatrix[pos].G*(float)this->c) << " "<< (int)(this->imageMatrix[pos].B*(float)this->c) << "     ";
+                fileTarget << min((int)(this->imageMatrix[pos].R*(float)this->c),c) << " "<< min((int)(this->imageMatrix[pos].G*(float)this->c),c) << " "<< min((int)(this->imageMatrix[pos].B*(float)this->c),c) << "     ";
                 pos++;
             }
             if (i % 10000 == 0){

@@ -109,12 +109,18 @@ int main (int argc, char *argv[]) {
             }
         }
         */
+
+
+    
     vector<Pixel> textura;
     exito = textureReader(textura, "lantern.ppm");
-            
+    
+    pointLight light = pointLight(vec3(0.0, 7.0, 10.0, 0), 000);
         
-        Image resultado = ver(primitivas, sensor, numRayos, filename, width, height, textura);
-        resultado.save(filename);
+    Image resultado = ver(primitivas, sensor, numRayos, filename, width, height, light, textura);
+    resultado.save(filename);
+
+    
         
 
     }else{

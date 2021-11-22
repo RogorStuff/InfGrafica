@@ -23,6 +23,11 @@ enum EVENT {
 };
 
 
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_real_distribution<double> dist(0.0, 1.0);
+
+
 EVENT getRandomEvent(Primitiva* primitiva) {
     // Russian roulette
     
@@ -41,11 +46,7 @@ EVENT getRandomEvent(Primitiva* primitiva) {
         Kr *= MAX / sum;
     }
 
-    std::random_device rd;
-    std::mt19937 mt(rd());
-    std::uniform_real_distribution<double> dist(0.0, 1.0);
-
-    float randomZTO = (float)(rand() % 100)/100.0; //((double) rand() / (RAND_MAX));
+    float randomZTO = (float)dist(mt); //((double) rand() / (RAND_MAX));
 
     if ((randomZTO -= Kd) < 0) {
         // DIFFUSE case
@@ -80,11 +81,9 @@ EVENT getRandomEvent2(Primitiva* primitiva) {
         Kr *= MAX / sum;
     //}
 
-    std::random_device rd;
-    std::mt19937 mt(rd());
-    std::uniform_real_distribution<double> dist(0.0, 1.0);
+    //float randomZTO = (float)(rand() % 100)/100.0; //((double) rand() / (RAND_MAX));
+    float randomZTO = (float)dist(mt); //((double) rand() / (RAND_MAX));
 
-    float randomZTO = (float)(rand() % 100)/100.0; //((double) rand() / (RAND_MAX));
 
     if ((randomZTO -= Kd) < 0) {
         // DIFFUSE case
