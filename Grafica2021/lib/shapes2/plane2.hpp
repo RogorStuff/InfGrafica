@@ -21,8 +21,8 @@ class plane : public Primitiva {
     public:
         vec3 center;
         vec3 normal;
-        vec3 supizq;
-        vec3 infder;
+        vec3 max;
+        vec3 min;
         colour color;
         float diffuse;
         float reflective;
@@ -30,7 +30,8 @@ class plane : public Primitiva {
         float refractIndex;
         bool emisor;
         plane();
-        plane(vec3 center_,vec3 normal_, colour color_, float _diffuse, float _reflective, float _refractive, float _refractIndex, bool _emisor, vec3 supizq_, vec3 infder_);
+        plane(vec3 center_,vec3 normal_, colour color_, float _diffuse, float _reflective, float _refractive, float _refractIndex, bool _emisor, vec3 min_, vec3 max_);
+        void setLimits(vec3 min, vec3 max);
         vec3 getCenter();
         vec3 getNormal();
         float getDiffuse();

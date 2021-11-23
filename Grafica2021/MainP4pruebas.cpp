@@ -60,7 +60,8 @@ int main (int argc, char *argv[]) {
 
     vector<sphere> esferas;
     vector<plane> planos;
-    bool exito = sceneReader(esferas, planos, "pruebaP4.txt");
+    pointLight light = pointLight(vec3(0.0, 0.0, 0.0, 0), 0);
+    bool exito = sceneReader(esferas, planos, light, "pruebaP4.txt");
     cout<<"Tenemos "<<esferas.size()<<" esferas y "<<planos.size()<<" planos."<<endl;
     
     //Cargamos el vector de primitivas con las esferas y planos anteriores
@@ -72,7 +73,7 @@ int main (int argc, char *argv[]) {
     } 
     for(int i = 0; i< planos.size(); i++){
         plane p = planos.at(i);        
-        plane* a = new plane(p.center, p.normal, p.color, p.diffuse, p.reflective, p.refractive, p.refractIndex, p.emisor);
+        plane* a = new plane(p.center, p.normal, p.color, p.diffuse, p.reflective, p.refractive, p.refractIndex, p.emisor, p.min, p.max);
         primitivas.push_back(a);
     } 
 
@@ -88,45 +89,20 @@ int main (int argc, char *argv[]) {
         
         camera sensor(sensorApuntaU, sensorApuntaI, sensorApunta, sensorCentro);
 
-        /*
-        vec3 rayDirection(0.0, -0.005, sensor.apunta.z, 0);
-        //matrix cameraToWorld(sensor.coordenadasU, sensor.coordenadasI, sensor.apunta, sensor.coordenadasO);
-        //rayDirection = translation(cameraToWorld, rayDirection);
-        ray rayoAux(sensor.coordenadasO,rayDirection);
-        colour colorAux;
-        float distnaciaAux;
-        vec3 normalAux;
-        for (int i=0; i<primitivas.size();i++){
-            bool testEsfera = primitivas.at(i)->ray_intersect(rayoAux, colorAux, distnaciaAux, normalAux);
-            if(testEsfera && primitivas.at(i)->queSoy()=="esfera"){
-                float kd, ks, kr;
-                primitivas.at(i)->material(kd, ks, kr);
-                cout<<"Soy "<<primitivas.at(i)->queSoy()<<endl;
-                vec3 puntoChoque = desplazarPunto(sensorCentro, rayDirection, distnaciaAux);
-                vec3 newDirectionRay = generarDireccion(REFRACTION, rayDirection, normalAux, puntoChoque, primitivas.at(i));
-                cout<<"Vector de entrada "<<rayDirection<<endl;
-                cout<<"Vector de salida  "<<newDirectionRay<<endl;
-            }
+        if(light.potencia>0){
+            cout<<"Tenemos luces puntuales"<<endl;
+        }else{
+            cout<<"Tenemos luces globales"<<endl;
         }
-        */
 
-
-    
-    vector<Pixel> textura;
-    exito = textureReader(textura, "lantern.ppm");
-    
-    pointLight light = pointLight(vec3(0.0, 7.0, 10.0, 0), 000);
-        
-    Image resultado = ver(primitivas, sensor, numRayos, filename, width, height, light, textura);
-    resultado.save(filename);
-
-    
-        
+        vector<Pixel> textura;
+        exito = textureReader(textura, "lantern.ppm");
+            
+        Image resultado = ver(primitivas, sensor, numRayos, filename, width, height, light, textura);
+        resultado.save(filename);
 
     }else{
         cout<<"Ha habido un problema cargando la escena"<<endl;
     }
 
 }
-
-//plane 2 3.5 4 0 0 0 1.0 0.0 1.0

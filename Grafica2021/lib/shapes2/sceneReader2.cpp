@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../images/pixel.cpp"
+#include "../scene/pointLight.cpp"
 #include "plane2.cpp"
 #include "sphere2.cpp"
 #include "colour.cpp"
@@ -20,11 +21,13 @@ using namespace std;
 *   El formato de las imágenes será tal que:
 *   tipo(sphere/plane)
 *   center.X center.Y center.Z
+*   min.x    min.y    min.z
+*   max.x    max.y    max.z
 *   normal.X normal.Y normal.Z/radius (dependiendo del tipo)
 *   color.R color.G color.B
 */
 
-bool sceneReader(vector<sphere> &esferas, vector<plane> &planos, string fileName){
+bool sceneReader(vector<sphere> &esferas, vector<plane> &planos, pointLight &light, string fileName){
     ifstream fileReader(fileName);
     if (fileReader.is_open()){
 
@@ -32,6 +35,8 @@ bool sceneReader(vector<sphere> &esferas, vector<plane> &planos, string fileName
         string line = "";
         float center[3];
         float normal[3];
+        float min[3];
+        float max[3];
         float radius;
         float color[3];
         float diffuse;
@@ -64,15 +69,28 @@ bool sceneReader(vector<sphere> &esferas, vector<plane> &planos, string fileName
             }else if (type == "plane"){
 
                 fileReader >> center[0] >> center[1] >> center[2]; 
+                fileReader >> min[0] >> min[1] >> min[2]; 
+                fileReader >> max[0] >> max[1] >> max[2]; 
                 fileReader >> normal[0] >> normal[1] >> normal[2]; 
                 fileReader >> color[0] >> color[1] >> color[2]; 
                 fileReader >> diffuse >> reflective >> refractive >> refractIndex >> emisor; 
                 vec3 newCenter(center[0], center[1], center[2], 0);
                 vec3 newNormal(normal[0], normal[1], normal[2], 0);
+                vec3 newMin(min[0], min[1], min[2], 0);
+                vec3 newMax(max[0], max[1], max[2], 0);
                 colour newColor(color[0]/255, color[1]/255, color[2]/255);
                 plane newPlane(newCenter, normalizar(newNormal), newColor, diffuse, reflective, refractive, refractIndex, emisor);
+                newPlane.setLimits(newMin, newMax);
                 planos.push_back(newPlane);
                 //if (newPlane.getEmisor()){std::cout << "Guardado plano" << center << " que es emisor" << emisor << std::endl;}
+                getline(fileReader, line);  //Leemos el salto de línea y lo guardamos en la basura
+
+            }else if (type == "light"){
+                float potencia;
+                fileReader >> center[0] >> center[1] >> center[2]; 
+                fileReader >> potencia; 
+                vec3 newCenter(center[0], center[1], center[2], 0);
+                light =  pointLight(newCenter, potencia);
                 getline(fileReader, line);  //Leemos el salto de línea y lo guardamos en la basura
 
             }else{

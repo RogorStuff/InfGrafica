@@ -147,8 +147,7 @@ Pixel colorPathPL(vector<Primitiva*> &primitivas, ray rayoLanzado, pointLight li
                 return Pixel(0.0, 0.0, 0.0);
             }
     }
-
-    return resultado;
+    return Pixel(0.0, 0.0, 0.0);
 }
 
 
@@ -208,32 +207,7 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, int loop, vect
                 }else if (eventoObjeto == REFRACTION){
                     return (colorPathR(primitivas, nuevoRayo, loop+1,textura));
                 }else {
-            
-                    if(objetoGolpeado->queSoy()=="esfera"){
-                        return (resultado * colorPathR(primitivas, nuevoRayo, loop+1, textura));
-                    }else{
-                        /*int coordenadaY, coordenadaX;
-                        if(normalFinal.y > normalFinal.x && normalFinal.y > normalFinal.z){
-                            coordenadaY = floor(puntoChoque.z*10);
-                            coordenadaY = abs(coordenadaY%16);
-                            coordenadaX = floor(puntoChoque.x*10);
-                            coordenadaX = abs(coordenadaX%16);
-                        }else if(normalFinal.x > normalFinal.y && normalFinal.x > normalFinal.z){
-                            coordenadaY = floor(puntoChoque.y*10);
-                            coordenadaY = abs(coordenadaY%16);
-                            coordenadaX = floor(puntoChoque.z*10);
-                            coordenadaX = abs(coordenadaX%16);
-                        }else{
-                            coordenadaY = floor(puntoChoque.y*10);
-                            coordenadaY = abs(coordenadaY%16);
-                            coordenadaX = floor(puntoChoque.x*10);
-                            coordenadaX = abs(coordenadaX%16);
-                        }
-                        int coordenada = (coordenadaX*16 + coordenadaY)%256;
-                        Pixel pixelTextura = textura.at(coordenada);
-                        return resultado = pixelTextura;*/
-                        return (resultado * colorPathR(primitivas, nuevoRayo, loop+1, textura));
-                    }
+                    return (resultado * colorPathR(primitivas, nuevoRayo, 1, textura));
                 }
             }else{
                 return Pixel(0.0, 0.0, 0.0);
@@ -295,33 +269,7 @@ Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado, vector<Pixel> &
                 }else if (eventoObjeto == REFRACTION){
                     return (colorPathR(primitivas, nuevoRayo, 1,textura));
                 }else {
-            
-                    if(objetoGolpeado->queSoy()=="esfera"){
-                        return (resultado * colorPathR(primitivas, nuevoRayo, 1, textura));
-                    }else{
-                        /*int coordenadaY, coordenadaX;
-                        if(normalFinal.y > normalFinal.x && normalFinal.y > normalFinal.z){
-                            coordenadaY = floor(puntoChoque.z*10);
-                            coordenadaY = abs(coordenadaY%16);
-                            coordenadaX = floor(puntoChoque.x*10);
-                            coordenadaX = abs(coordenadaX%16);
-                        }else if(normalFinal.x > normalFinal.y && normalFinal.x > normalFinal.z){
-                            coordenadaY = floor(puntoChoque.y*10);
-                            coordenadaY = abs(coordenadaY%16);
-                            coordenadaX = floor(puntoChoque.z*10);
-                            coordenadaX = abs(coordenadaX%16);
-                        }else{
-                            coordenadaY = floor(puntoChoque.y*10);
-                            coordenadaY = abs(coordenadaY%16);
-                            coordenadaX = floor(puntoChoque.x*10);
-                            coordenadaX = abs(coordenadaX%16);
-                        }
-                        int coordenada = (coordenadaX*16 + coordenadaY)%256;
-                        Pixel pixelTextura = textura.at(coordenada);
-                        return resultado = pixelTextura;*/
-                        return (resultado * colorPathR(primitivas, nuevoRayo, 1, textura));
-                    }
-
+                    return (resultado * colorPathR(primitivas, nuevoRayo, 1, textura));
                 }
             }else{
                 return Pixel(0.0, 0.0, 0.0);

@@ -5,7 +5,7 @@
 plane::plane(){
 }
 
-plane::plane(vec3 center_,vec3 normal_, colour color_, float _diffuse, float _reflective, float _refractive, float _refractIndex, bool _emisor, vec3 supizq_ = vec3(0, 0, 0, 0), vec3 infder_ = vec3(0, 0, 0, 0)){
+plane::plane(vec3 center_,vec3 normal_, colour color_, float _diffuse, float _reflective, float _refractive, float _refractIndex, bool _emisor, vec3 min_ = vec3(0, 0, 0, 0), vec3 max_ = vec3(0, 0, 0, 0)){
     this->center=center_;
     this->normal=normal_;
     this->color=color_;
@@ -14,33 +14,41 @@ plane::plane(vec3 center_,vec3 normal_, colour color_, float _diffuse, float _re
     this->refractive=_refractive;
     this->refractIndex=_refractIndex;
     this->emisor=_emisor;
-
-    if (this->center.x == -10){ //izq
-        this->infder = vec3(-10,-10,-40,0);
-        this->supizq = vec3(-10,10,30,0);
+/*
+    if (this->center.x == -100){ //izq
+        this->min = vec3(-100,-100,-200,0);
+        this->max = vec3(-100,100,200,0);
         
-    } else if (this->center.x == 10){   //der
-        this->infder = vec3(10,-10,-40,0);
-        this->supizq = vec3(10,10,30,0);
+    } else if (this->center.x == 100){   //der
+        this->min = vec3(100,-100,-200,0);
+        this->max = vec3(100,100,200,0);
 
-    } else if (this->center.y == -10){  //suelo
-        this->infder = vec3(-10,-10,-40,0);
-        this->supizq = vec3(10,-10,30,0);
+    } else if (this->center.y == -100){  //suelo
+        this->min = vec3(-100,-100,-200,0);
+        this->max = vec3(100,-100,200,0);
         
-    } else if (this->center.y == 10){   //techo
-        this->infder = vec3(-10,10,-40,0);
-        this->supizq = vec3(10,10,30,0);
+    } else if (this->center.y == 100){   //techo
+        this->min = vec3(-100,100,-200,0);
+        this->max = vec3(100,100,200,0);
 
-    } else if (this->center.z == 30){   //Fondo
-        this->infder = vec3(-10,-10,30,0);
-        this->supizq = vec3(10,10,30,0);
+    } else if (this->center.z == 200){   //Fondo
+        this->min = vec3(-100,-100,200,0);
+        this->max = vec3(100,100,200,0);
 
     } else {
         std::cout << "Plano no reconocido de limites " << std::endl;
-        this->infder = vec3(0, 0, 0, 0);
-        this->supizq = vec3(0, 0, 0, 0);
-    }
+        this->min = vec3(0, 0, 0, 0);
+        this->max = vec3(0, 0, 0, 0);
+    }*/
+    this->min = min_;
+    this->max = max_;
 
+}
+
+void plane::setLimits(vec3 min_, vec3 max_) {
+    this->min = min_;
+    this->max = max_;
+    cout<<"Mi centro "<<this->center<<" con min "<<this->min<<" y max "<<this->max<<endl;
 }
 
 vec3 plane::getCenter(){
@@ -82,6 +90,11 @@ bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normal
     float denominator = dot(l, n);
     float denominator2 = dot(l, nNegado);
 
+   /* if (rayo.direccion.y<0.34 && rayo.origen.x == 0 ){
+        cout<<rayo.origen<<endl;
+        cout<<rayo.direccion<<endl;
+    }
+*/
     if (denominator != 0.0) {
         vec3 aux = po-lo;
         dist = dot(aux, n) / denominator;
@@ -89,25 +102,21 @@ bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normal
             distancia = dist;
             tono = this->color;
             normalParam = n;
-            vec3 puntoChoque = desplazarPunto(rayo.origen, rayo.direccion, distancia);
-            
-            //if ((puntoChoque.x> supizq.x && puntoChoque.x< infder.x) || (puntoChoque.x< supizq.x && puntoChoque.x> infder.x) || (supizq.x == infder.x)) {
-            //    if ((puntoChoque.y> supizq.y && puntoChoque.y< infder.y) || (puntoChoque.y< supizq.y && puntoChoque.y> infder.y) || (supizq.y == infder.y)) {
-            //        if ((puntoChoque.z> supizq.z && puntoChoque.z< infder.z) || (puntoChoque.z< supizq.z && puntoChoque.z> infder.z) || (supizq.z == infder.z)) {
-            /*if ( (puntoChoque.x< supizq.x && puntoChoque.x> infder.x) || (supizq.x == infder.x)) {
-                if ( (puntoChoque.y< supizq.y && puntoChoque.y> infder.y) || (supizq.y == infder.y)) {
-                    if ( (puntoChoque.z< supizq.z && puntoChoque.z> infder.z) || (supizq.z == infder.z)) {
+            vec3 puntoChoque = desplazarPunto(lo,l,distancia);
+            if((100-puntoChoque.x < 0.01) && (100-puntoChoque.y < 0.01) && (puntoChoque.x < 100) && (puntoChoque.y < 100)){
+                //cout<<"Punto: "<<puntoChoque<<endl;
+            }
+            /*if ((puntoChoque.x> max.x && puntoChoque.x< min.x) || (puntoChoque.x< max.x && puntoChoque.x> min.x) || (max.x == min.x)) {
+                if ((puntoChoque.y> max.y && puntoChoque.y< min.y) || (puntoChoque.y< max.y && puntoChoque.y> min.y) || (max.y == min.y)) {
+                    if ((puntoChoque.z> max.z && puntoChoque.z< min.z) || (puntoChoque.z< max.z && puntoChoque.z> min.z) || (max.z == min.z)) {*/
+            if ( (puntoChoque.x <= max.x && puntoChoque.x >= min.x) || (max.x - min.x < 0.001)) {
+                if ( (puntoChoque.y <= max.y && puntoChoque.y >= min.y) || (max.y - min.y < 0.001)) {
+                    if ( (puntoChoque.z <= max.z && puntoChoque.z >= min.z) || (max.z - min.z < 0.001)) {
                         ret= true;
-                    } else {
-                        ret = false;
-                    }   
-                } else {
-                    ret = false;
+                    }  
                 }
-            } else {
-                ret = false;
-            }*/
-            ret = true;
+            }
+            //ret= true;
         }
     } else if (denominator2 != 0.0) {
         vec3 aux = po-lo;
@@ -115,77 +124,22 @@ bool plane::ray_intersect(ray rayo, colour& tono, float& distancia, vec3& normal
         if (dist > 0) {
             distancia = dist;
             tono = this->color;
-            normalParam = n;
-            vec3 puntoChoque = desplazarPunto(rayo.origen, rayo.direccion, distancia);
-            /*if ( (puntoChoque.x< supizq.x && puntoChoque.x> infder.x) || (supizq.x == infder.x)) {
-                if ( (puntoChoque.y< supizq.y && puntoChoque.y> infder.y) || (supizq.y == infder.y)) {
-                    if ( (puntoChoque.z< supizq.z && puntoChoque.z> infder.z) || (supizq.z == infder.z)) {
+            normalParam = nNegado;
+            vec3 puntoChoque = desplazarPunto(lo,l,distancia);
+            if((100-puntoChoque.x < 0.01) && (100-puntoChoque.y < 0.01) && (puntoChoque.x < 100) && (puntoChoque.y < 100)){
+                //cout<<"Punto: "<<puntoChoque<<endl;
+            }
+            if ( (puntoChoque.x <= max.x && puntoChoque.x >= min.x) || (max.x - min.x < 0.001)) {
+                if ( (puntoChoque.y <= max.y && puntoChoque.y >= min.y) || (max.y - min.y < 0.001)) {
+                    if ( (puntoChoque.z <= max.z && puntoChoque.z >= min.z) || (max.z - min.z < 0.001)) {
                         ret= true;
-                    } else {
-                        ret = false;
-                    }   
-                } else {
-                    ret = false;
+                    }  
                 }
-            } else {
-                ret = false;
-            }*/
-            ret = true;
+            }
+            //ret= true;
         }
     }
     return ret;
-
-
-    /*
-    //https://stackoverflow.com/questions/23975555/how-to-do-ray-plane-intersection
-    // Crashea al generar la imagne, parece que es bucle infinito
-    vec3 esteCentro = this->center;
-    vec3 estaNormal = this->normal;
-    float denom = dot(estaNormal, rayo.direccion);
-    if (fabs(denom) > 0){
-        vec3 polo = vector2puntos(rayo.origen, esteCentro);
-        float t = dot(estaNormal, esteCentro);
-        if (t > 0){
-            distancia = t ;
-            tono = this->color;
-            normalParam = this->normal;
-            return true;
-        }else{
-            return false;
-        }
-    }
-    return false;
-    */
-/*
-    https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-box-intersection
-   float tmin, tmax, tymin, tymax, tzmin, tzmax; 
-
- 
-    tmin = (bounds[r.sign[0]].x - rayo.origen.x) * r.invdir.x; 
-    tmax = (bounds[1-r.sign[0]].x - rayo.origen.x) * r.invdir.x; 
-    tymin = (bounds[r.sign[1]].y - rayo.origen.y) * r.invdir.y; 
-    tymax = (bounds[1-r.sign[1]].y - rayo.origen.y) * r.invdir.y; 
- 
-    if ((tmin > tymax) || (tymin > tmax)) 
-        return false; 
-    if (tymin > tmin) 
-        tmin = tymin; 
-    if (tymax < tmax) 
-        tmax = tymax; 
- 
-    tzmin = (bounds[r.sign[2]].z - rayo.origen.z) * r.invdir.z; 
-    tzmax = (bounds[1-r.sign[2]].z - rayo.origen.z) * r.invdir.z; 
- 
-    if ((tmin > tzmax) || (tzmin > tmax)) 
-        return false; 
-    if (tzmin > tmin) 
-        tmin = tzmin; 
-    if (tzmax < tmax) 
-        tmax = tzmax;  
- 
-    return true; 
-*/
-
 }
 
 
