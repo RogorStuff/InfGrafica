@@ -48,7 +48,6 @@ plane::plane(vec3 center_,vec3 normal_, colour color_, float _diffuse, float _re
 void plane::setLimits(vec3 min_, vec3 max_) {
     this->min = min_;
     this->max = max_;
-    cout<<"Mi centro "<<this->center<<" con min "<<this->min<<" y max "<<this->max<<endl;
 }
 
 vec3 plane::getCenter(){
