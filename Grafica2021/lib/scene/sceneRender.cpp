@@ -80,25 +80,23 @@ Pixel colorPathRPL(vector<Primitiva*> &primitivas, ray rayoLanzado, int loop, po
                     //newDirectionRay = normalizar(newDirectionRay);    //Se normaliza en generarDireccion
                     ray nuevoRayo = ray(puntoChoque, newDirectionRay);
                     if (eventoObjeto == REFLECTION){
-                        /*if(loop == 1){
-                        colorLuzFinal = colorLuzFinal + colorLuzLocal;
-                            //Pixel colorRec = colorPathRPL(primitivas, nuevoRayo, loop+1, light, textura, rebotes, colorLuzFinal);
-                            return colorLuzFinal/rebotes;
-                        }else{
-                            return (resultado * colorPathRPL(primitivas, nuevoRayo, loop+1, light, textura, rebotes, colorLuzFinal));
-                        }*/
-                        //cout<<"Reflejo con Nuevo origen: "<<puntoChoque<<" y nueva direccion "<<newDirectionRay<<endl;
                         rebotes = rebotes + 1;
                         return (colorPathRPL(primitivas, nuevoRayo, loop+1, light, textura, rebotes, colorLuzFinal));
                     }else if (eventoObjeto == REFRACTION){
-                        colorLuzFinal = colorLuzFinal + colorLuzLocal;
-                        if(loop == 1){
+
+                        //Cuando cojo color aquí algo raro, te toca investigarlo
+                        //colorLuzFinal = colorLuzFinal;
+                        //float k1, k2, k3;
+                        //objetoGolpeado->material(k1, k2, k3);
+                        /*if(loop == 1){
                             Pixel colorRec = colorPathRPL(primitivas, nuevoRayo, loop+1, light, textura, rebotes, colorLuzFinal);
-                            return colorLuzFinal/rebotes + colorRec/rebotes;
-                        }else{
+                            return colorRec + colorLuzFinal/rebotes;
+                        }else{*/
                             return (colorPathRPL(primitivas, nuevoRayo, loop+1, light, textura, rebotes, colorLuzFinal));
-                        }
+                        //}
                         //return (colorPathRPL(primitivas, nuevoRayo, loop+1, light, textura, rebotes, colorLuzFinal));
+
+
                     }else {
                         colorLuzFinal = colorLuzFinal + colorLuzLocal;
                         rebotes = rebotes + 1;
