@@ -81,7 +81,8 @@ Pixel colorPathRPL(vector<Primitiva*> &primitivas, ray rayoLanzado, int loop, po
                     ray nuevoRayo = ray(puntoChoque, newDirectionRay);
                     if (eventoObjeto == REFLECTION){
                         rebotes = rebotes + 1;
-                        return (colorPathRPL(primitivas, nuevoRayo, loop+1, light, textura, rebotes, colorLuzFinal));
+                        Pixel colorRec = colorPathRPL(primitivas, nuevoRayo, loop+1, light, textura, rebotes, colorLuzFinal);
+                        return colorRec + colorLuzFinal/rebotes;
                     }else if (eventoObjeto == REFRACTION){
 
                         //Cuando cojo color aquí algo raro, te toca investigarlo
@@ -92,7 +93,8 @@ Pixel colorPathRPL(vector<Primitiva*> &primitivas, ray rayoLanzado, int loop, po
                             Pixel colorRec = colorPathRPL(primitivas, nuevoRayo, loop+1, light, textura, rebotes, colorLuzFinal);
                             return colorRec + colorLuzFinal/rebotes;
                         }else{*/
-                            return (colorPathRPL(primitivas, nuevoRayo, loop+1, light, textura, rebotes, colorLuzFinal));
+                            Pixel colorRec = colorPathRPL(primitivas, nuevoRayo, loop+1, light, textura, rebotes, colorLuzFinal);
+                            return colorRec;
                         //}
                         //return (colorPathRPL(primitivas, nuevoRayo, loop+1, light, textura, rebotes, colorLuzFinal));
 
@@ -102,7 +104,7 @@ Pixel colorPathRPL(vector<Primitiva*> &primitivas, ray rayoLanzado, int loop, po
                         rebotes = rebotes + 1;
                         if(loop == 1){
                             Pixel colorRec = colorPathRPL(primitivas, nuevoRayo, loop+1, light, textura, rebotes, colorLuzFinal);
-                            return colorLuzFinal/rebotes + colorRec/rebotes;
+                            return resultado * colorRec + colorLuzFinal/rebotes;
                         }else{
                             return (resultado * colorPathRPL(primitivas, nuevoRayo, loop+1, light, textura, rebotes, colorLuzFinal) + colorLuzFinal/rebotes);
                         }
