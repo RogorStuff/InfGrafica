@@ -5,6 +5,7 @@
 #include "lib/scene/sceneRender.cpp"
 #include "lib/shapes2/sceneReader2.cpp"
 #include "lib/images/image.cpp"
+#include "lib/images/texture.cpp"
 
 #include <iostream>
 #include <fstream>
@@ -58,10 +59,13 @@ int main (int argc, char *argv[]) {
         }
     }
 
+    Texture texturaBosque = Texture("forest.ppm");
+    Texture texturaBosque2 = Texture("forest2.ppm");
+
     vector<sphere> esferas;
     vector<plane> planos;
     pointLight light = pointLight(vec3(0.0, 0.0, 0.0, 0), 0);
-    bool exito = sceneReader(esferas, planos, light, "pruebaP4.txt");
+    bool exito = sceneReader(esferas, planos, light, "pruebaP4copy.txt");
     cout<<"Tenemos "<<esferas.size()<<" esferas y "<<planos.size()<<" planos."<<endl;
     
     //Cargamos el vector de primitivas con las esferas y planos anteriores
@@ -74,6 +78,27 @@ int main (int argc, char *argv[]) {
     for(int i = 0; i< planos.size(); i++){
         plane p = planos.at(i);        
         plane* a = new plane(p.center, p.normal, p.color, p.diffuse, p.reflective, p.refractive, p.refractIndex, p.emisor, p.min, p.max);
+
+        if(a->normal.z<0){
+            //Textura del cielo
+            a->setTextura(texturaBosque);
+        } else if (a->normal.y>0){
+            //Suelo
+            Texture texturaSuelo = Texture("snow ground.ppm");
+            a->setTextura(texturaSuelo);
+        } else if (a->normal.y<0){
+            //Suelo
+            Texture texturaSuelo = Texture("skysun.ppm");
+            cout<<texturaSuelo.height<<" "<<texturaSuelo.width<<endl;
+            a->setTextura(texturaSuelo);
+        } else if (a->normal.x<0){
+            //Pared derecha
+            a->setTextura(texturaBosque2);
+        } else if (a->normal.x>0){
+            //Pared izquierda
+            a->setTextura(texturaBosque2);
+        }
+        
         primitivas.push_back(a);
     } 
 
@@ -97,7 +122,7 @@ int main (int argc, char *argv[]) {
 
         vector<Pixel> textura;
         exito = textureReader(textura, "lantern.ppm");
-            
+        
         Image resultado = ver(primitivas, sensor, numRayos, filename, width, height, light, textura);
         resultado.save(filename);
 

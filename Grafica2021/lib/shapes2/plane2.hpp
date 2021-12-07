@@ -2,6 +2,7 @@
 
 #include "../math/vec3.cpp"
 #include "../scene/ray.cpp"
+#include "../images/texture.cpp"
 #include "colour.hpp"
 #include "math.h"
 #include <vector>
@@ -24,11 +25,16 @@ class plane : public Primitiva {
         vec3 max;
         vec3 min;
         colour color;
+        float ladoX;
+        float ladoY;
+        float ladoZ;
         float diffuse;
         float reflective;
         float refractive;
         float refractIndex;
         bool emisor;
+        bool hayTextura;
+        Texture textura;
         plane();
         plane(vec3 center_,vec3 normal_, colour color_, float _diffuse, float _reflective, float _refractive, float _refractIndex, bool _emisor, vec3 min_, vec3 max_);
         void setLimits(vec3 min, vec3 max);
@@ -44,6 +50,8 @@ class plane : public Primitiva {
         void material(float& Kd, float& Ks, float& Kr) const override;
         bool getEmisor() const override;
         float getRIndex() const override;
+        void setTextura(Texture texturaNueva);
+        bool getTextura(int x, int y,  int tipo, Pixel& pixelTextura) const override;
 };
 
 #endif

@@ -209,18 +209,15 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, int loop, vect
 
     if (golpea){
         if (objetoGolpeado->getEmisor()){
-            /*
-            vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, menorDistancia);
-            int coordenadaY = floor(puntoChoque.z*10);
-            coordenadaY = abs(coordenadaY%16);
-            int coordenadaX = floor(puntoChoque.x*10);
-            coordenadaX = abs(coordenadaX%16);
-            int coordenada = (coordenadaX*16 + coordenadaY)%256;
-            Pixel pixelTextura = textura.at(coordenada);
-            */
-            //return pixelTextura;
 
-            return resultado;
+            vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, menorDistancia);
+            Pixel auxTextura;
+            if (objetoGolpeado->getTextura(puntoChoque.x, puntoChoque.z, 2, auxTextura)){
+                return (auxTextura);
+            }else{
+                return (resultado);
+            }
+
         } else {    //Objeto golpeado no emisor
 
             EVENT eventoObjeto;
@@ -238,6 +235,30 @@ Pixel colorPathR(vector<Primitiva*> &primitivas, ray rayoLanzado, int loop, vect
                 }else if (eventoObjeto == REFRACTION){
                     return (colorPathR(primitivas, nuevoRayo, loop+1,textura));
                 }else {
+                    Pixel auxTextura;
+                    if(abs(normalFinal.x)>0){
+
+                        if (objetoGolpeado->getTextura(puntoChoque.z, puntoChoque.y, 1, auxTextura)){
+                            return (auxTextura * colorPathR(primitivas, nuevoRayo, 1, textura));
+                        }else{
+                            return (resultado * colorPathR(primitivas, nuevoRayo, 1, textura));
+                        }
+
+                    }else if(abs(normalFinal.y)>0){
+
+                        if (objetoGolpeado->getTextura(puntoChoque.x, puntoChoque.z, 2, auxTextura)){
+                            return (auxTextura * colorPathR(primitivas, nuevoRayo, 1, textura));
+                        }else{
+                            return (resultado * colorPathR(primitivas, nuevoRayo, 1, textura));
+                        }
+                    }else if(abs(normalFinal.z)>0){
+
+                        if (objetoGolpeado->getTextura(puntoChoque.x, puntoChoque.y, 3, auxTextura)){
+                            return (auxTextura * colorPathR(primitivas, nuevoRayo, 1, textura));
+                        }else{
+                            return (resultado * colorPathR(primitivas, nuevoRayo, 1, textura));
+                        }
+                    }
                     return (resultado * colorPathR(primitivas, nuevoRayo, 1, textura));
                 }
             }else{
@@ -276,16 +297,14 @@ Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado, vector<Pixel> &
 //cout<<"Comprobado "<<golpea<<endl;
     if (golpea){
         if (objetoGolpeado->getEmisor()){
-            /*
+
             vec3 puntoChoque = desplazarPunto(rayoLanzado.origen, rayoLanzado.direccion, menorDistancia);
-            int coordenadaY = floor(puntoChoque.z*10);
-            coordenadaY = abs(coordenadaY%16);
-            int coordenadaX = floor(puntoChoque.x*10);
-            coordenadaX = abs(coordenadaX%16);
-            int coordenada = (coordenadaX*16 + coordenadaY)%256;
-            Pixel pixelTextura = textura.at(coordenada);
-            return pixelTextura;
-            */
+            Pixel auxTextura;
+            if (objetoGolpeado->getTextura(puntoChoque.x, puntoChoque.z, 2, auxTextura)){
+                return (auxTextura);
+            }else{
+                return (resultado);
+            }
 
             return resultado;
         } else {    //Objeto golpeado no emisor
@@ -300,6 +319,30 @@ Pixel colorPath(vector<Primitiva*> &primitivas, ray rayoLanzado, vector<Pixel> &
                 }else if (eventoObjeto == REFRACTION){
                     return (colorPathR(primitivas, nuevoRayo, 1,textura));
                 }else {
+                    Pixel auxTextura;
+                    if(abs(normalFinal.x)>0){
+
+                        if (objetoGolpeado->getTextura(puntoChoque.z, puntoChoque.y, 1, auxTextura)){
+                            return (auxTextura * colorPathR(primitivas, nuevoRayo, 1, textura));
+                        }else{
+                            return (resultado * colorPathR(primitivas, nuevoRayo, 1, textura));
+                        }
+
+                    }else if(abs(normalFinal.y)>0){
+
+                        if (objetoGolpeado->getTextura(puntoChoque.x, puntoChoque.z, 2, auxTextura)){
+                            return (auxTextura * colorPathR(primitivas, nuevoRayo, 1, textura));
+                        }else{
+                            return (resultado * colorPathR(primitivas, nuevoRayo, 1, textura));
+                        }
+                    }else if(abs(normalFinal.z)>0){
+
+                        if (objetoGolpeado->getTextura(puntoChoque.x, puntoChoque.y, 3, auxTextura)){
+                            return (auxTextura * colorPathR(primitivas, nuevoRayo, 1, textura));
+                        }else{
+                            return (resultado * colorPathR(primitivas, nuevoRayo, 1, textura));
+                        }
+                    }
                     return (resultado * colorPathR(primitivas, nuevoRayo, 1, textura));
                 }
             }else{
