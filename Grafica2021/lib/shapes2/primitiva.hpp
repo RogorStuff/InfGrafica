@@ -2,6 +2,7 @@
 
 #include "../math/vec3.cpp"
 #include "../scene/ray.cpp"
+#include "../images/texture.cpp"
 #include "colour.hpp"
 #include "math.h"
 #include <vector>
@@ -25,6 +26,7 @@ class Primitiva{
         virtual void material(float& Kd, float& Ks, float& Kr) const=0;
         virtual bool getEmisor() const=0;
         virtual float getRIndex() const=0;
+        virtual bool getTextura(int x, int y, int tipo,  Pixel& pixelTextura) const=0;
 
 };
 

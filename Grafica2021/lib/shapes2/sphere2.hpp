@@ -40,6 +40,7 @@ class sphere : public Primitiva {
         void material(float& Kd, float& Ks, float& Kr) const override;
         bool getEmisor() const override;
         float getRIndex() const override;
+        bool getTextura(int x, int y, int tipo,  Pixel& pixelTextura) const override;
 };
 
 #endif

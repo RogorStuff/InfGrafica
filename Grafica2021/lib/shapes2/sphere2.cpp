@@ -129,3 +129,7 @@ bool sphere::getEmisor() const {
 float sphere::getRIndex() const {
     return this->refractIndex;
 }
+
+bool sphere::getTextura(int x, int y, int tipo,  Pixel& pixelTextura) const {
+    return false;
+}
