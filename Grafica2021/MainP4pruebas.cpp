@@ -39,14 +39,17 @@ int main (int argc, char *argv[]) {
         if (strcmp (argv[i], "ppp") == 0){
             numRayos = atoi(argv[i+1]);
             rayosCambiados = true;
+            std::cout << "ppp cambiados" << std::endl;
         }
         if (strcmp (argv[i], "width") == 0){
             width = atoi(argv[i+1]);
             widthCambiado = true;
+            std::cout << "width cambiados" << std::endl;
         }
         if (strcmp (argv[i], "height") == 0){
             height = atoi(argv[i+1]);
             heightCambiado = true;
+            std::cout << "height cambiados" << std::endl;
         }
         if (strcmp (argv[i], "filename") == 0){
             filename = (argv[i+1]);
